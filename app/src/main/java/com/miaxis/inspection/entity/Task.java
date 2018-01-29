@@ -1,10 +1,13 @@
 package com.miaxis.inspection.entity;
 
+import java.io.Serializable;
+
 /**
+ * 检查任务
  * Created by xu.nan on 2018/1/3.
  */
 
-public class Task {
+public class Task implements Serializable {
 
     private String name;
     private String beginTime;

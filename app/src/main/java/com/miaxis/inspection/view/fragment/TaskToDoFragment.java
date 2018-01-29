@@ -1,6 +1,7 @@
 package com.miaxis.inspection.view.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.TaskAdapter;
 import com.miaxis.inspection.entity.Task;
+import com.miaxis.inspection.view.activity.ItemListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +49,6 @@ public class TaskToDoFragment extends Fragment implements SwipeRefreshLayout.OnR
     public TaskToDoFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -109,6 +110,14 @@ public class TaskToDoFragment extends Fragment implements SwipeRefreshLayout.OnR
         rvTaskToDo.setLayoutManager(new LinearLayoutManager(getContext()));
         srlTaskToDo.setOnRefreshListener(this);
         initLoadMoreListener(adapter);
+        adapter.setListener(new TaskAdapter.OnTaskClickListener() {
+            @Override
+            public void onTaskClick(View view, int position) {
+                Intent toItemListIntent = new Intent(getContext(), ItemListActivity.class);
+                toItemListIntent.putExtra("task", taskList.get(position));
+                startActivity(toItemListIntent);
+            }
+        });
     }
 
     @Override

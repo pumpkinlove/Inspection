@@ -1,10 +1,11 @@
 package com.miaxis.inspection.entity;
 
 /**
+ * 机构
  * Created by xu.nan on 2018/1/3.
  */
 
-public class Dept {
+public class Organization {
 
     private long id;
     private String name;
