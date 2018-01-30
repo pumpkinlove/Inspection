@@ -7,12 +7,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
+import com.miaxis.inspection.entity.Config;
+import com.miaxis.inspection.view.fragment.ConfigFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements ConfigFragment.OnConfigClickListener {
 
     @BindView(R.id.fl_config)
     FrameLayout flConfig;
@@ -29,6 +31,9 @@ public class LoginActivity extends BaseActivity {
 
         initData();
         initView();
+
+        ConfigFragment configFragment = new ConfigFragment();
+        getFragmentManager().beginTransaction().replace(R.id.fl_config, configFragment).commit();
 
     }
 
@@ -47,4 +52,13 @@ public class LoginActivity extends BaseActivity {
         startActivity(new Intent(this, MainActivity.class));
     }
 
+    @Override
+    public void onConfigSave() {
+
+    }
+
+    @Override
+    public void onConfigCancel() {
+
+    }
 }

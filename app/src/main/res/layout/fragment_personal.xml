@@ -1,14 +1,87 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray_bg"
+    android:orientation="vertical"
     tools:context="com.miaxis.inspection.view.fragment.PersonalFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_marginTop="@dimen/activity_padding"
+        style="@style/l_personal_item"
+        android:padding="10dp">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/iv_inspector_photo"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:hint="用户名"
+            android:id="@+id/tv_inspector_name"
+            app:layout_constraintLeft_toRightOf="@id/iv_inspector_photo"
+            app:layout_constraintBottom_toTopOf="@id/tv_inspector_code"
+            app:layout_constraintTop_toTopOf="parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textSize="16sp"
+            android:textColor="@color/dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:hint="用户编号"
+            android:id="@+id/tv_inspector_code"
+            app:layout_constraintLeft_toRightOf="@id/iv_inspector_photo"
+            app:layout_constraintTop_toBottomOf="@id/tv_inspector_name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/activity_padding"
+        android:orientation="horizontal"
+        style="@style/l_personal_item">
+
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/tv_personal_item"
+            android:text="检查点管理"/>
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <LinearLayout
+        android:id="@+id/ll_config"
+        android:orientation="horizontal"
+        style="@style/l_personal_item">
+
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/tv_personal_item"
+            android:text="@string/setting"/>
+
+    </LinearLayout>
+
+</LinearLayout>

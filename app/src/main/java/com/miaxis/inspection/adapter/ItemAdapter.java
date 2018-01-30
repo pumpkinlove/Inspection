@@ -51,7 +51,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         InspectItem item = inspectItemList.get(position);
         holder.tvItemSeq.setText("" + item.getId());
         holder.tvItemName.setText(item.getName());
-        holder.tvItemProgress.setText(String.format(context.getString(R.string.item_progress_format), item.getCurCount(), item.getTotalCount() - item.getCurCount()));
+        holder.tvItemProgress.setText(String.format(context.getString(R.string.item_progress_format),2, 1));
     }
 
     @Override

@@ -81,7 +81,7 @@ public class MainActivity extends BaseActivity
 
         initTabLayout();
         vpMain.setCurrentItem(1);
-        tlMain.getTabAt(1).select();
+        tlMain.getTabAt(0).select();
     }
 
     private void initTabLayout() {

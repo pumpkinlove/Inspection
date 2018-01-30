@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.miaxis.inspection">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGEE" />
+
     <application
         android:name=".app.Inspection_App"
         android:allowBackup="true"
@@ -18,8 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.activity.MainActivity" />
-        <activity android:name=".view.activity.ItemListActivity"
-            ></activity>
+        <activity android:name=".view.activity.ItemListActivity" />
+        <activity android:name=".view.activity.ConfigActivity"></activity>
     </application>
 
 </manifest>

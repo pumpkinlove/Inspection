@@ -12,6 +12,7 @@ public class Task implements Serializable {
     private String name;
     private String beginTime;
     private String endTime;
+    private int frequency;
 
     public String getName() {
         return name;

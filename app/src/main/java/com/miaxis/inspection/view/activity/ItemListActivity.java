@@ -49,17 +49,13 @@ public class ItemListActivity extends BaseActivity {
     protected void initData() {
         itemList = new ArrayList<>();
         InspectItem i = new InspectItem();
-        i.setId(1);
+        i.setId(1L);
         i.setName("门窗");
-        i.setCurCount(1);
-        i.setTotalCount(3);
         itemList.add(i);
 
         InspectItem i2 = new InspectItem();
-        i2.setId(2);
+        i2.setId(2L);
         i2.setName("水电气-总行");
-        i2.setCurCount(2);
-        i2.setTotalCount(4);
         itemList.add(i2);
 
         adapter = new ItemAdapter(itemList, this);
