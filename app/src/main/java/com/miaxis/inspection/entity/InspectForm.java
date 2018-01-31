@@ -1,11 +1,13 @@
 package com.miaxis.inspection.entity;
 
+import java.io.Serializable;
+
 /**
  * 检查表单
  * Created by xu.nan on 2018/1/29.
  */
 
-public class InspectForm {
+public class InspectForm implements Serializable {
 
     private Long id;
     private String name;

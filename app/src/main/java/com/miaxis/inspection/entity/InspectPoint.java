@@ -1,11 +1,13 @@
 package com.miaxis.inspection.entity;
 
+import java.io.Serializable;
+
 /**
  * 检查点
  * Created by xu.nan on 2018/1/3.
  */
 
-public class InspectPoint {
+public class InspectPoint implements Serializable {
 
     private Long id;
 

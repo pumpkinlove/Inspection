@@ -1,5 +1,6 @@
 package com.miaxis.inspection.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Date;
  * Created by xu.nan on 2018/1/29.
  */
 
-public class InspectLog {
+public class InspectLog implements Serializable {
 
     private Long id;
     private Date opDate;

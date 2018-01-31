@@ -22,7 +22,8 @@
         </activity>
         <activity android:name=".view.activity.MainActivity" />
         <activity android:name=".view.activity.ItemListActivity" />
-        <activity android:name=".view.activity.ConfigActivity"></activity>
+        <activity android:name=".view.activity.ConfigActivity" />
+        <activity android:name=".view.activity.LogDetailActivity"></activity>
     </application>
 
 </manifest>

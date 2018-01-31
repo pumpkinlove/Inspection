@@ -1,11 +1,13 @@
 package com.miaxis.inspection.entity;
 
+import java.io.Serializable;
+
 /**
  * 机构
  * Created by xu.nan on 2018/1/3.
  */
 
-public class Organization {
+public class Organization implements Serializable {
 
     private long id;
     private String name;

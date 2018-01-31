@@ -8,4 +8,11 @@
     <string name="item_progress_format">当前检查次数：%d 剩余检查次数：%d</string>
     <string name="scan">扫描</string>
     <string name="setting">设置</string>
+    <string name="inspector_manage">检查员管理</string>
+    <string name="inspect_point">检查点</string>
+    <string name="inspector">检察员</string>
+    <string name="time">检查时间</string>
+    <string name="result">检查结果</string>
+    <string name="more"><u>查看更多</u></string>
+    <string name="inspect_log">检查记录</string>
 </resources>

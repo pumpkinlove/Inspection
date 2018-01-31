@@ -22,7 +22,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:hint="用户名"
+            android:hint="检察员姓名"
             android:id="@+id/tv_inspector_name"
             app:layout_constraintLeft_toRightOf="@id/iv_inspector_photo"
             app:layout_constraintBottom_toTopOf="@id/tv_inspector_code"
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:hint="用户编号"
+            android:hint="检察员编号"
             android:id="@+id/tv_inspector_code"
             app:layout_constraintLeft_toRightOf="@id/iv_inspector_photo"
             app:layout_constraintTop_toBottomOf="@id/tv_inspector_name"
@@ -60,6 +60,27 @@
         <TextView
             style="@style/tv_personal_item"
             android:text="检查点管理"/>
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <LinearLayout
+        android:id="@+id/ll_inspector_manage"
+        android:orientation="horizontal"
+        style="@style/l_personal_item">
+
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/tv_personal_item"
+            android:text="@string/inspector_manage"/>
 
     </LinearLayout>
 

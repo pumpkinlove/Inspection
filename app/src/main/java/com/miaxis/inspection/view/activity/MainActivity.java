@@ -21,8 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity
-        implements HomePageFragment.OnFragmentInteractionListener,
-        PersonalFragment.OnFragmentInteractionListener {
+        implements PersonalFragment.OnFragmentInteractionListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -62,7 +61,7 @@ public class MainActivity extends BaseActivity
         pressedIconList.add(getResources().getDrawable(R.drawable.tab3_p));
 
         List<Fragment> fragmentList = new ArrayList<>();
-        HomePageFragment homePageFragment = HomePageFragment.newInstance("", "");
+        HomePageFragment homePageFragment = new HomePageFragment();
         fragmentList.add(homePageFragment);
         MyTaskFragment myTaskFragment = MyTaskFragment.newInstance();
         fragmentList.add(myTaskFragment);
