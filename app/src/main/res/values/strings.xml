@@ -7,6 +7,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="item_progress_format">当前检查次数：%d 剩余检查次数：%d</string>
     <string name="scan">扫描</string>
+    <string name="version">版本号：</string>
     <string name="setting">设置</string>
     <string name="inspector_manage">检查员管理</string>
     <string name="inspect_point">检查点</string>

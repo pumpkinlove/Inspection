@@ -10,10 +10,10 @@ public class InspectContent {
 
     private Long id;
     private String name;
-    private InspectItem inspectItem;
+    private InspectItem inspectItem;    //所属检查项
     private String roleName;
 
-    private String result;          //检查结果
+    private String result;              //检查结果
     private String description;         //问题描述
     private List<String> picUrls;       //照片路径
     private List<byte[]> picDataList;   //照片数据

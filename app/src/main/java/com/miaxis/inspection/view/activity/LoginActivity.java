@@ -7,8 +7,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
-import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.view.fragment.ConfigFragment;
+import com.miaxis.inspection.utils.CommonUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +44,8 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
 
     @Override
     protected void initView() {
-
+        tvVersion.setText(R.string.version);
+        tvVersion.append(CommonUtil.getVerName(this));
     }
 
     @OnClick(R.id.btn_login)
