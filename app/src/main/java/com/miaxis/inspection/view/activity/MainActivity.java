@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity
     private List<Drawable> normalIconList;
     private List<Drawable> pressedIconList;
 
-    public static final String[] TITLES = {"首页", "我的任务", "个人中心"};
+    public static final String[] TITLES = {"安保检查", "我的任务", "个人中心"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

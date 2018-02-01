@@ -1,12 +1,13 @@
 package com.miaxis.inspection.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 检查内容
  * Created by xu.nan on 2018/1/3.
  */
-public class InspectContent {
+public class InspectContent implements Serializable {
 
     private Long id;
     private String name;

@@ -16,4 +16,8 @@
     <string name="result">检查结果</string>
     <string name="more"><u>查看更多</u></string>
     <string name="inspect_log">检查记录</string>
+    <string name="problem_description">问题描述</string>
+    <string name="pic_description">图片描述</string>
+    <string name="submit">提交</string>
+    <string name="inspect_content">检查内容</string>
 </resources>

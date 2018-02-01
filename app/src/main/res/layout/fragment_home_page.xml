@@ -7,16 +7,49 @@
     tools:context="com.miaxis.inspection.view.fragment.HomePageFragment">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cv_scan"
+        android:focusable="true"
+        android:clickable="true"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp">
 
+        <LinearLayout
+            android:background="@drawable/green_gradient_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <ImageView
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center_vertical"
+                android:tint="@color/white"
+                android:src="@mipmap/scan"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:text="立即检查        "
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:layout_weight="3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cv_point_to_do"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -24,7 +57,37 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp">
 
+        <LinearLayout
+            android:background="@drawable/red_gradient_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <ImageView
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center_vertical"
+                android:tint="@color/white"
+                android:src="@mipmap/location"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:id="@+id/tv_to_do_point"
+                android:text="待检查点"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:layout_weight="3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 

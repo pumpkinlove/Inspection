@@ -1,6 +1,7 @@
 package com.miaxis.inspection.view.activity;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
@@ -18,6 +19,10 @@ public class LogDetailActivity extends BaseActivity {
     TextView tvLogTime;
     @BindView(R.id.tv_log_result)
     TextView tvLogResult;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.tv_log_inspector)
+    TextView tvLogInspector;
     private InspectLog mLog;
 
     @Override
@@ -38,8 +43,17 @@ public class LogDetailActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        initToolBar();
         tvLogPoint.setText(mLog.getInspectPoint().getPointName());
         tvLogTime.setText(DateUtil.toAll(mLog.getOpDate()));
         tvLogResult.setText(mLog.getResult());
+
     }
+
+    private void initToolBar() {
+        toolbar.setTitle("记录详情");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
 }

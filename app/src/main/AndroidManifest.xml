@@ -23,7 +23,14 @@
         <activity android:name=".view.activity.MainActivity" />
         <activity android:name=".view.activity.ItemListActivity" />
         <activity android:name=".view.activity.ConfigActivity" />
-        <activity android:name=".view.activity.LogDetailActivity"></activity>
+        <activity android:name=".view.activity.LogDetailActivity" />
+        <activity android:name=".view.activity.DoInspectActivity" />
+        <activity android:name=".view.activity.ScanPointActivity" />
+        <activity android:name=".view.activity.DoInspectContentActivity" />
+        <activity android:name=".view.activity.InspectFormActivity" />
+        <activity android:name=".view.activity.InspectItemActivity" />
+        <activity android:name=".view.activity.ContentListActivity" />
+        <activity android:name=".view.activity.PointListActivity"></activity>
     </application>
 
 </manifest>

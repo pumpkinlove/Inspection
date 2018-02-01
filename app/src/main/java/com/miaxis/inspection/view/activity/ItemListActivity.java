@@ -1,5 +1,6 @@
 package com.miaxis.inspection.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -91,7 +92,7 @@ public class ItemListActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.action_scan:
-                Toast.makeText(this, "scan", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, ScanPointActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
