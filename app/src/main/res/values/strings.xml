@@ -20,4 +20,5 @@
     <string name="pic_description">图片描述</string>
     <string name="submit">提交</string>
     <string name="inspect_content">检查内容</string>
+    <string name="update">检查新版本</string>
 </resources>

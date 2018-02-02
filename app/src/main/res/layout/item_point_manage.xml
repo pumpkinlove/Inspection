@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="@color/blue_band_dark3"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1px">
+
+    <TextView
+        android:id="@+id/tv_point_name"
+        android:singleLine="true"
+        android:textColor="@color/dark"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:layout_margin="5dp"
+        android:gravity="center_vertical"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:background="@drawable/round_stroke_white_bg"
+        android:focusable="true"
+        android:clickable="true"
+        android:id="@+id/tv_add_rfid"
+        android:layout_margin="5dp"
+        android:text="绑定"
+        android:drawableStart="@drawable/add_btn_bg"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:background="@drawable/round_stroke_white_bg"
+        android:focusable="true"
+        android:clickable="true"
+        android:id="@+id/tv_mod_rfid"
+        android:layout_margin="5dp"
+        android:text="更改"
+        android:drawableStart="@drawable/mod_btn_bg"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:background="@drawable/round_stroke_white_bg"
+        android:focusable="true"
+        android:clickable="true"
+        android:id="@+id/tv_del_rfid"
+        android:layout_margin="5dp"
+        android:text="解绑"
+        android:drawableStart="@drawable/del_btn_bg"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

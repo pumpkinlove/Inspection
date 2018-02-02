@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
+import com.miaxis.inspection.adapter.PointManageAdapter;
 import com.miaxis.inspection.view.activity.ConfigActivity;
+import com.miaxis.inspection.view.activity.PointManageActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -134,6 +136,11 @@ public class PersonalFragment extends Fragment {
     @OnClick(R.id.ll_config)
     void onConfigClick() {
         startActivity(new Intent(getActivity(), ConfigActivity.class));
+    }
+
+    @OnClick(R.id.ll_inspector_point_manage)
+    void onInspectPointManageClick() {
+        startActivity(new Intent(getActivity(), PointManageActivity.class));
     }
 
 }

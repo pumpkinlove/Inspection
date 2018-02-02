@@ -1,9 +1,13 @@
 package com.miaxis.inspection.view.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -113,6 +117,11 @@ public class HomePageFragment extends Fragment {
 
     @OnClick(R.id.cv_scan)
     void onDoInspect() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // 申请权限
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA},1);
+            return;
+        }
         startActivity(new Intent(getContext(), ScanPointActivity.class));
     }
 

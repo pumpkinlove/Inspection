@@ -2,6 +2,7 @@ package com.miaxis.inspection.view.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
@@ -47,13 +48,23 @@ public class LogDetailActivity extends BaseActivity {
         tvLogPoint.setText(mLog.getInspectPoint().getPointName());
         tvLogTime.setText(DateUtil.toAll(mLog.getOpDate()));
         tvLogResult.setText(mLog.getResult());
-
+        tvLogInspector.setText(mLog.getOpInspectorName());
     }
 
     private void initToolBar() {
         toolbar.setTitle("记录详情");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

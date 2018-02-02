@@ -11,6 +11,7 @@ public class InspectPoint implements Serializable {
 
     private Long id;
 
+    private String rfid;
     private String pointName;
     private String itemName;
 
@@ -74,5 +75,13 @@ public class InspectPoint implements Serializable {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
+    }
+
+    public String getRfid() {
+        return rfid;
+    }
+
+    public void setRfid(String rfid) {
+        this.rfid = rfid;
     }
 }
