@@ -43,16 +43,16 @@
         android:layout_height="40dp">
 
         <TextView
-            android:layout_marginRight="3dp"
-            android:text="正常"
-            android:gravity="center"
-            android:focusable="true"
-            android:clickable="true"
-            android:textColor="@color/green_dark"
-            android:background="@drawable/et_white_bg_blue_stroke"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginRight="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/et_white_bg_blue_stroke"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="正常"
+            android:textColor="@color/gray_dark" />
 
         <TextView
             android:layout_marginLeft="3dp"
@@ -60,7 +60,7 @@
             android:gravity="center"
             android:focusable="true"
             android:clickable="true"
-            android:textColor="@color/red"
+            android:textColor="@color/gray_dark"
             android:background="@drawable/et_white_bg_blue_stroke"
             android:layout_weight="1"
             android:layout_width="0dp"
@@ -68,114 +68,107 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <GridLayout
+        android:id="@+id/gl_problem_type"
+        android:layout_marginStart="@dimen/activity_padding"
+        android:layout_marginEnd="@dimen/activity_padding"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="4">
+
+        <TextView
+            android:background="@drawable/et_white_bg_blue_stroke"
+            android:text="消防类"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:layout_height="35dp"/>
+
+        <TextView
+            android:background="@drawable/et_white_bg_blue_stroke"
+            android:text="人防类"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:layout_height="35dp"/>
+
+        <TextView
+            android:background="@drawable/et_white_bg_blue_stroke"
+            android:text="技防类"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:layout_height="35dp"/>
+
+        <TextView
+            android:background="@drawable/et_white_bg_blue_stroke"
+            android:text="制度类"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:layout_height="35dp"/>
+
+        <TextView
+            android:background="@drawable/et_white_bg_blue_stroke"
+            android:text="物防类"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:layout_height="35dp"/>
+
+        <TextView
+            android:background="@drawable/et_white_bg_blue_stroke"
+            android:text="其它类"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:layout_height="35dp"/>
+
+    </GridLayout>
+
+    <TextView
+        android:layout_marginStart="@dimen/activity_padding"
+        android:layout_marginEnd="@dimen/activity_padding"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/blue_band_dark"
+        android:textStyle="bold"
+        android:text="@string/problem_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_marginStart="@dimen/activity_padding"
+        android:layout_marginEnd="@dimen/activity_padding"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/et_white_bg_blue_stroke"
+        android:gravity="start"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
+    <TextView
+        android:layout_marginStart="@dimen/activity_padding"
+        android:layout_marginEnd="@dimen/activity_padding"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/blue_band_dark"
+        android:textStyle="bold"
+        android:text="@string/pic_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <GridLayout
+        android:background="@drawable/et_white_bg_blue_stroke"
+        android:layout_marginStart="@dimen/activity_padding"
+        android:layout_marginEnd="@dimen/activity_padding"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/gl_pic_description"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:columnCount="4">
 
-        <GridLayout
-            android:layout_marginStart="@dimen/activity_padding"
-            android:layout_marginEnd="@dimen/activity_padding"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="4">
+        <ImageView
+            android:background="@color/gray_light"
+            android:src="@mipmap/default_photo"
+            />
 
-            <TextView
-                android:background="@drawable/et_white_bg_blue_stroke"
-                android:text="消防类"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:layout_height="35dp"/>
-
-            <TextView
-                android:background="@drawable/et_white_bg_blue_stroke"
-                android:text="人防类"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:layout_height="35dp"/>
-
-            <TextView
-                android:background="@drawable/et_white_bg_blue_stroke"
-                android:text="技防类"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:layout_height="35dp"/>
-
-            <TextView
-                android:background="@drawable/et_white_bg_blue_stroke"
-                android:text="制度类"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:layout_height="35dp"/>
-
-            <TextView
-                android:background="@drawable/et_white_bg_blue_stroke"
-                android:text="物防类"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:layout_height="35dp"/>
-
-            <TextView
-                android:background="@drawable/et_white_bg_blue_stroke"
-                android:text="其它类"
-                android:layout_columnWeight="1"
-                android:gravity="center"
-                android:layout_height="35dp"/>
-
-        </GridLayout>
-
-        <TextView
-            android:layout_marginStart="@dimen/activity_padding"
-            android:layout_marginEnd="@dimen/activity_padding"
-            android:layout_marginTop="5dp"
-            android:textColor="@color/blue_band_dark"
-            android:textStyle="bold"
-            android:text="@string/problem_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:layout_marginStart="@dimen/activity_padding"
-            android:layout_marginEnd="@dimen/activity_padding"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/et_white_bg_blue_stroke"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp" />
-
-        <TextView
-            android:layout_marginStart="@dimen/activity_padding"
-            android:layout_marginEnd="@dimen/activity_padding"
-            android:layout_marginTop="5dp"
-            android:textColor="@color/blue_band_dark"
-            android:textStyle="bold"
-            android:text="@string/pic_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <GridLayout
-            android:background="@drawable/et_white_bg_blue_stroke"
-            android:layout_marginStart="@dimen/activity_padding"
-            android:layout_marginEnd="@dimen/activity_padding"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
-            android:id="@+id/gl_pic_description"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:columnCount="4">
-
-            <ImageView
-                android:background="@color/gray_light"
-                android:src="@mipmap/default_photo"
-                />
-
-        </GridLayout>
-
-    </LinearLayout>
+    </GridLayout>
 
 
 </LinearLayout>

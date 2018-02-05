@@ -1,11 +1,14 @@
 package com.miaxis.inspection.view.activity;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
+import com.miaxis.inspection.adapter.LogContentDetailAdapter;
 import com.miaxis.inspection.entity.InspectLog;
 import com.miaxis.inspection.utils.DateUtil;
 
@@ -24,7 +27,12 @@ public class LogDetailActivity extends BaseActivity {
     Toolbar toolbar;
     @BindView(R.id.tv_log_inspector)
     TextView tvLogInspector;
+    @BindView(R.id.rv_content)
+    RecyclerView rvContent;
+
     private InspectLog mLog;
+    private LogContentDetailAdapter contentDetailAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,7 @@ public class LogDetailActivity extends BaseActivity {
     @Override
     protected void initData() {
         mLog = (InspectLog) getIntent().getSerializableExtra("log");
+        contentDetailAdapter = new LogContentDetailAdapter(mLog.getContentList(), this);
     }
 
     @Override
@@ -49,6 +58,9 @@ public class LogDetailActivity extends BaseActivity {
         tvLogTime.setText(DateUtil.toAll(mLog.getOpDate()));
         tvLogResult.setText(mLog.getResult());
         tvLogInspector.setText(mLog.getOpInspectorName());
+
+        rvContent.setLayoutManager(new LinearLayoutManager(this));
+        rvContent.setAdapter(contentDetailAdapter);
     }
 
     private void initToolBar() {

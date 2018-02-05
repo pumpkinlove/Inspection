@@ -1,14 +1,21 @@
 package com.miaxis.inspection.entity;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+
 import java.io.Serializable;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * 检查表单
  * Created by xu.nan on 2018/1/29.
  */
-
+@Entity
 public class InspectForm implements Serializable {
 
+    private static final long serialVersionUID = 3026327254261470986L;
+
+    @Id(autoincrement = true)
     private Long id;
     private String name;
     private String code;
@@ -18,6 +25,25 @@ public class InspectForm implements Serializable {
     private String typeName;
     private String requirement;
     private int completionRate;
+
+    @Generated(hash = 1617805843)
+    public InspectForm(Long id, String name, String code, String roleName,
+            String roleCode, int type, String typeName, String requirement,
+            int completionRate) {
+        this.id = id;
+        this.name = name;
+        this.code = code;
+        this.roleName = roleName;
+        this.roleCode = roleCode;
+        this.type = type;
+        this.typeName = typeName;
+        this.requirement = requirement;
+        this.completionRate = completionRate;
+    }
+
+    @Generated(hash = 1814758225)
+    public InspectForm() {
+    }
 
     public Long getId() {
         return id;

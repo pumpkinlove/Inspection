@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <View
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
     <LinearLayout
+        android:focusable="true"
+        android:clickable="true"
+        android:id="@+id/ll_log_content"
+        android:background="@color/white"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,30 +22,86 @@
 
         <TextView
             android:id="@+id/tv_content_name"
+            android:gravity="center"
             android:layout_weight="3"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
         <TextView
+            android:gravity="center"
             android:id="@+id/tv_content_result"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent" />
 
+        <ImageView
+            android:id="@+id/iv_expand"
+            android:src="@mipmap/expand"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
-    
-    <LinearLayout
-        android:id="@+id/ll_content_problem"
-        android:orientation="vertical"
+
+    <View
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <android.support.v7.widget.CardView
+        android:layout_margin="5dp"
+        app:cardElevation="5dp"
+        app:cardBackgroundColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_problem_description"
+        <ScrollView
+            android:padding="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
+            <LinearLayout
+                android:id="@+id/ll_content_problem"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </LinearLayout>
+                <TextView
+                    android:textColor="@color/light_red"
+                    android:textStyle="bold"
+                    android:text="@string/problem_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:padding="5dp"
+                    android:gravity="start"
+                    android:id="@+id/tv_problem_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="100dp"/>
+
+                <TextView
+                    android:textColor="@color/light_red"
+                    android:textStyle="bold"
+                    android:text="@string/pic_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <GridLayout
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/gl_problem_pics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </GridLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>

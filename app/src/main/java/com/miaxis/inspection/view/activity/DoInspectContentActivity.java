@@ -8,7 +8,12 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
+import com.miaxis.inspection.view.custom.CheckedTextLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -20,6 +25,14 @@ public class DoInspectContentActivity extends BaseActivity {
     TextView tvContentName;
     @BindView(R.id.gl_pic_description)
     GridLayout glPicDescription;
+
+    @BindColor(R.color.red)
+    int red;
+    @BindColor(R.color.green_dark)
+    int greenDark;
+
+    @BindColor(R.color.blue_band_dark2)
+    int blueDark2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,5 +78,6 @@ public class DoInspectContentActivity extends BaseActivity {
     @Override
     protected void initView() {
         initToolBar();
+
     }
 }

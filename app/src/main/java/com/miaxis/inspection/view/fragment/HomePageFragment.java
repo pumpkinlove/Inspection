@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.LogAdapter;
+import com.miaxis.inspection.entity.InspectContent;
 import com.miaxis.inspection.entity.InspectLog;
 import com.miaxis.inspection.entity.InspectPoint;
 import com.miaxis.inspection.view.activity.LogDetailActivity;
@@ -91,6 +92,13 @@ public class HomePageFragment extends Fragment {
         InspectPoint point = new InspectPoint();
         point.setPointName("检查点1");
         log.setInspectPoint(point);
+        List<InspectContent> contentList = new ArrayList<>();
+        InspectContent c = new InspectContent();
+        c.setName("测试检查内容一");
+        c.setResult("异常");
+        c.setDescription("测试检查内容一 描述");
+        contentList.add(c);
+        log.setContentList(contentList);
         log.setOpDate(new Date());
         log.setResult("正常");
         logList.add(log);
@@ -112,7 +120,6 @@ public class HomePageFragment extends Fragment {
         badgeView.setBadgeGravity(Gravity.CENTER | Gravity.END);
         badgeView.bindTarget(tvToDoPoint).setBadgeNumber(3);
         badgeView.setBadgeTextSize(16, true);
-
     }
 
     @OnClick(R.id.cv_scan)

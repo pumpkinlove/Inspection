@@ -2,6 +2,7 @@ package com.miaxis.inspection.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 历史检查记录
@@ -16,6 +17,8 @@ public class InspectLog implements Serializable {
     private String result;
 
     private InspectPoint inspectPoint;
+
+    private List<InspectContent> contentList;
 
     public Long getId() {
         return id;
@@ -55,5 +58,13 @@ public class InspectLog implements Serializable {
 
     public void setInspectPoint(InspectPoint inspectPoint) {
         this.inspectPoint = inspectPoint;
+    }
+
+    public List<InspectContent> getContentList() {
+        return contentList;
+    }
+
+    public void setContentList(List<InspectContent> contentList) {
+        this.contentList = contentList;
     }
 }

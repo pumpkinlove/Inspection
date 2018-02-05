@@ -43,7 +43,7 @@ dependencies {
 }
 
 greendao {
-    schemaVersion 1
+    schemaVersion 2
     daoPackage 'com.miaxis.inspection.dao.gen'
     targetGenDir 'src/main/java'
 }
