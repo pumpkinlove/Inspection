@@ -16,24 +16,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.LogAdapter;
-import com.miaxis.inspection.entity.InspectContent;
+import com.miaxis.inspection.app.Inspection_App;
+import com.miaxis.inspection.dao.gen.InspectPointDao;
 import com.miaxis.inspection.entity.InspectLog;
 import com.miaxis.inspection.entity.InspectPoint;
+import com.miaxis.inspection.view.activity.DoInspectActivity;
 import com.miaxis.inspection.view.activity.LogDetailActivity;
 import com.miaxis.inspection.view.activity.PointListActivity;
-import com.miaxis.inspection.view.activity.ScanPointActivity;
+import com.uuzuche.lib_zxing.activity.CaptureActivity;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import q.rorbin.badgeview.QBadgeView;
 
 public class HomePageFragment extends Fragment {
@@ -51,6 +58,9 @@ public class HomePageFragment extends Fragment {
     TextView tvLogResult;
     @BindView(R.id.tv_to_do_point)
     TextView tvToDoPoint;
+
+    private static final int REQ_CODE_DO_INSPECT = 2;
+
 
     private LogAdapter logAdapter;
     private List<InspectLog> logList;
@@ -87,21 +97,7 @@ public class HomePageFragment extends Fragment {
     }
 
     private void initData() {
-        logList = new ArrayList<>();
-        InspectLog log = new InspectLog();
-        InspectPoint point = new InspectPoint();
-        point.setPointName("检查点1");
-        log.setInspectPoint(point);
-        List<InspectContent> contentList = new ArrayList<>();
-        InspectContent c = new InspectContent();
-        c.setName("测试检查内容一");
-        c.setResult("异常");
-        c.setDescription("测试检查内容一 描述");
-        contentList.add(c);
-        log.setContentList(contentList);
-        log.setOpDate(new Date());
-        log.setResult("正常");
-        logList.add(log);
+        logList = Inspection_App.getInstance().getDaoSession().getInspectLogDao().loadAll();
         logAdapter = new LogAdapter(logList, getContext());
         logAdapter.setListener(new LogAdapter.OnItemClickListener() {
             @Override
@@ -129,12 +125,61 @@ public class HomePageFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA},1);
             return;
         }
-        startActivity(new Intent(getContext(), ScanPointActivity.class));
+        startActivityForResult(new Intent(getContext(), CaptureActivity.class), REQ_CODE_DO_INSPECT);
     }
 
     @OnClick(R.id.cv_point_to_do)
     void onToDoInspectPoint() {
         startActivity(new Intent(getContext(), PointListActivity.class));
+    }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != REQ_CODE_DO_INSPECT) {
+            return;
+        }
+        if (null != data) {
+            Bundle bundle = data.getExtras();
+            if (bundle == null) {
+                return;
+            }
+            if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                String rfid = bundle.getString(CodeUtils.RESULT_STRING);
+                scanPointResult(rfid);
+            } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                Toast.makeText(getContext(), "解析二维码失败", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void scanPointResult(String rfid) {
+        Observable
+                .just(rfid)
+                .subscribeOn(Schedulers.io())
+                .map(new Function<String, InspectPoint>() {
+                    @Override
+                    public InspectPoint apply(String rfid) throws Exception {
+                        InspectPointDao pointDao = Inspection_App.getInstance().getDaoSession().getInspectPointDao();
+                        return pointDao.queryBuilder().where(InspectPointDao.Properties.Rfid.eq(rfid)).unique();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<InspectPoint>() {
+                    @Override
+                    public void accept(InspectPoint inspectPoint) throws Exception {
+                        Intent i = new Intent(getContext(), DoInspectActivity.class);
+                        i.putExtra("point", inspectPoint);
+                        startActivity(i);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Toast.makeText(getContext(), "无效的编码", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
     }
 
 }

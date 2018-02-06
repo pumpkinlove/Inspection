@@ -13,13 +13,13 @@ public class ProblemPhoto {
     @Id(autoincrement = true)
     private Long id;
 
-    private Long contentId;
+    private Long contentLogId;
     private String picUrl;
     private byte[] picData;
-    @Generated(hash = 1190077069)
-    public ProblemPhoto(Long id, Long contentId, String picUrl, byte[] picData) {
+    @Generated(hash = 104425425)
+    public ProblemPhoto(Long id, Long contentLogId, String picUrl, byte[] picData) {
         this.id = id;
-        this.contentId = contentId;
+        this.contentLogId = contentLogId;
         this.picUrl = picUrl;
         this.picData = picData;
     }
@@ -32,11 +32,11 @@ public class ProblemPhoto {
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getContentId() {
-        return this.contentId;
+    public Long getContentLogId() {
+        return this.contentLogId;
     }
-    public void setContentId(Long contentId) {
-        this.contentId = contentId;
+    public void setContentLogId(Long contentLogId) {
+        this.contentLogId = contentLogId;
     }
     public String getPicUrl() {
         return this.picUrl;
@@ -50,6 +50,5 @@ public class ProblemPhoto {
     public void setPicData(byte[] picData) {
         this.picData = picData;
     }
-
 
 }

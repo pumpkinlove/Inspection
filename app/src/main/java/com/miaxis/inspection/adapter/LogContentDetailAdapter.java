@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.entity.InspectContent;
+import com.miaxis.inspection.entity.InspectContentLog;
 
 import java.util.List;
 
@@ -27,11 +28,11 @@ import butterknife.OnClick;
 public class LogContentDetailAdapter extends RecyclerView.Adapter<LogContentDetailAdapter.ViewHolder> {
 
     private OnItemClickListener listener;
-    private List<InspectContent> contentList;
+    private List<InspectContentLog> contentLogList;
     private Context context;
 
-    public LogContentDetailAdapter(List<InspectContent> contentList, Context context) {
-        this.contentList = contentList;
+    public LogContentDetailAdapter(List<InspectContentLog> contentLogList, Context context) {
+        this.contentLogList = contentLogList;
         this.context = context;
     }
 
@@ -51,16 +52,17 @@ public class LogContentDetailAdapter extends RecyclerView.Adapter<LogContentDeta
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        InspectContent content = contentList.get(position);
+        InspectContentLog contentLog = contentLogList.get(position);
+        InspectContent content = contentLog.getInspectContent();
         holder.tvContentName.setText(content.getName());
-        holder.tvContentResult.setText(content.getResult());
-        holder.tvProblemDescription.setText(content.getDescription());
+        holder.tvContentResult.setText(contentLog.getResult());
+        holder.tvProblemDescription.setText(contentLog.getDescription());
     }
 
     @Override
     public int getItemCount() {
-        if (contentList != null) {
-            return contentList.size();
+        if (contentLogList != null) {
+            return contentLogList.size();
         }
         return 0;
     }

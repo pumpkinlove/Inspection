@@ -3,7 +3,6 @@ package com.miaxis.inspection.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.miaxis.inspection.R;
@@ -29,7 +28,7 @@ public class ScanPointActivity extends BaseActivity {
             public void run() {
                 try {
                     Thread.sleep(3000);
-                    startActivity(new Intent(ScanPointActivity.this, ContentListActivity.class));
+                    startActivity(new Intent(ScanPointActivity.this, DoInspectActivity.class));
                     finish();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -63,4 +62,7 @@ public class ScanPointActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+
 }

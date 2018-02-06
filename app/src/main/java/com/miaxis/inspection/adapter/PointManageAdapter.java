@@ -49,7 +49,7 @@ public class PointManageAdapter extends RecyclerView.Adapter<PointManageAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         InspectPoint point = pointList.get(position);
         holder.tvPointName.setText(point.getPointName());
-        if (point.isBound()) {
+        if (point.getBound()) {
             holder.tvAddRfid.setVisibility(View.GONE);
             holder.tvModRfid.setVisibility(View.VISIBLE);
             holder.tvDelRfid.setVisibility(View.VISIBLE);

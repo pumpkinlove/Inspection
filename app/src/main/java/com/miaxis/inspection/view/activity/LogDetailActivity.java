@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.LogContentDetailAdapter;
+import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.entity.InspectLog;
 import com.miaxis.inspection.utils.DateUtil;
 
@@ -48,6 +49,7 @@ public class LogDetailActivity extends BaseActivity {
     @Override
     protected void initData() {
         mLog = (InspectLog) getIntent().getSerializableExtra("log");
+        mLog.__setDaoSession(Inspection_App.getInstance().getDaoSession());
         contentDetailAdapter = new LogContentDetailAdapter(mLog.getContentList(), this);
     }
 

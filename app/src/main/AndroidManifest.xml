@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.miaxis.inspection">
 
+    <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />    <!-- 存储读写权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGEE" />
 
@@ -9,6 +11,9 @@
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 震动权限 -->
     <uses-permission android:name="android.permission.CAMERA" /> <!-- 摄像头权限 -->
     <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 自动聚焦权限 -->
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" /><!-- 闪光灯权限 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 唤醒锁屏权限 -->
 
     <application
         android:name=".app.Inspection_App"
@@ -29,12 +34,11 @@
         <activity android:name=".view.activity.ItemListActivity" />
         <activity android:name=".view.activity.ConfigActivity" />
         <activity android:name=".view.activity.LogDetailActivity" />
-        <activity android:name=".view.activity.DoInspectActivity" />
         <activity android:name=".view.activity.ScanPointActivity" />
         <activity android:name=".view.activity.DoInspectContentActivity" />
         <activity android:name=".view.activity.InspectFormActivity" />
         <activity android:name=".view.activity.InspectItemActivity" />
-        <activity android:name=".view.activity.ContentListActivity" />
+        <activity android:name=".view.activity.DoInspectActivity" />
         <activity android:name=".view.activity.PointListActivity" />
         <activity android:name=".view.activity.PointManageActivity"></activity>
     </application>

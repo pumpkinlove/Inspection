@@ -29,4 +29,7 @@
     <color name="light_red">#df8484</color>
     <color name="aero_gray">#34000000</color>
     <color name="aero">#00ffffff</color>
+
+    <color name="scan_corner_color">#33CCFF</color>
+
 </resources>

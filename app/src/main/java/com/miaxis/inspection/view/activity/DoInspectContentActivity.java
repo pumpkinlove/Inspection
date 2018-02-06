@@ -8,6 +8,7 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
+import com.miaxis.inspection.entity.InspectContent;
 import com.miaxis.inspection.view.custom.CheckedTextLayout;
 
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ public class DoInspectContentActivity extends BaseActivity {
 
     @BindColor(R.color.blue_band_dark2)
     int blueDark2;
+
+    private InspectContent inspectContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +75,14 @@ public class DoInspectContentActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        inspectContent = (InspectContent) getIntent().getSerializableExtra("content");
 
     }
 
     @Override
     protected void initView() {
         initToolBar();
+        tvContentName.setText(inspectContent.getName());
 
     }
 }
