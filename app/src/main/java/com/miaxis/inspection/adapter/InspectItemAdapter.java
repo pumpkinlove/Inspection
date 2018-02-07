@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.entity.InspectItem;
-import com.miaxis.inspection.entity.Task;
 
 import java.util.List;
 
@@ -21,13 +20,13 @@ import butterknife.OnClick;
  * Created by xu.nan on 2018/1/3.
  */
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
+public class InspectItemAdapter extends RecyclerView.Adapter<InspectItemAdapter.ViewHolder> {
 
     private OnItemClickListener listener;
     private List<InspectItem> inspectItemList;
     private Context context;
 
-    public ItemAdapter(List<InspectItem> inspectItemList, Context context) {
+    public InspectItemAdapter(List<InspectItem> inspectItemList, Context context) {
         this.inspectItemList = inspectItemList;
         this.context = context;
     }

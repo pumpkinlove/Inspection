@@ -14,6 +14,7 @@ import com.miaxis.inspection.dao.gen.InspectLogDao;
 import com.miaxis.inspection.dao.gen.InspectPointDao;
 import com.miaxis.inspection.dao.gen.OrganizationDao;
 import com.miaxis.inspection.dao.gen.ProblemTypeDao;
+import com.miaxis.inspection.dao.gen.ResultTypeDao;
 import com.miaxis.inspection.entity.InspectContent;
 import com.miaxis.inspection.entity.InspectContentLog;
 import com.miaxis.inspection.entity.InspectForm;
@@ -22,6 +23,7 @@ import com.miaxis.inspection.entity.InspectLog;
 import com.miaxis.inspection.entity.InspectPoint;
 import com.miaxis.inspection.entity.Organization;
 import com.miaxis.inspection.entity.ProblemType;
+import com.miaxis.inspection.entity.ResultType;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import java.util.ArrayList;
@@ -61,12 +63,13 @@ public class Inspection_App extends Application {
     }
 
     public DaoSession getDaoSession() {
-//        mDaoSession.clear();
+        mDaoSession.clear();
         return mDaoSession;
     }
 
     private void testDao() {
 
+        initResultType();
         initProblemType();
         initOrganization();
         initInspectForm();
@@ -76,6 +79,27 @@ public class Inspection_App extends Application {
         initInspectLog();
         initInspectContentLog();
 
+    }
+
+    private void initResultType() {
+        ResultTypeDao typeDao = mDaoSession.getResultTypeDao();
+        List<ResultType> resultTypeList = typeDao.loadAll();
+        if (resultTypeList == null || resultTypeList.size() == 0) {
+            resultTypeList = new ArrayList<>();
+
+            ResultType type1 = new ResultType();
+            type1.setIsProblem(false);
+            type1.setResultName("正常");
+            resultTypeList.add(type1);
+
+            ResultType type2 = new ResultType();
+            type2.setIsProblem(true);
+            type2.setResultName("异常");
+            resultTypeList.add(type2);
+
+            typeDao.saveInTx(resultTypeList);
+
+        }
     }
 
     private void initProblemType() {

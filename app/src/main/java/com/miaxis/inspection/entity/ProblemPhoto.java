@@ -16,6 +16,7 @@ public class ProblemPhoto {
     private Long contentLogId;
     private String picUrl;
     private byte[] picData;
+
     @Generated(hash = 104425425)
     public ProblemPhoto(Long id, Long contentLogId, String picUrl, byte[] picData) {
         this.id = id;

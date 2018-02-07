@@ -3,16 +3,14 @@ package com.miaxis.inspection.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.miaxis.inspection.R;
-import com.miaxis.inspection.adapter.ItemAdapter;
+import com.miaxis.inspection.adapter.InspectItemAdapter;
 import com.miaxis.inspection.entity.InspectItem;
 import com.miaxis.inspection.entity.Task;
 
@@ -31,7 +29,7 @@ public class ItemListActivity extends BaseActivity {
     @BindView(R.id.srl_item)
     SwipeRefreshLayout srlItem;
 
-    private ItemAdapter adapter;
+    private InspectItemAdapter adapter;
     private List<InspectItem> itemList;
 
     @Override
@@ -59,7 +57,7 @@ public class ItemListActivity extends BaseActivity {
         i2.setName("水电气-总行");
         itemList.add(i2);
 
-        adapter = new ItemAdapter(itemList, this);
+        adapter = new InspectItemAdapter(itemList, this);
 
     }
 

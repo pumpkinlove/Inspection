@@ -96,9 +96,9 @@ public class PointManageActivity extends BaseActivity {
                     @Override
                     public void onClick(View view) {
                         InspectPoint point = pointList.get(position);
-                        Inspection_App.getInstance().getDaoSession().getInspectPointDao().update(point);
                         point.setBound(false);
                         point.setRfid(null);
+                        Inspection_App.getInstance().getDaoSession().getInspectPointDao().update(point);
                         adapter.notifyDataSetChanged();
                         sd.dismiss();
                     }
