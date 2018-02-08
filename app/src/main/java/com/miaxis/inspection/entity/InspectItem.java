@@ -10,10 +10,10 @@ import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import com.miaxis.inspection.dao.gen.DaoSession;
-import com.miaxis.inspection.dao.gen.ExcuteTimeDao;
 import com.miaxis.inspection.dao.gen.InspectItemDao;
 import com.miaxis.inspection.dao.gen.InspectFormDao;
 import com.miaxis.inspection.dao.gen.InspectContentDao;
+import com.miaxis.inspection.dao.gen.ExecuteTimeDao;
 
 /**
  * 检查项
@@ -36,14 +36,14 @@ public class InspectItem implements Serializable {
     @ToOne(joinProperty = "inspectItemId")
     private InspectItem inspectItem;
 
-    @ToMany(referencedJoinProperty = "id")
-    private List<ExcuteTime> timeList;
+    @ToMany(referencedJoinProperty = "inspectItemId")
+    private List<ExecuteTime> timeList;
 
     @ToMany(referencedJoinProperty = "inspectItemId")
     private List<InspectContent> inspectContentList;
 
     private int count;
-    private int type;
+    private String frequencyType;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -52,15 +52,15 @@ public class InspectItem implements Serializable {
     /** Used for active entity operations. */
     @Generated(hash = 624423172)
     private transient InspectItemDao myDao;
-    @Generated(hash = 44816995)
+    @Generated(hash = 1599760318)
     public InspectItem(Long id, String name, Long inspectFormId, Long inspectItemId,
-            int count, int type) {
+            int count, String frequencyType) {
         this.id = id;
         this.name = name;
         this.inspectFormId = inspectFormId;
         this.inspectItemId = inspectItemId;
         this.count = count;
-        this.type = type;
+        this.frequencyType = frequencyType;
     }
     @Generated(hash = 71777420)
     public InspectItem() {
@@ -95,11 +95,11 @@ public class InspectItem implements Serializable {
     public void setCount(int count) {
         this.count = count;
     }
-    public int getType() {
-        return this.type;
+    public String getFrequencyType() {
+        return this.frequencyType;
     }
-    public void setType(int type) {
-        this.type = type;
+    public void setFrequencyType(String frequencyType) {
+        this.frequencyType = frequencyType;
     }
     @Generated(hash = 1912765686)
     private transient Long inspectForm__resolvedKey;
@@ -165,15 +165,16 @@ public class InspectItem implements Serializable {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 732464161)
-    public List<ExcuteTime> getTimeList() {
+    @Generated(hash = 958694251)
+    public List<ExecuteTime> getTimeList() {
         if (timeList == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            ExcuteTimeDao targetDao = daoSession.getExcuteTimeDao();
-            List<ExcuteTime> timeListNew = targetDao._queryInspectItem_TimeList(id);
+            ExecuteTimeDao targetDao = daoSession.getExecuteTimeDao();
+            List<ExecuteTime> timeListNew = targetDao
+                    ._queryInspectItem_TimeList(id);
             synchronized (this) {
                 if (timeList == null) {
                     timeList = timeListNew;

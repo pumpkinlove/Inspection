@@ -34,7 +34,7 @@ public class InspectLog implements Serializable {
     @ToOne(joinProperty = "inspectPointId")
     private InspectPoint inspectPoint;
 
-    @ToMany(referencedJoinProperty = "id")
+    @ToMany(referencedJoinProperty = "inspectLogId")
     private List<InspectContentLog> contentList;
 
     /** Used to resolve relations */

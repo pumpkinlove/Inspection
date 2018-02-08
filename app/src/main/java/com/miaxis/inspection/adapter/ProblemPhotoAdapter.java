@@ -1,6 +1,7 @@
 package com.miaxis.inspection.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -50,8 +51,14 @@ public class ProblemPhotoAdapter extends RecyclerView.Adapter<ProblemPhotoAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ProblemPhoto photo = photoList.get(position);
-        holder.ivProblemPhoto.setImageBitmap(BitmapFactory.decodeFile(photo.getPicUrl()));
+        ProblemPhoto photo = photoList.get(photoList.size() - position - 1);
+        Bitmap bitmap = BitmapFactory.decodeFile(photo.getPicUrl());
+        if (bitmap == null && photo.getPicData() != null) {
+            bitmap = BitmapFactory.decodeByteArray(photo.getPicData(), 0, photo.getPicData().length);
+        }
+        if (bitmap != null) {
+            holder.ivProblemPhoto.setImageBitmap(bitmap);
+        }
     }
 
     @Override
@@ -75,7 +82,7 @@ public class ProblemPhotoAdapter extends RecyclerView.Adapter<ProblemPhotoAdapte
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick(R.id.ll_content)
+        @OnClick(R.id.iv_problem_photo)
         void onItemClick(View view) {
             if (listener != null) {
                 listener.onItemClick(view, getPosition());

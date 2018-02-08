@@ -15,6 +15,7 @@ import com.miaxis.inspection.dao.gen.InspectPointDao;
 import com.miaxis.inspection.dao.gen.OrganizationDao;
 import com.miaxis.inspection.dao.gen.ProblemTypeDao;
 import com.miaxis.inspection.dao.gen.ResultTypeDao;
+import com.miaxis.inspection.dao.gen.TaskDao;
 import com.miaxis.inspection.entity.InspectContent;
 import com.miaxis.inspection.entity.InspectContentLog;
 import com.miaxis.inspection.entity.InspectForm;
@@ -24,9 +25,11 @@ import com.miaxis.inspection.entity.InspectPoint;
 import com.miaxis.inspection.entity.Organization;
 import com.miaxis.inspection.entity.ProblemType;
 import com.miaxis.inspection.entity.ResultType;
+import com.miaxis.inspection.entity.Task;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -78,7 +81,58 @@ public class Inspection_App extends Application {
         initInspectPoint();
         initInspectLog();
         initInspectContentLog();
+        initTask();
+    }
 
+    private void initTask() {
+        TaskDao taskDao = mDaoSession.getTaskDao();
+        List<Task> taskList = taskDao.loadAll();
+        if (taskList == null || taskList.size() == 0) {
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(2018,2,8, 6,0,0);
+            Date d1 = calendar.getTime();
+            calendar.set(2018,2,8, 23,59,59);
+            Date d2 = calendar.getTime();
+            calendar.set(2018,2,7, 6,0,0);
+            Date d3 = calendar.getTime();
+            calendar.set(2018,2,7, 23,59,59);
+            Date d4 = calendar.getTime();
+            calendar.set(2018,2,6, 6,0,0);
+            Date d5 = calendar.getTime();
+            calendar.set(2018,2,6, 23,59,59);
+            Date d6 = calendar.getTime();
+
+
+         taskList = new ArrayList<>();
+
+            Task task1 = new Task();
+            task1.setInspectFormId(1L);
+            task1.setName("日常检查任务");
+            task1.setBeginTime(d1);
+            task1.setEndTime(d2);
+
+            taskList.add(task1);
+
+            Task task2 = new Task();
+            task2.setInspectFormId(1L);
+            task2.setName("日常检查任务");
+            task2.setBeginTime(d3);
+            task2.setEndTime(d4);
+
+            taskList.add(task2);
+
+            Task task3 = new Task();
+            task3.setInspectFormId(2L);
+            task3.setName("月度检查任务");
+            task3.setBeginTime(d5);
+            task3.setEndTime(d6);
+
+            taskList.add(task3);
+
+            taskDao.saveInTx(taskList);
+
+        }
     }
 
     private void initResultType() {

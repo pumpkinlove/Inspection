@@ -35,7 +35,8 @@
         <activity android:name=".view.activity.ConfigActivity" />
         <activity android:name=".view.activity.LogDetailActivity" />
         <activity android:name=".view.activity.ScanPointActivity" />
-        <activity android:name=".view.activity.DoInspectContentActivity" />
+        <activity android:name=".view.activity.DoInspectContentActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".view.activity.InspectFormActivity" />
         <activity android:name=".view.activity.InspectItemActivity" />
         <activity android:name=".view.activity.DoInspectActivity" />

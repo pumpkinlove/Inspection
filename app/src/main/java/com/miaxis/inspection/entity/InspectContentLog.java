@@ -26,6 +26,8 @@ public class InspectContentLog implements Serializable {
     @Id(autoincrement = true)
     private Long id;
 
+    private Long inspectLogId;
+
     private Long contentId;
     @ToOne(joinProperty = "contentId")
     private InspectContent inspectContent;
@@ -48,10 +50,11 @@ public class InspectContentLog implements Serializable {
     @Generated(hash = 1054412929)
     private transient InspectContentLogDao myDao;
 
-    @Generated(hash = 719429221)
-    public InspectContentLog(Long id, Long contentId, String result,
-            String description, Long problemTypeId) {
+    @Generated(hash = 1465311620)
+    public InspectContentLog(Long id, Long inspectLogId, Long contentId,
+            String result, String description, Long problemTypeId) {
         this.id = id;
+        this.inspectLogId = inspectLogId;
         this.contentId = contentId;
         this.result = result;
         this.description = description;
@@ -68,6 +71,14 @@ public class InspectContentLog implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getInspectLogId() {
+        return this.inspectLogId;
+    }
+
+    public void setInspectLogId(Long inspectLogId) {
+        this.inspectLogId = inspectLogId;
     }
 
     public Long getContentId() {
@@ -239,5 +250,6 @@ public class InspectContentLog implements Serializable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInspectContentLogDao() : null;
     }
+
 
 }

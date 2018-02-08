@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.entity.Task;
+import com.miaxis.inspection.utils.DateUtil;
 
 import java.util.List;
 
@@ -49,8 +50,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         Task task = taskList.get(position);
         holder.tvTaskName.setText(task.getName());
-        holder.tvTaskBeginTime.setText(task.getBeginTime());
-        holder.tvTaskEndTime.setText(task.getEndTime());
+        holder.tvTaskBeginTime.setText(DateUtil.toAll(task.getBeginTime()));
+        holder.tvTaskEndTime.setText(DateUtil.toAll(task.getEndTime()));
     }
 
     @Override

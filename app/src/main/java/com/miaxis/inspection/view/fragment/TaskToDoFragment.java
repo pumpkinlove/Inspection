@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.TaskAdapter;
+import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.entity.Task;
 import com.miaxis.inspection.view.activity.ItemListActivity;
 
@@ -70,37 +71,7 @@ public class TaskToDoFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void initData() {
-        taskList = new ArrayList<>();
-        Task t = new Task();
-        t.setName("网点日常检查");
-        t.setBeginTime("开始时间：8:30");
-        t.setEndTime("结束时间：15.30");
-        Task t1 = new Task();
-        t1.setName("网点日常检查2");
-        t1.setBeginTime("开始时间：8:30");
-        t1.setEndTime("结束时间：15.30");
-        Task t2 = new Task();
-        t2.setName("网点日常检查3");
-        t2.setBeginTime("开始时间：8:30");
-        t2.setEndTime("结束时间：15.30");
-        Task t3 = new Task();
-        t3.setName("网点日常检查");
-        t3.setBeginTime("开始时间：8:30");
-        t3.setEndTime("结束时间：15.30");
-        Task t4 = new Task();
-        t4.setName("网点日常检查2");
-        t4.setBeginTime("开始时间：8:30");
-        t4.setEndTime("结束时间：15.30");
-        Task t5 = new Task();
-        t5.setName("网点日常检查3");
-        t5.setBeginTime("开始时间：8:30");
-        t5.setEndTime("结束时间：15.30");
-        taskList.add(t);
-        taskList.add(t1);
-        taskList.add(t2);
-        taskList.add(t3);
-        taskList.add(t4);
-        taskList.add(t5);
+        taskList = Inspection_App.getInstance().getDaoSession().getTaskDao().loadAll();
         adapter = new TaskAdapter(taskList, getContext());
 
     }
