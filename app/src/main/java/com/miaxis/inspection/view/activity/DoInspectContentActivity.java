@@ -21,14 +21,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.ProblemPhotoAdapter;
 import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.dao.gen.InspectContentLogDao;
+import com.miaxis.inspection.dao.gen.InspectLogDao;
 import com.miaxis.inspection.dao.gen.ProblemPhotoDao;
 import com.miaxis.inspection.entity.InspectContent;
 import com.miaxis.inspection.entity.InspectContentLog;
+import com.miaxis.inspection.entity.InspectLog;
 import com.miaxis.inspection.entity.ProblemPhoto;
 import com.miaxis.inspection.entity.ProblemType;
 import com.miaxis.inspection.entity.ResultType;
@@ -81,6 +84,8 @@ public class DoInspectContentActivity extends BaseActivity {
     private int photoNo;
     private boolean isCameraCapture;
     private String filePathCache;
+    private Long inspectLogId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +119,11 @@ public class DoInspectContentActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.action_submit:
-                submit();
+                try {
+                    submit();
+                } catch (Exception e) {
+                    finish();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -122,6 +131,7 @@ public class DoInspectContentActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        inspectLogId = getIntent().getLongExtra("inspectLogId", -1L);
         inspectContent = (InspectContent) getIntent().getSerializableExtra("content");
         photoList = new ArrayList<>();
         initAddNewPhotoItem();
@@ -327,9 +337,22 @@ public class DoInspectContentActivity extends BaseActivity {
     }
 
     private void submit() {
+        if (inspectLogId == -1L) {
+            Toast.makeText(this, "缺少日志id", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        InspectLogDao inspectLogDao = Inspection_App.getInstance().getDaoSession().getInspectLogDao();
+        InspectLog inspectLog = inspectLogDao.queryBuilder().where(InspectLogDao.Properties.Id.eq(inspectLogId)).unique();
+        if (inspectLog == null) {
+            Toast.makeText(this, "查询根检查日志失败", Toast.LENGTH_SHORT).show();
+            return;
+        }
         InspectContentLog contentLog = new InspectContentLog();
+        contentLog.setInspectLogId(inspectLog.getId());
+        contentLog.setInspectLogId(inspectLogId);
+        contentLog.setOpDate(new Date());
         contentLog.setContentId(inspectContent.getId());
-        contentLog.setResult(selectedResultType.getResultName());
+        contentLog.setResult(selectedResultType);
         if (selectedResultType.getIsProblem()) {
             contentLog.setProblemTypeId(selectedProblemType.getId());
             contentLog.setDescription(etProblemDescription.getText().toString());
@@ -343,6 +366,15 @@ public class DoInspectContentActivity extends BaseActivity {
             photoList.get(i).setContentLogId(contentLogId);
         }
         problemPhotoDao.saveInTx(photoList);
+
+        inspectLog.setInspected(true);
+        inspectLog.setOpDate(new Date());
+        if (selectedResultType.getIsProblem()) {
+            inspectLog.setResult("异常");
+        } else {
+            inspectLog.setResult("正常");
+        }
+        inspectLogDao.save(inspectLog);
 
         finish();
 

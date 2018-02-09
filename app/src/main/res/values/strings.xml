@@ -23,4 +23,5 @@
     <string name="update">检查新版本</string>
     <string name="inspect_point_name">检查点名称</string>
     <string name="inspect_item_name">检查项名称</string>
+    <string name="inspect_item">检查项</string>
 </resources>

@@ -32,8 +32,8 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
         initData();
         initView();
 
-        ConfigFragment configFragment = new ConfigFragment();
-        getFragmentManager().beginTransaction().replace(R.id.fl_config, configFragment).commit();
+//        ConfigFragment configFragment = new ConfigFragment();
+//        getFragmentManager().beginTransaction().replace(R.id.fl_config, configFragment).commit();
 
     }
 

@@ -6,6 +6,7 @@ import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
@@ -14,6 +15,7 @@ import com.miaxis.inspection.dao.gen.ProblemPhotoDao;
 import com.miaxis.inspection.dao.gen.ProblemTypeDao;
 import com.miaxis.inspection.dao.gen.InspectContentDao;
 import com.miaxis.inspection.dao.gen.InspectContentLogDao;
+import com.miaxis.inspection.dao.gen.ResultTypeDao;
 
 /**
  * Created by xu.nan on 2018/2/6.
@@ -32,7 +34,11 @@ public class InspectContentLog implements Serializable {
     @ToOne(joinProperty = "contentId")
     private InspectContent inspectContent;
 
-    private String result;
+    private Date opDate;
+
+    private Long resultTypeId;
+    @ToOne(joinProperty = "resultTypeId")
+    private ResultType result;
     private String description;         //问题描述
 
     private Long problemTypeId;            //问题类型
@@ -50,13 +56,15 @@ public class InspectContentLog implements Serializable {
     @Generated(hash = 1054412929)
     private transient InspectContentLogDao myDao;
 
-    @Generated(hash = 1465311620)
+    @Generated(hash = 904601417)
     public InspectContentLog(Long id, Long inspectLogId, Long contentId,
-            String result, String description, Long problemTypeId) {
+            Date opDate, Long resultTypeId, String description,
+            Long problemTypeId) {
         this.id = id;
         this.inspectLogId = inspectLogId;
         this.contentId = contentId;
-        this.result = result;
+        this.opDate = opDate;
+        this.resultTypeId = resultTypeId;
         this.description = description;
         this.problemTypeId = problemTypeId;
     }
@@ -89,12 +97,20 @@ public class InspectContentLog implements Serializable {
         this.contentId = contentId;
     }
 
-    public String getResult() {
-        return this.result;
+    public Date getOpDate() {
+        return this.opDate;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setOpDate(Date opDate) {
+        this.opDate = opDate;
+    }
+
+    public Long getResultTypeId() {
+        return this.resultTypeId;
+    }
+
+    public void setResultTypeId(Long resultTypeId) {
+        this.resultTypeId = resultTypeId;
     }
 
     public String getDescription() {
@@ -143,6 +159,38 @@ public class InspectContentLog implements Serializable {
             this.inspectContent = inspectContent;
             contentId = inspectContent == null ? null : inspectContent.getId();
             inspectContent__resolvedKey = contentId;
+        }
+    }
+
+    @Generated(hash = 446399057)
+    private transient Long result__resolvedKey;
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 549235915)
+    public ResultType getResult() {
+        Long __key = this.resultTypeId;
+        if (result__resolvedKey == null || !result__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            ResultTypeDao targetDao = daoSession.getResultTypeDao();
+            ResultType resultNew = targetDao.load(__key);
+            synchronized (this) {
+                result = resultNew;
+                result__resolvedKey = __key;
+            }
+        }
+        return result;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 208257253)
+    public void setResult(ResultType result) {
+        synchronized (this) {
+            this.result = result;
+            resultTypeId = result == null ? null : result.getId();
+            result__resolvedKey = resultTypeId;
         }
     }
 
@@ -250,6 +298,7 @@ public class InspectContentLog implements Serializable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInspectContentLogDao() : null;
     }
+
 
 
 }

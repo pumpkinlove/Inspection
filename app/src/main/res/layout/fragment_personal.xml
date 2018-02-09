@@ -88,27 +88,27 @@
 
     </LinearLayout>
 
-    <View
-        android:background="@color/gray_light"
-        android:layout_width="match_parent"
-        android:layout_height="1px"/>
+    <!--<View-->
+        <!--android:background="@color/gray_light"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1px"/>-->
 
-    <LinearLayout
-        android:id="@+id/ll_update"
-        android:orientation="horizontal"
-        style="@style/l_personal_item">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/ll_update"-->
+        <!--android:orientation="horizontal"-->
+        <!--style="@style/l_personal_item">-->
 
-        <ImageView
-            android:src="@mipmap/update"
-            android:layout_gravity="center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <!--<ImageView-->
+            <!--android:src="@mipmap/update"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
 
-        <TextView
-            style="@style/tv_personal_item"
-            android:text="@string/update"/>
+        <!--<TextView-->
+            <!--style="@style/tv_personal_item"-->
+            <!--android:text="@string/update"/>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
     <View
         android:background="@color/gray_light"

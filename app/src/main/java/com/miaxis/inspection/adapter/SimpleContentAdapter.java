@@ -8,8 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
+import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.entity.InspectContent;
+import com.miaxis.inspection.entity.InspectContentLog;
 import com.miaxis.inspection.entity.InspectItem;
+import com.miaxis.inspection.entity.ResultType;
 
 import java.util.List;
 
@@ -25,10 +28,20 @@ public class SimpleContentAdapter extends RecyclerView.Adapter<SimpleContentAdap
 
     private OnItemClickListener listener;
     private List<InspectContent> contentList;
+    private List<InspectContentLog> contentLogList;
     private Context context;
 
-    public SimpleContentAdapter(List<InspectContent> contentList, Context context) {
+    public void setContentList(List<InspectContent> contentList) {
         this.contentList = contentList;
+    }
+
+    public void setContentLogList(List<InspectContentLog> contentLogList) {
+        this.contentLogList = contentLogList;
+    }
+
+    public SimpleContentAdapter(List<InspectContent> contentList, List<InspectContentLog> contentLogList, Context context) {
+        this.contentList = contentList;
+        this.contentLogList = contentLogList;
         this.context = context;
     }
 
@@ -50,6 +63,19 @@ public class SimpleContentAdapter extends RecyclerView.Adapter<SimpleContentAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
         InspectContent content = contentList.get(position);
         holder.tvContentName.setText(content.getName());
+        try {
+            InspectContentLog contentLog = contentLogList.get(position);
+            contentLog.__setDaoSession(Inspection_App.getInstance().getDaoSession());
+            ResultType resultType = contentLog.getResult();
+            holder.tvStatus.setText(resultType.getResultName());
+            if (resultType.getIsProblem()) {
+                holder.tvStatus.setTextColor(context.getResources().getColor(R.color.red));
+            } else {
+                holder.tvStatus.setTextColor(context.getResources().getColor(R.color.green_dark));
+            }
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
@@ -66,6 +92,8 @@ public class SimpleContentAdapter extends RecyclerView.Adapter<SimpleContentAdap
 
         @BindView(R.id.tv_content_name)
         TextView tvContentName;
+        @BindView(R.id.tv_status)
+        TextView tvStatus;
 
         ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);

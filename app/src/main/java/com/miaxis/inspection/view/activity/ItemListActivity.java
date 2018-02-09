@@ -22,7 +22,6 @@ import com.miaxis.inspection.entity.Task;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -62,7 +61,7 @@ public class ItemListActivity extends BaseActivity {
     protected void initData() {
         mTask = (Task) getIntent().getSerializableExtra("task");
         mTask.__setDaoSession(Inspection_App.getInstance().getDaoSession());
-        InspectLog inspectLog = mTask.getInspectLog();
+
         InspectForm inspectForm = mTask.getInspectForm();
         itemList = inspectForm.getInspectItemList();
         adapter = new InspectItemAdapter(itemList, this);
@@ -135,7 +134,7 @@ public class ItemListActivity extends BaseActivity {
                 .subscribe(new Consumer<InspectPoint>() {
                     @Override
                     public void accept(InspectPoint inspectPoint) throws Exception {
-                        Intent i = new Intent(ItemListActivity.this, DoInspectActivity.class);
+                        Intent i = new Intent(ItemListActivity.this, DoInspectItemActivity.class);
                         i.putExtra("point", inspectPoint);
                         startActivity(i);
                     }

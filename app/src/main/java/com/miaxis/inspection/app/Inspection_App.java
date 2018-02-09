@@ -75,12 +75,14 @@ public class Inspection_App extends Application {
         initResultType();
         initProblemType();
         initOrganization();
+        initInspectPoint();
+
         initInspectForm();
         initInspectItem();
         initInspectContent();
-        initInspectPoint();
-        initInspectLog();
-        initInspectContentLog();
+
+//        initInspectLog();
+//        initInspectContentLog();
         initTask();
     }
 
@@ -103,7 +105,6 @@ public class Inspection_App extends Application {
             calendar.set(2018,2,6, 23,59,59);
             Date d6 = calendar.getTime();
 
-
          taskList = new ArrayList<>();
 
             Task task1 = new Task();
@@ -115,7 +116,7 @@ public class Inspection_App extends Application {
             taskList.add(task1);
 
             Task task2 = new Task();
-            task2.setInspectFormId(1L);
+            task2.setInspectFormId(2L);
             task2.setName("日常检查任务");
             task2.setBeginTime(d3);
             task2.setEndTime(d4);
@@ -123,7 +124,7 @@ public class Inspection_App extends Application {
             taskList.add(task2);
 
             Task task3 = new Task();
-            task3.setInspectFormId(2L);
+            task3.setInspectFormId(3L);
             task3.setName("月度检查任务");
             task3.setBeginTime(d5);
             task3.setEndTime(d6);
@@ -228,6 +229,18 @@ public class Inspection_App extends Application {
             form2.setTypeName("月度检查");
             formList.add(form2);
 
+            InspectForm form3 = new InspectForm();
+            form3.setName("安全员季度检查清单");
+            form3.setCode("003");
+            form3.setTypeName("季度检查");
+            formList.add(form3);
+
+            InspectForm form4 = new InspectForm();
+            form4.setName("安全员年度检查清单");
+            form4.setCode("004");
+            form4.setTypeName("年度检查");
+            formList.add(form4);
+
             formDao.saveInTx(formList);
         }
 
@@ -241,28 +254,33 @@ public class Inspection_App extends Application {
             InspectItem item1 = new InspectItem();
             item1.setName("水、电");
             item1.setInspectFormId(1L);
+            item1.setCount(5);
+            item1.setFrequencyType("次/天");
             itemList.add(item1);
 
             InspectItem item2 = new InspectItem();
             item2.setName("门、窗");
-            item2.setInspectFormId(1L);
+            item2.setInspectFormId(2L);
+            item1.setCount(4);
+            item1.setFrequencyType("次/天");
             itemList.add(item2);
 
             InspectItem item3 = new InspectItem();
             item3.setName("自助设备");
-            item3.setInspectFormId(2L);
+            item3.setInspectFormId(1L);
+            item1.setCount(2);
+            item1.setFrequencyType("次/天");
             itemList.add(item3);
 
             InspectItem item4 = new InspectItem();
             item4.setName("视频监控");
             item4.setInspectFormId(2L);
+            item1.setCount(3);
+            item1.setFrequencyType("次/天");
             itemList.add(item4);
 
             inspectItemDao.saveInTx(itemList);
         }
-        InspectFormDao formDao = mDaoSession.getInspectFormDao();
-        List<InspectForm> formList = formDao.loadAll();
-        List<InspectItem> itemList1 = formList.get(0).getInspectItemList();
 
     }
 
@@ -303,41 +321,6 @@ public class Inspection_App extends Application {
     }
 
     private void initInspectLog() {
-        InspectLogDao logDao = mDaoSession.getInspectLogDao();
-        List<InspectLog> logList = logDao.loadAll();
-        if (logList == null || logList.size() == 0) {
-            logList = new ArrayList<>();
-
-            InspectLog log1 = new InspectLog();
-            log1.setInspectPointId(1L);
-            log1.setResult("正常");
-            log1.setOpInspectorName("张检察员");
-            log1.setOpDate(new Date());
-            logList.add(log1);
-
-            InspectLog log2 = new InspectLog();
-            log2.setInspectPointId(1L);
-            log2.setResult("异常");
-            log2.setOpInspectorName("张检察员");
-            log2.setOpDate(new Date());
-            logList.add(log2);
-
-            InspectLog log3 = new InspectLog();
-            log3.setInspectPointId(2L);
-            log3.setResult("正常");
-            log3.setOpInspectorName("张检察员");
-            log3.setOpDate(new Date());
-            logList.add(log3);
-
-            InspectLog log4 = new InspectLog();
-            log4.setInspectPointId(2L);
-            log4.setResult("异常");
-            log4.setOpInspectorName("张检察员");
-            log4.setOpDate(new Date());
-            logList.add(log4);
-
-            logDao.saveInTx(logList);
-        }
     }
 
     private void initInspectContent() {
@@ -367,40 +350,6 @@ public class Inspection_App extends Application {
             contentList.add(content4);
 
             contentDao.saveInTx(contentList);
-        }
-    }
-
-    private void initInspectContentLog() {
-        InspectContentLogDao contentLogDao = mDaoSession.getInspectContentLogDao();
-        List<InspectContentLog> contentLogList = contentLogDao.loadAll();
-        if (contentLogList == null || contentLogList.size() == 0) {
-            contentLogList = new ArrayList<>();
-
-            InspectContentLog contentLog1 = new InspectContentLog();
-            contentLog1.setContentId(1L);
-            contentLog1.setResult("正常");
-
-            InspectContentLog contentLog2 = new InspectContentLog();
-            contentLog2.setContentId(2L);
-            contentLog2.setResult("异常");
-            contentLog2.setProblemTypeId(1L);
-
-            InspectContentLog contentLog3 = new InspectContentLog();
-            contentLog3.setContentId(3L);
-            contentLog3.setResult("正常");
-
-            InspectContentLog contentLog4 = new InspectContentLog();
-            contentLog4.setContentId(4L);
-            contentLog4.setResult("异常");
-            contentLog4.setProblemTypeId(2L);
-            contentLog4.setDescription("存在出钞口及自助设备被非法安装或被破坏等，存在非法张贴物、针孔摄像机被堵塞（遮挡）");
-
-            contentLogList.add(contentLog1);
-            contentLogList.add(contentLog2);
-            contentLogList.add(contentLog3);
-            contentLogList.add(contentLog4);
-
-            contentLogDao.saveInTx(contentLogList);
         }
     }
 

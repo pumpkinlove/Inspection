@@ -21,11 +21,13 @@ import android.widget.Toast;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.LogAdapter;
 import com.miaxis.inspection.app.Inspection_App;
+import com.miaxis.inspection.dao.gen.InspectLogDao;
 import com.miaxis.inspection.dao.gen.InspectPointDao;
 import com.miaxis.inspection.entity.InspectLog;
 import com.miaxis.inspection.entity.InspectPoint;
-import com.miaxis.inspection.view.activity.DoInspectActivity;
+import com.miaxis.inspection.view.activity.DoInspectItemActivity;
 import com.miaxis.inspection.view.activity.LogDetailActivity;
+import com.miaxis.inspection.view.activity.LogListActivity;
 import com.miaxis.inspection.view.activity.PointListActivity;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
@@ -61,7 +63,7 @@ public class HomePageFragment extends Fragment {
 
     private static final int REQ_CODE_DO_INSPECT = 2;
 
-
+    private QBadgeView badgeView;
     private LogAdapter logAdapter;
     private List<InspectLog> logList;
 
@@ -97,7 +99,7 @@ public class HomePageFragment extends Fragment {
     }
 
     private void initData() {
-        logList = Inspection_App.getInstance().getDaoSession().getInspectLogDao().loadAll();
+        logList = Inspection_App.getInstance().getDaoSession().getInspectLogDao().queryBuilder().where(InspectLogDao.Properties.Inspected.eq(true)).list();
         logAdapter = new LogAdapter(logList, getContext());
         logAdapter.setListener(new LogAdapter.OnItemClickListener() {
             @Override
@@ -107,15 +109,27 @@ public class HomePageFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
     }
 
     private void initView() {
+        badgeView = new QBadgeView(getContext());
         rvLog.setAdapter(logAdapter);
         rvLog.setLayoutManager(new LinearLayoutManager(getContext()));
-        QBadgeView badgeView = new QBadgeView(getContext());
-        badgeView.setBadgeGravity(Gravity.CENTER | Gravity.END);
-        badgeView.bindTarget(tvToDoPoint).setBadgeNumber(3);
-        badgeView.setBadgeTextSize(16, true);
+
+    }
+
+    private void initBadge() {
+        InspectPointDao pointDao = Inspection_App.getInstance().getDaoSession().getInspectPointDao();
+        List<InspectPoint> pointList = pointDao.queryBuilder().where(InspectPointDao.Properties.Bound.eq(true)).list();
+        if (pointList.size() == 0) {
+            badgeView.setVisibility(View.GONE);
+        } else {
+            badgeView.setVisibility(View.VISIBLE);
+            badgeView.setBadgeGravity(Gravity.CENTER | Gravity.END);
+            badgeView.bindTarget(tvToDoPoint).setBadgeNumber(pointList.size());
+            badgeView.setBadgeTextSize(16, true);
+        }
     }
 
     @OnClick(R.id.cv_scan)
@@ -169,7 +183,7 @@ public class HomePageFragment extends Fragment {
                 .subscribe(new Consumer<InspectPoint>() {
                     @Override
                     public void accept(InspectPoint inspectPoint) throws Exception {
-                        Intent i = new Intent(getContext(), DoInspectActivity.class);
+                        Intent i = new Intent(getContext(), DoInspectItemActivity.class);
                         i.putExtra("point", inspectPoint);
                         startActivity(i);
                     }
@@ -180,6 +194,22 @@ public class HomePageFragment extends Fragment {
                     }
                 });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        logList = Inspection_App.getInstance().getDaoSession().getInspectLogDao().queryBuilder().where(InspectLogDao.Properties.Inspected.eq(true)).list();
+        logAdapter.setLogList(logList);
+        logAdapter.notifyDataSetChanged();
+
+        initBadge();
+
+    }
+
+    @OnClick(R.id.tv_more_log)
+    void moreLog() {
+        startActivity(new Intent(getActivity(), LogListActivity.class));
     }
 
 }

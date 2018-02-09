@@ -1,6 +1,7 @@
 package com.miaxis.inspection.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.entity.InspectContent;
 import com.miaxis.inspection.entity.InspectContentLog;
+import com.miaxis.inspection.entity.ResultType;
 
 import java.util.List;
 
@@ -55,8 +57,13 @@ public class LogContentDetailAdapter extends RecyclerView.Adapter<LogContentDeta
         InspectContentLog contentLog = contentLogList.get(position);
         InspectContent content = contentLog.getInspectContent();
         holder.tvContentName.setText(content.getName());
-        holder.tvContentResult.setText(contentLog.getResult());
-        holder.tvProblemDescription.setText(contentLog.getDescription());
+        ResultType resultType = contentLog.getResult();
+        if (resultType.getIsProblem()) {
+            holder.tvContentResult.setTextColor(context.getResources().getColor(R.color.red));
+        } else {
+            holder.tvContentResult.setTextColor(context.getResources().getColor(R.color.green_dark));
+        }
+        holder.tvContentResult.setText(resultType.getResultName());
     }
 
     @Override
@@ -75,14 +82,6 @@ public class LogContentDetailAdapter extends RecyclerView.Adapter<LogContentDeta
         TextView tvContentName;
         @BindView(R.id.tv_content_result)
         TextView tvContentResult;
-        @BindView(R.id.iv_expand)
-        ImageView ivExpand;
-        @BindView(R.id.tv_problem_description)
-        TextView tvProblemDescription;
-        @BindView(R.id.gl_problem_pics)
-        GridLayout glProblemPics;
-        @BindView(R.id.ll_content_problem)
-        LinearLayout llContentProblem;
 
         ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);

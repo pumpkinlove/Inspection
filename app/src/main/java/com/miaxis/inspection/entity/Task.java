@@ -31,16 +31,15 @@ public class Task implements Serializable {
     private Date beginTime;
     private Date endTime;
     private String frequencyType;
-    private int status;
+    private int status; // 0 待执行 1 执行中 2 已完成
     private String statusName;
 
     private Long inspectFormId;
     @ToOne(joinProperty = "inspectFormId")
     private InspectForm inspectForm;
 
-    private Long inspectLogId;
-    @ToOne(joinProperty = "inspectLogId")
-    private InspectLog inspectLog;
+    @ToMany(referencedJoinProperty = "taskId")
+    private List<InspectLog> inspectLogList;
 
     @ToMany(referencedJoinProperty = "taskId")
     private List<ExecuteTime> excuteTimes;
@@ -53,9 +52,10 @@ public class Task implements Serializable {
     @Generated(hash = 1469429066)
     private transient TaskDao myDao;
 
-    @Generated(hash = 226318746)
-    public Task(Long id, String name, Date beginTime, Date endTime, String frequencyType, int status,
-            String statusName, Long inspectFormId, Long inspectLogId) {
+    @Generated(hash = 938666041)
+    public Task(Long id, String name, Date beginTime, Date endTime,
+            String frequencyType, int status, String statusName,
+            Long inspectFormId) {
         this.id = id;
         this.name = name;
         this.beginTime = beginTime;
@@ -64,7 +64,6 @@ public class Task implements Serializable {
         this.status = status;
         this.statusName = statusName;
         this.inspectFormId = inspectFormId;
-        this.inspectLogId = inspectLogId;
     }
 
     @Generated(hash = 733837707)
@@ -111,20 +110,28 @@ public class Task implements Serializable {
         this.frequencyType = frequencyType;
     }
 
+    public int getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getStatusName() {
+        return this.statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
     public Long getInspectFormId() {
         return this.inspectFormId;
     }
 
     public void setInspectFormId(Long inspectFormId) {
         this.inspectFormId = inspectFormId;
-    }
-
-    public Long getInspectLogId() {
-        return this.inspectLogId;
-    }
-
-    public void setInspectLogId(Long inspectLogId) {
-        this.inspectLogId = inspectLogId;
     }
 
     @Generated(hash = 1912765686)
@@ -160,37 +167,33 @@ public class Task implements Serializable {
         }
     }
 
-    @Generated(hash = 1394565320)
-    private transient Long inspectLog__resolvedKey;
-
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 426321560)
-    public InspectLog getInspectLog() {
-        Long __key = this.inspectLogId;
-        if (inspectLog__resolvedKey == null
-                || !inspectLog__resolvedKey.equals(__key)) {
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 2001735219)
+    public List<InspectLog> getInspectLogList() {
+        if (inspectLogList == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             InspectLogDao targetDao = daoSession.getInspectLogDao();
-            InspectLog inspectLogNew = targetDao.load(__key);
+            List<InspectLog> inspectLogListNew = targetDao
+                    ._queryTask_InspectLogList(id);
             synchronized (this) {
-                inspectLog = inspectLogNew;
-                inspectLog__resolvedKey = __key;
+                if (inspectLogList == null) {
+                    inspectLogList = inspectLogListNew;
+                }
             }
         }
-        return inspectLog;
+        return inspectLogList;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 2051507064)
-    public void setInspectLog(InspectLog inspectLog) {
-        synchronized (this) {
-            this.inspectLog = inspectLog;
-            inspectLogId = inspectLog == null ? null : inspectLog.getId();
-            inspectLog__resolvedKey = inspectLogId;
-        }
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 1915160241)
+    public synchronized void resetInspectLogList() {
+        inspectLogList = null;
     }
 
     /**
@@ -264,20 +267,5 @@ public class Task implements Serializable {
         myDao = daoSession != null ? daoSession.getTaskDao() : null;
     }
 
-    public int getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getStatusName() {
-        return this.statusName;
-    }
-
-    public void setStatusName(String statusName) {
-        this.statusName = statusName;
-    }
 
 }

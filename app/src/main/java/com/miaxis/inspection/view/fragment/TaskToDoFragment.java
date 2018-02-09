@@ -109,7 +109,7 @@ public class TaskToDoFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
-                        Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
                         srlTaskToDo.setRefreshing(false);
                     }
                 });
@@ -141,7 +141,7 @@ public class TaskToDoFragment extends Fragment implements SwipeRefreshLayout.OnR
                             .subscribe(new Consumer<String>() {
                                 @Override
                                 public void accept(String s) throws Exception {
-                                    Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }

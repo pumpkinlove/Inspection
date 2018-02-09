@@ -5,13 +5,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.LogContentDetailAdapter;
 import com.miaxis.inspection.app.Inspection_App;
+import com.miaxis.inspection.entity.InspectContentLog;
 import com.miaxis.inspection.entity.InspectLog;
 import com.miaxis.inspection.utils.DateUtil;
+import com.miaxis.inspection.view.custom.ProblemDetailDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +54,18 @@ public class LogDetailActivity extends BaseActivity {
         mLog = (InspectLog) getIntent().getSerializableExtra("log");
         mLog.__setDaoSession(Inspection_App.getInstance().getDaoSession());
         contentDetailAdapter = new LogContentDetailAdapter(mLog.getContentList(), this);
+        contentDetailAdapter.setListener(new LogContentDetailAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                InspectContentLog contentLog = mLog.getContentList().get(position);
+                if (contentLog.getResult().getIsProblem()) {
+                    ProblemDetailDialog problemDetailDialog = new ProblemDetailDialog();
+                    problemDetailDialog.setProblemDescription(contentLog.getDescription());
+                    problemDetailDialog.setPhotoList(contentLog.getProblemPhotoList());
+                    problemDetailDialog.show(getFragmentManager(), "problemDetail");
+                }
+            }
+        });
     }
 
     @Override

@@ -25,6 +25,10 @@ import butterknife.OnClick;
 
 public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
+    public void setLogList(List<InspectLog> logList) {
+        this.logList = logList;
+    }
+
     private OnItemClickListener listener;
     private List<InspectLog> logList;
     private Context context;
@@ -51,9 +55,11 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         InspectLog log = logList.get(position);
-        holder.tvLogPoint.setText(log.getInspectPoint().getPointName());
-        holder.tvLogTime.setText(DateUtil.toHourMinString(log.getOpDate()));
-        holder.tvLogResult.setText(log.getResult());
+        if (log.getInspected()) {
+            holder.tvLogPoint.setText(log.getInspectPoint().getPointName());
+            holder.tvLogTime.setText(DateUtil.toHourMinString(log.getOpDate()));
+            holder.tvLogResult.setText(log.getResult());
+        }
     }
 
     @Override

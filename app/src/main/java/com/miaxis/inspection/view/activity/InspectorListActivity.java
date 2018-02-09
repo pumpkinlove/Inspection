@@ -1,7 +1,7 @@
 package com.miaxis.inspection.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -10,31 +10,22 @@ import com.miaxis.inspection.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ScanPointActivity extends BaseActivity {
+public class InspectorListActivity extends BaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.rv_inspector)
+    RecyclerView rvInspector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_point);
+        setContentView(R.layout.activity_inspector_list);
         ButterKnife.bind(this);
+
         initData();
         initView();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                    startActivity(new Intent(ScanPointActivity.this, DoInspectItemActivity.class));
-                    finish();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        initToolBar();
     }
 
     @Override
@@ -44,11 +35,11 @@ public class ScanPointActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        initToolBar();
+
     }
 
     private void initToolBar() {
-        toolbar.setTitle("扫描检查点");
+        toolbar.setTitle("检查员管理");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -62,7 +53,4 @@ public class ScanPointActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
 }
