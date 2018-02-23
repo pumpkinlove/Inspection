@@ -17,10 +17,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.dao.gen.ConfigDao;
+import com.miaxis.inspection.dao.gen.InspectorDao;
+import com.miaxis.inspection.dao.gen.OrganizationDao;
 import com.miaxis.inspection.entity.Config;
+import com.miaxis.inspection.entity.Inspector;
+import com.miaxis.inspection.entity.Organization;
+import com.miaxis.inspection.entity.ResponseEntity;
+import com.miaxis.inspection.net.DownloadInspectorNet;
+import com.miaxis.inspection.net.DownloadOrganizationNet;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +42,8 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ConfigFragment extends Fragment {
 
@@ -140,6 +152,8 @@ public class ConfigFragment extends Fragment {
         config.setPort(etPort.getText().toString());
         config.setOrgCode(etOrgCode.getText().toString());
         saveConfig(config);
+        loadOrganization(config);
+        downloadInspector(config);
     }
 
     @OnClick(R.id.btn_cancel)
@@ -225,5 +239,74 @@ public class ConfigFragment extends Fragment {
                     }
                 });
     }
+
+    private void loadOrganization(Config config) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl("http://" + config.getIp() + ":" + config.getPort())
+                .build();
+
+        DownloadOrganizationNet net = retrofit.create(DownloadOrganizationNet.class);
+
+        net.downloadOrgnization(config.getOrgCode())
+                .subscribeOn(Schedulers.newThread())
+                .doOnNext(new Consumer<ResponseEntity<Organization>>() {
+                    @Override
+                    public void accept(ResponseEntity<Organization> responseEntity) throws Exception {
+                        OrganizationDao dao = Inspection_App.getInstance().getDaoSession().getOrganizationDao();
+                        Organization o = responseEntity.getData();
+                        dao.insertOrReplace(o);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseEntity<Organization>>() {
+                    @Override
+                    public void accept(ResponseEntity<Organization> responseEntity) throws Exception {
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e("e", "ee" + throwable.getMessage());
+                    }
+                });
+
+    }
+
+    private void downloadInspector(Config config) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl("http://" + config.getIp() + ":" + config.getPort())
+                .build();
+
+        DownloadInspectorNet net = retrofit.create(DownloadInspectorNet.class);
+
+        net.downloadInspector(config.getOrgCode())
+                .subscribeOn(Schedulers.newThread())
+                .doOnNext(new Consumer<ResponseEntity<Inspector>>() {
+                    @Override
+                    public void accept(ResponseEntity<Inspector> responseEntity) throws Exception {
+                        InspectorDao dao = Inspection_App.getInstance().getDaoSession().getInspectorDao();
+                        List<Inspector> inspectors = responseEntity.getListData();
+                        dao.insertOrReplaceInTx(inspectors);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseEntity<Inspector>>() {
+                    @Override
+                    public void accept(ResponseEntity<Inspector> responseEntity) throws Exception {
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e("e", "ee" + throwable.getMessage());
+                    }
+                });
+    }
+
 
 }

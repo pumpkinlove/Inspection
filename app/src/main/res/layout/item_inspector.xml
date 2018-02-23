@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cv_inspector"
+    android:focusable="true"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginLeft="@dimen/activity_padding"
+    android:layout_marginRight="@dimen/activity_padding"
+    android:layout_marginTop="@dimen/activity_padding"
+    app:cardBackgroundColor="@color/white"
+    app:cardElevation="5dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_inspector_photo"
+            android:layout_width="@dimen/pic_height"
+            android:layout_height="@dimen/pic_height"
+            android:background="@drawable/white_bg_gray_stroke_n"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:textSize="16sp"
+            android:textColor="@color/dark"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:gravity="center"
+            android:id="@+id/tv_inspector_name"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:hint="检查员姓名"
+            app:layout_constraintStart_toEndOf="@+id/iv_inspector_photo"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:textSize="14sp"
+            android:textColor="@color/dark"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:gravity="center"
+            android:hint="检查员编号"
+            android:id="@+id/tv_inspector_code"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toEndOf="@+id/iv_inspector_photo"
+            app:layout_constraintTop_toBottomOf="@+id/tv_inspector_name" />
+
+        <TextView
+            android:textSize="14sp"
+            android:textColor="@color/dark"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:gravity="center"
+            android:hint="检查员权限"
+            android:id="@+id/tv_inspector_role"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

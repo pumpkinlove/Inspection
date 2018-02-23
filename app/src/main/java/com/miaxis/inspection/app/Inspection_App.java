@@ -105,7 +105,7 @@ public class Inspection_App extends Application {
             calendar.set(2018,2,6, 23,59,59);
             Date d6 = calendar.getTime();
 
-         taskList = new ArrayList<>();
+            taskList = new ArrayList<>();
 
             Task task1 = new Task();
             task1.setInspectFormId(1L);
@@ -196,15 +196,8 @@ public class Inspection_App extends Application {
 
     private void initOrganization() {
         OrganizationDao organizationDao = mDaoSession.getOrganizationDao();
-        Organization organization = organizationDao.load(1L);
-        if (organization == null) {
-            organization = new Organization();
-            organization.setId(1L);
-            organization.setName("测试机构");
-            organization.setCode("001");
-            organization.setNode("1.0");
-            organizationDao.insert(organization);
-        }
+        List<Organization> organizationList = organizationDao.loadAll();
+        Organization organization = organizationDao.loadByRowId(1L);
     }
 
     private void initInspector() {

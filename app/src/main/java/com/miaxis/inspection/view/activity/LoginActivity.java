@@ -2,11 +2,14 @@ package com.miaxis.inspection.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
+import com.miaxis.inspection.app.Inspection_App;
+import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.view.fragment.ConfigFragment;
 import com.miaxis.inspection.utils.CommonUtil;
 
@@ -32,8 +35,7 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
         initData();
         initView();
 
-//        ConfigFragment configFragment = new ConfigFragment();
-//        getFragmentManager().beginTransaction().replace(R.id.fl_config, configFragment).commit();
+        checkConfig();
 
     }
 
@@ -48,6 +50,23 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
         tvVersion.append(CommonUtil.getVerName(this));
     }
 
+    private void checkConfig() {
+        Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
+        toggleConfigFragment(config == null);
+    }
+
+    private void toggleConfigFragment(boolean showConfigFragment) {
+        if (showConfigFragment) {
+            flConfig.setVisibility(View.VISIBLE);
+            btnLogin.setVisibility(View.INVISIBLE);
+            ConfigFragment configFragment = new ConfigFragment();
+            getFragmentManager().beginTransaction().replace(R.id.fl_config, configFragment).commit();
+        } else {
+            flConfig.setVisibility(View.INVISIBLE);
+            btnLogin.setVisibility(View.VISIBLE);
+        }
+    }
+
     @OnClick(R.id.btn_login)
     void onLoginClicked() {
         startActivity(new Intent(this, MainActivity.class));
@@ -55,7 +74,7 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
 
     @Override
     public void onConfigSave() {
-
+        toggleConfigFragment(false);
     }
 
     @Override
