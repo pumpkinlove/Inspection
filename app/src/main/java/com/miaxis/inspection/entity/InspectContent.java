@@ -14,6 +14,7 @@ import com.miaxis.inspection.dao.gen.ProblemPhotoDao;
 import com.miaxis.inspection.dao.gen.ProblemTypeDao;
 import com.miaxis.inspection.dao.gen.InspectItemDao;
 import com.miaxis.inspection.dao.gen.InspectContentDao;
+import com.miaxis.inspection.dao.gen.ResultTypeDao;
 
 /**
  * 检查内容
@@ -24,14 +25,17 @@ public class InspectContent implements Serializable {
 
     private static final long serialVersionUID = -1561898683354745508L;
 
-    @Id(autoincrement = true)
-    private Long id;
-    private String name;
+    @Id
+    private Long id;                    //id
+    private String name;                //检查内容名称
 
-    private Long inspectItemId;
+    private Long inspectItemId;         //所属检查项 id
     @ToOne(joinProperty = "inspectItemId")
     private InspectItem inspectItem;    //所属检查项
-    private String roleName;
+
+    private Long resultTypeId;          //结果类型 字典id
+    @ToOne(joinProperty = "resultTypeId")
+    private ResultType resultType;      //结果类型
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -40,12 +44,12 @@ public class InspectContent implements Serializable {
     /** Used for active entity operations. */
     @Generated(hash = 1747847796)
     private transient InspectContentDao myDao;
-    @Generated(hash = 2109726850)
-    public InspectContent(Long id, String name, Long inspectItemId, String roleName) {
+    @Generated(hash = 1841452477)
+    public InspectContent(Long id, String name, Long inspectItemId, Long resultTypeId) {
         this.id = id;
         this.name = name;
         this.inspectItemId = inspectItemId;
-        this.roleName = roleName;
+        this.resultTypeId = resultTypeId;
     }
     @Generated(hash = 515515340)
     public InspectContent() {
@@ -62,14 +66,11 @@ public class InspectContent implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public String getRoleName() {
-        return this.roleName;
-    }
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
     @Generated(hash = 1166922348)
     private transient Long inspectItem__resolvedKey;
+
+    @Generated(hash = 1605848548)
+    private transient Long resultType__resolvedKey;
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1160851564)
     public InspectItem getInspectItem() {
@@ -141,6 +142,39 @@ public class InspectContent implements Serializable {
     }
     public void setInspectItemId(Long inspectItemId) {
         this.inspectItemId = inspectItemId;
+    }
+    public Long getResultTypeId() {
+        return this.resultTypeId;
+    }
+    public void setResultTypeId(Long resultTypeId) {
+        this.resultTypeId = resultTypeId;
+    }
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 2005213139)
+    public ResultType getResultType() {
+        Long __key = this.resultTypeId;
+        if (resultType__resolvedKey == null || !resultType__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            ResultTypeDao targetDao = daoSession.getResultTypeDao();
+            ResultType resultTypeNew = targetDao.load(__key);
+            synchronized (this) {
+                resultType = resultTypeNew;
+                resultType__resolvedKey = __key;
+            }
+        }
+        return resultType;
+    }
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 855975300)
+    public void setResultType(ResultType resultType) {
+        synchronized (this) {
+            this.resultType = resultType;
+            resultTypeId = resultType == null ? null : resultType.getId();
+            resultType__resolvedKey = resultTypeId;
+        }
     }
 
 }

@@ -8,7 +8,8 @@ import java.io.Serializable;
 
 /**
  * 检察员
- * Created by xu.nan on 2018/1/3.
+ * 对应服务端的Cencor
+ * Created by xu.nan on 2018/1/3.C
  */
 @Entity
 public class Inspector implements Serializable {

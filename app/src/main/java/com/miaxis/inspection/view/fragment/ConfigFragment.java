@@ -27,8 +27,8 @@ import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.entity.Inspector;
 import com.miaxis.inspection.entity.Organization;
 import com.miaxis.inspection.entity.ResponseEntity;
-import com.miaxis.inspection.net.DownloadInspectorNet;
-import com.miaxis.inspection.net.DownloadOrganizationNet;
+import com.miaxis.inspection.net.DownInspectorNet;
+import com.miaxis.inspection.net.DownOrganizationNet;
 
 import java.util.List;
 
@@ -152,7 +152,7 @@ public class ConfigFragment extends Fragment {
         config.setPort(etPort.getText().toString());
         config.setOrgCode(etOrgCode.getText().toString());
         saveConfig(config);
-        loadOrganization(config);
+        downloadOrganization(config);
         downloadInspector(config);
     }
 
@@ -168,10 +168,13 @@ public class ConfigFragment extends Fragment {
     }
 
     public interface OnConfigClickListener {
-        void onConfigSave();
+        void onConfigSave(Config config);
         void onConfigCancel();
     }
 
+    /**
+     * 从数据库读去设置，并显示
+     */
     private void loadConfig() {
         Observable
                 .create(new ObservableOnSubscribe<Config>() {
@@ -201,6 +204,10 @@ public class ConfigFragment extends Fragment {
 
     }
 
+    /**
+     * 保存设置
+     * @param config
+     */
     private void saveConfig(Config config) {
         Observable
                 .just(config)
@@ -208,7 +215,6 @@ public class ConfigFragment extends Fragment {
                 .doOnNext(new Consumer<Config>() {
                     @Override
                     public void accept(Config config) throws Exception {
-                        Log.e("saveConfig", "ThreadName = " + Thread.currentThread().getName());
                         pdSaveConfig.setMessage("正在保存设置...");
                         pdSaveConfig.show();
                     }
@@ -217,7 +223,6 @@ public class ConfigFragment extends Fragment {
                 .doOnNext(new Consumer<Config>() {
                     @Override
                     public void accept(Config config) throws Exception {
-                        Log.e("saveConfig", "ThreadName = " + Thread.currentThread().getName());
                         configDao.save(config);
                     }
                 })
@@ -225,30 +230,33 @@ public class ConfigFragment extends Fragment {
                 .subscribe(new Consumer<Config>() {
                     @Override
                     public void accept(Config config) throws Exception {
-                        Log.e("saveConfig", "ThreadName = " + Thread.currentThread().getName());
                         pdSaveConfig.setMessage("保存成功");
                         pdSaveConfig.dismiss();
-                        mListener.onConfigSave();
+                        mListener.onConfigSave(config);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.e("saveConfig", "ThreadName = " + Thread.currentThread().getName());
                         pdSaveConfig.setMessage("保存失败");
                         pdSaveConfig.setCancelable(true);
                     }
                 });
     }
 
-    private void loadOrganization(Config config) {
-
+    /**
+     * 下载机构信息
+     * @param config
+     */
+    private void downloadOrganization(Config config) {
+        pdSaveConfig.setMessage("正在下载机构信息...");
+        pdSaveConfig.show();
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl("http://" + config.getIp() + ":" + config.getPort())
                 .build();
 
-        DownloadOrganizationNet net = retrofit.create(DownloadOrganizationNet.class);
+        DownOrganizationNet net = retrofit.create(DownOrganizationNet.class);
 
         net.downloadOrgnization(config.getOrgCode())
                 .subscribeOn(Schedulers.newThread())
@@ -264,25 +272,38 @@ public class ConfigFragment extends Fragment {
                 .subscribe(new Consumer<ResponseEntity<Organization>>() {
                     @Override
                     public void accept(ResponseEntity<Organization> responseEntity) throws Exception {
-
+                        if (responseEntity.getCode().equals("200")) {
+                            pdSaveConfig.setMessage("机构信息下载完成！");
+                            pdSaveConfig.dismiss();
+                        } else {
+                            pdSaveConfig.setMessage(responseEntity.getMessage());
+                            pdSaveConfig.setCancelable(true);
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.e("e", "ee" + throwable.getMessage());
+                        pdSaveConfig.setMessage("机构信息下载失败！");
+                        pdSaveConfig.setCancelable(true);
                     }
                 });
 
     }
 
+    /**
+     * 下载检查员
+     * @param config
+     */
     private void downloadInspector(Config config) {
+        pdSaveConfig.setMessage("正在下载检查员信息...");
+        pdSaveConfig.show();
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl("http://" + config.getIp() + ":" + config.getPort())
                 .build();
 
-        DownloadInspectorNet net = retrofit.create(DownloadInspectorNet.class);
+        DownInspectorNet net = retrofit.create(DownInspectorNet.class);
 
         net.downloadInspector(config.getOrgCode())
                 .subscribeOn(Schedulers.newThread())
@@ -298,12 +319,20 @@ public class ConfigFragment extends Fragment {
                 .subscribe(new Consumer<ResponseEntity<Inspector>>() {
                     @Override
                     public void accept(ResponseEntity<Inspector> responseEntity) throws Exception {
-
+                        if (responseEntity.getCode().equals("200")) {
+                            pdSaveConfig.setMessage("检查员信息下载完成！");
+                            pdSaveConfig.dismiss();
+                        } else {
+                            pdSaveConfig.setMessage(responseEntity.getMessage());
+                            pdSaveConfig.setCancelable(true);
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.e("e", "ee" + throwable.getMessage());
+                        Log.e(TAG, "ee" + throwable.getMessage());
+                        pdSaveConfig.setMessage("检查员信息下载失败！");
+                        pdSaveConfig.setCancelable(true);
                     }
                 });
     }

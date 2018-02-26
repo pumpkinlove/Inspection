@@ -5,6 +5,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.miaxis.inspection.R;
+import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.view.fragment.ConfigFragment;
 
 import butterknife.BindView;
@@ -41,7 +42,7 @@ public class ConfigActivity extends BaseActivity implements ConfigFragment.OnCon
     }
 
     @Override
-    public void onConfigSave() {
+    public void onConfigSave(Config config) {
         finish();
     }
 

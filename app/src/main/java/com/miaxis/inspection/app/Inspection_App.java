@@ -51,7 +51,7 @@ public class Inspection_App extends Application {
 
         ZXingLibrary.initDisplayOpinion(this);
 
-        testDao();
+//        testDao();
     }
 
     private void initDbHelp() {
@@ -75,7 +75,6 @@ public class Inspection_App extends Application {
         initResultType();
         initProblemType();
         initOrganization();
-        initInspectPoint();
 
         initInspectForm();
         initInspectItem();
@@ -247,68 +246,24 @@ public class Inspection_App extends Application {
             InspectItem item1 = new InspectItem();
             item1.setName("水、电");
             item1.setInspectFormId(1L);
-            item1.setCount(5);
-            item1.setFrequencyType("次/天");
             itemList.add(item1);
 
             InspectItem item2 = new InspectItem();
             item2.setName("门、窗");
             item2.setInspectFormId(2L);
-            item1.setCount(4);
-            item1.setFrequencyType("次/天");
             itemList.add(item2);
 
             InspectItem item3 = new InspectItem();
             item3.setName("自助设备");
             item3.setInspectFormId(1L);
-            item1.setCount(2);
-            item1.setFrequencyType("次/天");
             itemList.add(item3);
 
             InspectItem item4 = new InspectItem();
             item4.setName("视频监控");
             item4.setInspectFormId(2L);
-            item1.setCount(3);
-            item1.setFrequencyType("次/天");
             itemList.add(item4);
 
             inspectItemDao.saveInTx(itemList);
-        }
-
-    }
-
-    private void initInspectPoint() {
-        InspectPointDao pointDao = mDaoSession.getInspectPointDao();
-        List<InspectPoint> pointList = pointDao.loadAll();
-        if (pointList == null || pointList.size() == 0) {
-            pointList = new ArrayList<>();
-
-            InspectPoint point1 = new InspectPoint();
-            point1.setPointName("监控室");
-            point1.setInspectItemId(1L);
-            point1.setOrganizationId(1L);
-            pointList.add(point1);
-
-            InspectPoint point2 = new InspectPoint();
-            point2.setPointName("周围环境");
-            point2.setInspectItemId(1L);
-            point2.setOrganizationId(1L);
-            pointList.add(point2);
-
-            InspectPoint point3 = new InspectPoint();
-            point3.setPointName("食堂");
-            point3.setInspectItemId(2L);
-            point3.setOrganizationId(1L);
-            pointList.add(point3);
-
-            InspectPoint point4 = new InspectPoint();
-            point4.setPointName("营业室");
-            point4.setInspectItemId(2L);
-            point4.setOrganizationId(1L);
-            pointList.add(point4);
-
-            pointDao.saveInTx(pointList);
-
         }
 
     }

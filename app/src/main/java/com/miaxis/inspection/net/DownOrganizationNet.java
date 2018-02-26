@@ -13,9 +13,9 @@ import retrofit2.http.Query;
  * Created by xu.nan on 2018/2/23.
  */
 
-public interface DownloadOrganizationNet {
+public interface DownOrganizationNet {
 
-    @GET("anbao/downBankHandler/downBank")
+    @GET("anbao/api/downBank")
     Observable<ResponseEntity<Organization>> downloadOrgnization(@Query("bankcode") String orgCode);
 
 }

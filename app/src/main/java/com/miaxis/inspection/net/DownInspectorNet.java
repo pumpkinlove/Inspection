@@ -13,9 +13,9 @@ import retrofit2.http.Query;
  * Created by xu.nan on 2018/2/23.
  */
 
-public interface DownloadInspectorNet {
+public interface DownInspectorNet {
 
-    @GET("anbao/workerHandler/downWorker")
+    @GET("anbao/api/downWorker")
     Observable<ResponseEntity<Inspector>> downloadInspector(@Query("bankcode") String orgCode);
 
 }
