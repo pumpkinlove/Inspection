@@ -5,9 +5,6 @@ import com.miaxis.inspection.entity.Organization;
 import java.util.List;
 
 public class Task {
-	/**
-	 * @Fields serialVersionUID : TODO(用一句话描述这个变量表示什么)
-	 */
 	private static final long serialVersionUID = 1L;
 	private String taskCode;          //任务编号
 	private String taskName;          //任务名

@@ -49,7 +49,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Task task = taskList.get(position);
-        holder.tvTaskName.setText(task.getName());
+        holder.tvTaskName.setText(task.getTaskName());
         holder.tvTaskBeginTime.setText(DateUtil.toAll(task.getBeginTime()));
         holder.tvTaskEndTime.setText(DateUtil.toAll(task.getEndTime()));
     }

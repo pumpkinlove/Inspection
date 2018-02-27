@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="@color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp">
+
+    <TextView
+        android:gravity="center_vertical|start"
+        android:textSize="16sp"
+        android:textColor="@color/blue_band_dark"
+        android:id="@+id/tv_inspector_code"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="50dp" />
+
+    <TextView
+        android:gravity="center_vertical|end"
+        android:textSize="14sp"
+        android:textColor="@color/blue_band_dark2"
+        android:id="@+id/tv_inspector_name"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="50dp" />
+
+</LinearLayout>

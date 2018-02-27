@@ -78,7 +78,7 @@ public class ItemListActivity extends BaseActivity {
     private void initToolBar() {
         Task task = (Task) getIntent().getSerializableExtra("task");
         if (task != null) {
-            setTitle(task.getName());
+            setTitle(task.getTaskName());
         }
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -27,7 +27,9 @@ public class Task implements Serializable {
 
     @Id(autoincrement = true)
     private Long id;
-    private String name;
+    private String taskName;        //任务名称
+    private String taskCode;        //任务编号
+
     private Date beginTime;
     private Date endTime;
     private String frequencyType;
@@ -37,9 +39,6 @@ public class Task implements Serializable {
     private Long inspectFormId;
     @ToOne(joinProperty = "inspectFormId")
     private InspectForm inspectForm;
-
-    @ToMany(referencedJoinProperty = "taskId")
-    private List<InspectLog> inspectLogList;
 
     @ToMany(referencedJoinProperty = "taskId")
     private List<ExecuteTime> excuteTimes;
@@ -52,12 +51,13 @@ public class Task implements Serializable {
     @Generated(hash = 1469429066)
     private transient TaskDao myDao;
 
-    @Generated(hash = 938666041)
-    public Task(Long id, String name, Date beginTime, Date endTime,
-            String frequencyType, int status, String statusName,
+    @Generated(hash = 210016470)
+    public Task(Long id, String taskName, String taskCode, Date beginTime,
+            Date endTime, String frequencyType, int status, String statusName,
             Long inspectFormId) {
         this.id = id;
-        this.name = name;
+        this.taskName = taskName;
+        this.taskCode = taskCode;
         this.beginTime = beginTime;
         this.endTime = endTime;
         this.frequencyType = frequencyType;
@@ -78,12 +78,20 @@ public class Task implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return this.name;
+    public String getTaskName() {
+        return this.taskName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public String getTaskCode() {
+        return this.taskCode;
+    }
+
+    public void setTaskCode(String taskCode) {
+        this.taskCode = taskCode;
     }
 
     public Date getBeginTime() {
@@ -171,35 +179,6 @@ public class Task implements Serializable {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 2001735219)
-    public List<InspectLog> getInspectLogList() {
-        if (inspectLogList == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            InspectLogDao targetDao = daoSession.getInspectLogDao();
-            List<InspectLog> inspectLogListNew = targetDao
-                    ._queryTask_InspectLogList(id);
-            synchronized (this) {
-                if (inspectLogList == null) {
-                    inspectLogList = inspectLogListNew;
-                }
-            }
-        }
-        return inspectLogList;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 1915160241)
-    public synchronized void resetInspectLogList() {
-        inspectLogList = null;
-    }
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
     @Generated(hash = 1698233468)
     public List<ExecuteTime> getExcuteTimes() {
         if (excuteTimes == null) {
@@ -266,6 +245,7 @@ public class Task implements Serializable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTaskDao() : null;
     }
+
 
 
 }

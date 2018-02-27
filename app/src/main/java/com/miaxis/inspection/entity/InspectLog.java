@@ -29,27 +29,23 @@ public class InspectLog implements Serializable {
     @Id(autoincrement = true)
     private Long id;
 
-    private Long taskId;
-    @ToOne(joinProperty = "taskId")
-    private Task task;
-
-    private Long inspectItemId;
+    private Long inspectItemId;         //对应检查项id
     @ToOne(joinProperty = "inspectItemId")
     private InspectItem inspectItem;
 
-    private Date opDate;
-    private String opInspectorName;
-    private String result;
+    private Date opDate;                //操作时间
+    private String opInspectorName;     //操作检查员姓名
+    private String result;              //检查结果
 
-    private boolean uploaded;
+    private boolean uploaded;           //是否已上传
     private boolean inspected;
 
-    private Long inspectPointId;
+    private Long inspectPointId;        //对应检查点id
     @ToOne(joinProperty = "inspectPointId")
     private InspectPoint inspectPoint;
 
     @ToMany(referencedJoinProperty = "inspectLogId")
-    private List<InspectContentLog> contentList;
+    private List<InspectContentLog> contentList;    //下属检查内容日志
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -59,20 +55,11 @@ public class InspectLog implements Serializable {
     @Generated(hash = 2012460397)
     private transient InspectLogDao myDao;
 
-    @Generated(hash = 100676365)
-    private transient Long task__resolvedKey;
-
-    @Generated(hash = 101199454)
-    private transient Long inspectPoint__resolvedKey;
-
-    @Generated(hash = 1166922348)
-    private transient Long inspectItem__resolvedKey;
-
-    @Generated(hash = 1184517621)
-    public InspectLog(Long id, Long taskId, Long inspectItemId, Date opDate, String opInspectorName,
-            String result, boolean uploaded, boolean inspected, Long inspectPointId) {
+    @Generated(hash = 641234548)
+    public InspectLog(Long id, Long inspectItemId, Date opDate,
+            String opInspectorName, String result, boolean uploaded,
+            boolean inspected, Long inspectPointId) {
         this.id = id;
-        this.taskId = taskId;
         this.inspectItemId = inspectItemId;
         this.opDate = opDate;
         this.opInspectorName = opInspectorName;
@@ -92,6 +79,14 @@ public class InspectLog implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getInspectItemId() {
+        return this.inspectItemId;
+    }
+
+    public void setInspectItemId(Long inspectItemId) {
+        this.inspectItemId = inspectItemId;
     }
 
     public Date getOpDate() {
@@ -118,22 +113,6 @@ public class InspectLog implements Serializable {
         this.result = result;
     }
 
-    public Long getInspectPointId() {
-        return this.inspectPointId;
-    }
-
-    public void setInspectPointId(Long inspectPointId) {
-        this.inspectPointId = inspectPointId;
-    }
-
-    public Long getTaskId() {
-        return this.taskId;
-    }
-
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
-    }
-
     public boolean getUploaded() {
         return this.uploaded;
     }
@@ -150,40 +129,56 @@ public class InspectLog implements Serializable {
         this.inspected = inspected;
     }
 
+    public Long getInspectPointId() {
+        return this.inspectPointId;
+    }
+
+    public void setInspectPointId(Long inspectPointId) {
+        this.inspectPointId = inspectPointId;
+    }
+
+    @Generated(hash = 1166922348)
+    private transient Long inspectItem__resolvedKey;
+
     /** To-one relationship, resolved on first access. */
-    @Generated(hash = 410192089)
-    public Task getTask() {
-        Long __key = this.taskId;
-        if (task__resolvedKey == null || !task__resolvedKey.equals(__key)) {
+    @Generated(hash = 1160851564)
+    public InspectItem getInspectItem() {
+        Long __key = this.inspectItemId;
+        if (inspectItem__resolvedKey == null
+                || !inspectItem__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            TaskDao targetDao = daoSession.getTaskDao();
-            Task taskNew = targetDao.load(__key);
+            InspectItemDao targetDao = daoSession.getInspectItemDao();
+            InspectItem inspectItemNew = targetDao.load(__key);
             synchronized (this) {
-                task = taskNew;
-                task__resolvedKey = __key;
+                inspectItem = inspectItemNew;
+                inspectItem__resolvedKey = __key;
             }
         }
-        return task;
+        return inspectItem;
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 711336367)
-    public void setTask(Task task) {
+    @Generated(hash = 1759562310)
+    public void setInspectItem(InspectItem inspectItem) {
         synchronized (this) {
-            this.task = task;
-            taskId = task == null ? null : task.getId();
-            task__resolvedKey = taskId;
+            this.inspectItem = inspectItem;
+            inspectItemId = inspectItem == null ? null : inspectItem.getId();
+            inspectItem__resolvedKey = inspectItemId;
         }
     }
+
+    @Generated(hash = 101199454)
+    private transient Long inspectPoint__resolvedKey;
 
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 619315470)
     public InspectPoint getInspectPoint() {
         Long __key = this.inspectPointId;
-        if (inspectPoint__resolvedKey == null || !inspectPoint__resolvedKey.equals(__key)) {
+        if (inspectPoint__resolvedKey == null
+                || !inspectPoint__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -220,7 +215,8 @@ public class InspectLog implements Serializable {
                 throw new DaoException("Entity is detached from DAO context");
             }
             InspectContentLogDao targetDao = daoSession.getInspectContentLogDao();
-            List<InspectContentLog> contentListNew = targetDao._queryInspectLog_ContentList(id);
+            List<InspectContentLog> contentListNew = targetDao
+                    ._queryInspectLog_ContentList(id);
             synchronized (this) {
                 if (contentList == null) {
                     contentList = contentListNew;
@@ -279,42 +275,6 @@ public class InspectLog implements Serializable {
         myDao = daoSession != null ? daoSession.getInspectLogDao() : null;
     }
 
-    public Long getInspectItemId() {
-        return this.inspectItemId;
-    }
-
-    public void setInspectItemId(Long inspectItemId) {
-        this.inspectItemId = inspectItemId;
-    }
-
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 1160851564)
-    public InspectItem getInspectItem() {
-        Long __key = this.inspectItemId;
-        if (inspectItem__resolvedKey == null || !inspectItem__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            InspectItemDao targetDao = daoSession.getInspectItemDao();
-            InspectItem inspectItemNew = targetDao.load(__key);
-            synchronized (this) {
-                inspectItem = inspectItemNew;
-                inspectItem__resolvedKey = __key;
-            }
-        }
-        return inspectItem;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1759562310)
-    public void setInspectItem(InspectItem inspectItem) {
-        synchronized (this) {
-            this.inspectItem = inspectItem;
-            inspectItemId = inspectItem == null ? null : inspectItem.getId();
-            inspectItem__resolvedKey = inspectItemId;
-        }
-    }
 
 
 }

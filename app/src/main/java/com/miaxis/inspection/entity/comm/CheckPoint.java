@@ -1,5 +1,7 @@
 package com.miaxis.inspection.entity.comm;
 
+import java.util.List;
+
 public class CheckPoint {
 
 	private Long id;
@@ -19,6 +21,7 @@ public class CheckPoint {
 	private String opDate;				//操作时间
 	private String remark;				//备注
 	private Integer isBind;             //是否绑定(0：否，1:是)
+	private List<CheckProjectContent> projectContent;		//检查内容
 
 	public Long getId() {
 		return id;
@@ -125,5 +128,12 @@ public class CheckPoint {
 		this.isBind = isBind;
 	}
 
+	public List<CheckProjectContent> getProjectContent() {
+		return projectContent;
+	}
+
+	public void setProjectContent(List<CheckProjectContent> projectContent) {
+		this.projectContent = projectContent;
+	}
 }
 

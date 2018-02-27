@@ -81,7 +81,7 @@ public class DoInspectItemActivity extends BaseActivity {
         if (inspectLog == null) {
             inspectLog = new InspectLog();
             inspectLog.setInspectPointId(inspectPoint.getId());
-            inspectLog.setTaskId(task.getId());
+//            inspectLog.setTaskId(task.getId());
             inspectLog.setInspectItemId(inspectItem.getId());
             logDao.save(inspectLog);
         }

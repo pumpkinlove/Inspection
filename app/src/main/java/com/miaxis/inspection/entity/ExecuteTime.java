@@ -21,6 +21,7 @@ public class ExecuteTime {
     private Date beginTime;
     private Date endTime;
     private Date remindTime;
+
     @Generated(hash = 2057441948)
     public ExecuteTime(Long id, Long taskId, Long inspectItemId, Date beginTime,
             Date endTime, Date remindTime) {

@@ -108,7 +108,7 @@ public class Inspection_App extends Application {
 
             Task task1 = new Task();
             task1.setInspectFormId(1L);
-            task1.setName("日常检查任务");
+            task1.setTaskName("日常检查任务");
             task1.setBeginTime(d1);
             task1.setEndTime(d2);
 
@@ -116,7 +116,7 @@ public class Inspection_App extends Application {
 
             Task task2 = new Task();
             task2.setInspectFormId(2L);
-            task2.setName("日常检查任务");
+            task2.setTaskName("日常检查任务");
             task2.setBeginTime(d3);
             task2.setEndTime(d4);
 
@@ -124,7 +124,7 @@ public class Inspection_App extends Application {
 
             Task task3 = new Task();
             task3.setInspectFormId(3L);
-            task3.setName("月度检查任务");
+            task3.setTaskName("月度检查任务");
             task3.setBeginTime(d5);
             task3.setEndTime(d6);
 

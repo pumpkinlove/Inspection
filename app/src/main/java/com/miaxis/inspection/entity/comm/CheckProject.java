@@ -1,7 +1,5 @@
 package com.miaxis.inspection.entity.comm;
 
-import com.miaxis.inspection.entity.InspectContent;
-
 import java.util.List;
 
 public class CheckProject {
@@ -29,8 +27,6 @@ public class CheckProject {
 	private String opUser;				  //操作员编码
 	private String opUserName;			  //操作员名
 	private String opDate;				  //操作时间
-
-	private List<CheckProject> projectContent;		//检查内容
 
 	public Long getId() {
 		return id;
@@ -167,12 +163,5 @@ public class CheckProject {
 		this.cProjectCompleteName = cProjectCompleteName;
 	}
 
-	public List<CheckProject> getProjectContent() {
-		return projectContent;
-	}
-
-	public void setProjectContent(List<CheckProject> projectContent) {
-		this.projectContent = projectContent;
-	}
 }
 
