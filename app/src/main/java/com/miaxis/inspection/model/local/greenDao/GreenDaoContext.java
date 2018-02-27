@@ -1,4 +1,4 @@
-package com.miaxis.inspection.dao;
+package com.miaxis.inspection.model.local.greenDao;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -8,6 +8,10 @@ import android.os.Environment;
 
 import java.io.File;
 import java.io.IOException;
+
+/**
+ * Created by xu.nan on 2017/5/24.
+ */
 
 public class GreenDaoContext extends ContextWrapper {
 
@@ -25,7 +29,12 @@ public class GreenDaoContext extends ContextWrapper {
      */
     @Override
     public File getDatabasePath(String dbName) {
-        File f = new File(Environment.getExternalStorageDirectory() + File.separator + dbName);
+        String path = Environment.getExternalStorageDirectory().getPath();
+        File dir = new File(path);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File f = new File(path + File.separator + dbName);
         if (!f.exists()) {
             try {
                 f.createNewFile();
@@ -57,9 +66,9 @@ public class GreenDaoContext extends ContextWrapper {
      * @param mode
      * @param factory
      * @param errorHandler
-     * @see android.content.ContextWrapper#openOrCreateDatabase(java.lang.String, int,
-     * android.database.sqlite.SQLiteDatabase.CursorFactory,
-     * android.database.DatabaseErrorHandler)
+     * @see ContextWrapper#openOrCreateDatabase(String, int,
+     * SQLiteDatabase.CursorFactory,
+     * DatabaseErrorHandler)
      */
     @Override
     public SQLiteDatabase openOrCreateDatabase(String name, int mode, SQLiteDatabase.CursorFactory factory,

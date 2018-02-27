@@ -20,15 +20,15 @@ import android.widget.EditText;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.app.Inspection_App;
-import com.miaxis.inspection.dao.gen.ConfigDao;
-import com.miaxis.inspection.dao.gen.InspectorDao;
-import com.miaxis.inspection.dao.gen.OrganizationDao;
 import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.entity.Inspector;
 import com.miaxis.inspection.entity.Organization;
 import com.miaxis.inspection.entity.ResponseEntity;
-import com.miaxis.inspection.net.DownInspectorNet;
-import com.miaxis.inspection.net.DownOrganizationNet;
+import com.miaxis.inspection.model.local.greenDao.gen.ConfigDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectorDao;
+import com.miaxis.inspection.model.local.greenDao.gen.OrganizationDao;
+import com.miaxis.inspection.model.remote.retrofit.DownInspectorNet;
+import com.miaxis.inspection.model.remote.retrofit.DownOrganizationNet;
 
 import java.util.List;
 

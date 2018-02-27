@@ -9,12 +9,11 @@ import java.io.Serializable;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-import com.miaxis.inspection.dao.gen.DaoSession;
-import com.miaxis.inspection.dao.gen.InspectItemDao;
-import com.miaxis.inspection.dao.gen.InspectFormDao;
-import com.miaxis.inspection.dao.gen.InspectContentDao;
-import com.miaxis.inspection.dao.gen.ExecuteTimeDao;
-import com.miaxis.inspection.dao.gen.InspectLogDao;
+import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectContentDao;
+import com.miaxis.inspection.model.local.greenDao.gen.ExecuteTimeDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectFormDao;
 
 /**
  * 检查项

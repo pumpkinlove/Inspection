@@ -9,10 +9,10 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Unique;
 
-import com.miaxis.inspection.dao.gen.DaoSession;
-import com.miaxis.inspection.dao.gen.OrganizationDao;
-import com.miaxis.inspection.dao.gen.InspectItemDao;
-import com.miaxis.inspection.dao.gen.InspectPointDao;
+import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
+import com.miaxis.inspection.model.local.greenDao.gen.OrganizationDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
 
 /**
  * 检查点

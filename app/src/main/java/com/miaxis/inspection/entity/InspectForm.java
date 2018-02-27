@@ -9,9 +9,9 @@ import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.DaoException;
-import com.miaxis.inspection.dao.gen.DaoSession;
-import com.miaxis.inspection.dao.gen.InspectItemDao;
-import com.miaxis.inspection.dao.gen.InspectFormDao;
+import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectFormDao;
 
 /**
  * 检查表单

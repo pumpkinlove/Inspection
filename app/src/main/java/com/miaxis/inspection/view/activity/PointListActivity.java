@@ -13,8 +13,8 @@ import android.widget.Toast;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.SimplePointAdapter;
 import com.miaxis.inspection.app.Inspection_App;
-import com.miaxis.inspection.dao.gen.InspectPointDao;
 import com.miaxis.inspection.entity.InspectPoint;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 

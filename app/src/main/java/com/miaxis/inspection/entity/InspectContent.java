@@ -9,12 +9,10 @@ import java.io.Serializable;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-import com.miaxis.inspection.dao.gen.DaoSession;
-import com.miaxis.inspection.dao.gen.ProblemPhotoDao;
-import com.miaxis.inspection.dao.gen.ProblemTypeDao;
-import com.miaxis.inspection.dao.gen.InspectItemDao;
-import com.miaxis.inspection.dao.gen.InspectContentDao;
-import com.miaxis.inspection.dao.gen.ResultTypeDao;
+import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
+import com.miaxis.inspection.model.local.greenDao.gen.ResultTypeDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectContentDao;
 
 /**
  * 检查内容
@@ -131,12 +129,6 @@ public class InspectContent implements Serializable {
         }
         myDao.update(this);
     }
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 231353234)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getInspectContentDao() : null;
-    }
     public Long getInspectItemId() {
         return this.inspectItemId;
     }
@@ -175,6 +167,12 @@ public class InspectContent implements Serializable {
             resultTypeId = resultType == null ? null : resultType.getId();
             resultType__resolvedKey = resultTypeId;
         }
+    }
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 231353234)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getInspectContentDao() : null;
     }
 
 }

@@ -13,8 +13,8 @@ import android.view.View;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.LogAdapter;
 import com.miaxis.inspection.app.Inspection_App;
-import com.miaxis.inspection.dao.gen.InspectLogDao;
 import com.miaxis.inspection.entity.InspectLog;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectLogDao;
 
 import java.util.List;
 

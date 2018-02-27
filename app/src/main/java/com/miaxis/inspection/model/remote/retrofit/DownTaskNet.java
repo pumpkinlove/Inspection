@@ -1,4 +1,4 @@
-package com.miaxis.inspection.net;
+package com.miaxis.inspection.model.remote.retrofit;
 
 import android.database.Observable;
 

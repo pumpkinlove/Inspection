@@ -1,6 +1,7 @@
 package com.miaxis.inspection.view.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,10 +17,6 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.InspectorSpinnerAdapter;
 import com.miaxis.inspection.app.Inspection_App;
-import com.miaxis.inspection.dao.gen.DaoSession;
-import com.miaxis.inspection.dao.gen.InspectContentDao;
-import com.miaxis.inspection.dao.gen.InspectItemDao;
-import com.miaxis.inspection.dao.gen.InspectPointDao;
 import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.entity.InspectContent;
 import com.miaxis.inspection.entity.InspectItem;
@@ -29,7 +26,11 @@ import com.miaxis.inspection.entity.ResponseEntity;
 import com.miaxis.inspection.entity.comm.CheckPoint;
 import com.miaxis.inspection.entity.comm.CheckProject;
 import com.miaxis.inspection.entity.comm.CheckProjectContent;
-import com.miaxis.inspection.net.DownInspectPointNet;
+import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectContentDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
+import com.miaxis.inspection.model.remote.retrofit.DownInspectPointNet;
 import com.miaxis.inspection.utils.CommonUtil;
 import com.miaxis.inspection.view.fragment.ConfigFragment;
 
@@ -110,10 +111,10 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
 
     @OnClick(R.id.btn_login)
     void onLoginClicked() {
-        pdLogin.show();
-//        startActivity(new Intent(this, MainActivity.class));
-        Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
-        downloadInspectPoint(config);
+//        pdLogin.show();
+        startActivity(new Intent(this, MainActivity.class));
+//        Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
+//        downloadInspectPoint(config);
     }
 
     @Override

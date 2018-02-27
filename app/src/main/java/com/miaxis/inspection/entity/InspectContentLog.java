@@ -10,12 +10,12 @@ import java.util.Date;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-import com.miaxis.inspection.dao.gen.DaoSession;
-import com.miaxis.inspection.dao.gen.ProblemPhotoDao;
-import com.miaxis.inspection.dao.gen.ProblemTypeDao;
-import com.miaxis.inspection.dao.gen.InspectContentDao;
-import com.miaxis.inspection.dao.gen.InspectContentLogDao;
-import com.miaxis.inspection.dao.gen.ResultTypeDao;
+import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
+import com.miaxis.inspection.model.local.greenDao.gen.ProblemPhotoDao;
+import com.miaxis.inspection.model.local.greenDao.gen.ProblemTypeDao;
+import com.miaxis.inspection.model.local.greenDao.gen.ResultTypeDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectContentDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectContentLogDao;
 
 /**
  * Created by xu.nan on 2018/2/6.
