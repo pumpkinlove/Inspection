@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.miaxis.inspection.R;
@@ -29,6 +30,9 @@ import com.miaxis.inspection.model.local.greenDao.gen.InspectorDao;
 import com.miaxis.inspection.model.local.greenDao.gen.OrganizationDao;
 import com.miaxis.inspection.model.remote.retrofit.DownInspectorNet;
 import com.miaxis.inspection.model.remote.retrofit.DownOrganizationNet;
+import com.miaxis.inspection.presenter.ConfigPresenterImpl;
+import com.miaxis.inspection.presenter.IConfigPresenter;
+import com.miaxis.inspection.view.IConfigView;
 
 import java.util.List;
 
@@ -45,7 +49,7 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ConfigFragment extends Fragment {
+public class ConfigFragment extends Fragment implements IConfigView {
 
     private static final String TAG = "ConfigFragment";
 
@@ -60,10 +64,10 @@ public class ConfigFragment extends Fragment {
     @BindView(R.id.btn_cancel)
     Button btnCancel;
     Unbinder unbinder;
-    private ConfigDao configDao;
-    private Config config;
     private ProgressDialog pdSaveConfig;
     private OnConfigClickListener mListener;
+
+    private IConfigPresenter configPresenter;
 
     public ConfigFragment() {
         // Required empty public constructor
@@ -123,37 +127,37 @@ public class ConfigFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadConfig();
+        configPresenter.loadConfig();
     }
 
-    void initView() {
+    private void initView() {
         pdSaveConfig = new ProgressDialog(getActivity());
+        pdSaveConfig.setCancelable(false);
     }
 
-    void initData() {
-        configDao = Inspection_App.getInstance().getDaoSession().getConfigDao();
+    private void initData() {
+        configPresenter = new ConfigPresenterImpl(this);
     }
 
     @OnClick(R.id.btn_confirm)
     void onSave(View view) {
-        if (TextUtils.isEmpty(etIp.getText().toString())) {
+        String ip = etIp.getText().toString();
+        String port = etPort.getText().toString();
+        String orgCode = etOrgCode.getText().toString();
+
+        if (TextUtils.isEmpty(ip)) {
+            Toast.makeText(getActivity(), "Ip地址 不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (TextUtils.isEmpty(etPort.getText().toString())) {
+        if (TextUtils.isEmpty(port)) {
+            Toast.makeText(getActivity(), "端口号 不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (TextUtils.isEmpty(etOrgCode.getText().toString())) {
+        if (TextUtils.isEmpty(orgCode)) {
+            Toast.makeText(getActivity(), "机构编号 不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (config == null) {
-            config = new Config();
-        }
-        config.setIp(etIp.getText().toString());
-        config.setPort(etPort.getText().toString());
-        config.setOrgCode(etOrgCode.getText().toString());
-        saveConfig(config);
-        downloadOrganization(config);
-        downloadInspector(config);
+        configPresenter.saveConfig(ip, port, orgCode, mListener);
     }
 
     @OnClick(R.id.btn_cancel)
@@ -172,170 +176,31 @@ public class ConfigFragment extends Fragment {
         void onConfigCancel();
     }
 
-    /**
-     * 从数据库读去设置，并显示
-     */
-    private void loadConfig() {
-        Observable
-                .create(new ObservableOnSubscribe<Config>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<Config> e) throws Exception {
-                        config = configDao.load(1L);
-                        e.onNext(config);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Config>() {
-                    @Override
-                    public void accept(Config config) throws Exception {
-                        etIp.setText(config.getIp());
-                        etPort.setText(config.getPort());
-                        etOrgCode.setText(config.getOrgCode());
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-
-
-
-    }
-
-    /**
-     * 保存设置
-     * @param config
-     */
-    private void saveConfig(Config config) {
-        Observable
-                .just(config)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Consumer<Config>() {
-                    @Override
-                    public void accept(Config config) throws Exception {
-                        pdSaveConfig.setMessage("正在保存设置...");
-                        pdSaveConfig.show();
-                    }
-                })
-                .observeOn(Schedulers.io())
-                .doOnNext(new Consumer<Config>() {
-                    @Override
-                    public void accept(Config config) throws Exception {
-                        configDao.save(config);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Config>() {
-                    @Override
-                    public void accept(Config config) throws Exception {
-                        pdSaveConfig.setMessage("保存成功");
-                        pdSaveConfig.dismiss();
-                        mListener.onConfigSave(config);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        pdSaveConfig.setMessage("保存失败");
-                        pdSaveConfig.setCancelable(true);
-                    }
-                });
-    }
-
-    /**
-     * 下载机构信息
-     * @param config
-     */
-    private void downloadOrganization(Config config) {
-        pdSaveConfig.setMessage("正在下载机构信息...");
+    @Override
+    public void showProgressDialog() {
         pdSaveConfig.show();
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl("http://" + config.getIp() + ":" + config.getPort())
-                .build();
-
-        DownOrganizationNet net = retrofit.create(DownOrganizationNet.class);
-
-        net.downloadOrgnization(config.getOrgCode())
-                .subscribeOn(Schedulers.newThread())
-                .doOnNext(new Consumer<ResponseEntity<Organization>>() {
-                    @Override
-                    public void accept(ResponseEntity<Organization> responseEntity) throws Exception {
-                        OrganizationDao dao = Inspection_App.getInstance().getDaoSession().getOrganizationDao();
-                        Organization o = responseEntity.getData();
-                        dao.insertOrReplace(o);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ResponseEntity<Organization>>() {
-                    @Override
-                    public void accept(ResponseEntity<Organization> responseEntity) throws Exception {
-                        if (responseEntity.getCode().equals("200")) {
-                            pdSaveConfig.setMessage("机构信息下载完成！");
-                            pdSaveConfig.dismiss();
-                        } else {
-                            pdSaveConfig.setMessage(responseEntity.getMessage());
-                            pdSaveConfig.setCancelable(true);
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        pdSaveConfig.setMessage("机构信息下载失败！");
-                        pdSaveConfig.setCancelable(true);
-                    }
-                });
-
     }
 
-    /**
-     * 下载检查员
-     * @param config
-     */
-    private void downloadInspector(Config config) {
-        pdSaveConfig.setMessage("正在下载检查员信息...");
-        pdSaveConfig.show();
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl("http://" + config.getIp() + ":" + config.getPort())
-                .build();
-
-        DownInspectorNet net = retrofit.create(DownInspectorNet.class);
-
-        net.downloadInspector(config.getOrgCode())
-                .subscribeOn(Schedulers.newThread())
-                .doOnNext(new Consumer<ResponseEntity<Inspector>>() {
-                    @Override
-                    public void accept(ResponseEntity<Inspector> responseEntity) throws Exception {
-                        InspectorDao dao = Inspection_App.getInstance().getDaoSession().getInspectorDao();
-                        List<Inspector> inspectors = responseEntity.getListData();
-                        dao.insertOrReplaceInTx(inspectors);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ResponseEntity<Inspector>>() {
-                    @Override
-                    public void accept(ResponseEntity<Inspector> responseEntity) throws Exception {
-                        if (responseEntity.getCode().equals("200")) {
-                            pdSaveConfig.setMessage("检查员信息下载完成！");
-                            pdSaveConfig.dismiss();
-                        } else {
-                            pdSaveConfig.setMessage(responseEntity.getMessage());
-                            pdSaveConfig.setCancelable(true);
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.e(TAG, "ee" + throwable.getMessage());
-                        pdSaveConfig.setMessage("检查员信息下载失败！");
-                        pdSaveConfig.setCancelable(true);
-                    }
-                });
+    @Override
+    public void hideProgressDialog() {
+        pdSaveConfig.dismiss();
     }
 
+    @Override
+    public void setProgressDialogMessage(String message) {
+        pdSaveConfig.setMessage(message);
+    }
+
+    @Override
+    public void setProgressDialogCancelable(boolean cancelable) {
+        pdSaveConfig.setCancelable(cancelable);
+    }
+
+    @Override
+    public void fetchConfig(Config config) {
+        etIp.setText(config.getIp());
+        etPort.setText(config.getPort());
+        etOrgCode.setText(config.getOrgCode());
+    }
 
 }

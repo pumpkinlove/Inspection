@@ -1,5 +1,6 @@
 package com.miaxis.inspection.model;
 
+import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.entity.Inspector;
 
 import java.util.List;
@@ -32,6 +33,6 @@ public interface IInspectorModel {
      * 查询全部检查员
      * @return
      */
-    List<Inspector> findAllInspector(String orgCode, String ip, String port);
+    List<Inspector> findAllInspector(Config config);
 
 }

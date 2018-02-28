@@ -2,6 +2,12 @@ package com.miaxis.inspection.model;
 
 import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.entity.Inspector;
+import com.miaxis.inspection.entity.ResponseEntity;
+import com.miaxis.inspection.entity.comm.CheckPoint;
+import com.miaxis.inspection.entity.comm.CommTask;
+import com.miaxis.inspection.entity.comm.Permission;
+
+import io.reactivex.Observable;
 
 /**
  * Created by Administrator on 2018/2/28 0028.
@@ -31,19 +37,19 @@ public interface ILoginModel {
      * 下载检查点（包含检查项、检查内容）
      * @param config
      */
-    void downloadInspectPoint(Config config);
+    Observable<ResponseEntity<CheckPoint>> downloadInspectPoint(Config config);
 
     /**
      * 下载登入检查员的权限
      * @param inspector
      * @param config
      */
-    void downloadPermission(Inspector inspector, Config config);
+    Observable<ResponseEntity<Permission>> downloadPermission(Inspector inspector, Config config);
 
     /**
      * 下载任务（包含检查清单）
      * @param config
      */
-    void downloadTask(Config config);
+    Observable<ResponseEntity<CommTask>> downloadTask(Config config);
 
 }

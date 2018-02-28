@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -14,41 +13,21 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.InspectorSpinnerAdapter;
-import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.entity.Config;
-import com.miaxis.inspection.entity.InspectContent;
-import com.miaxis.inspection.entity.InspectItem;
-import com.miaxis.inspection.entity.InspectPoint;
 import com.miaxis.inspection.entity.Inspector;
-import com.miaxis.inspection.entity.ResponseEntity;
-import com.miaxis.inspection.entity.comm.CheckPoint;
-import com.miaxis.inspection.entity.comm.CheckProject;
-import com.miaxis.inspection.entity.comm.CheckProjectContent;
-import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
-import com.miaxis.inspection.model.local.greenDao.gen.InspectContentDao;
-import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
-import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
-import com.miaxis.inspection.model.remote.retrofit.DownInspectPointNet;
 import com.miaxis.inspection.presenter.ILoginPresenter;
 import com.miaxis.inspection.presenter.LoginPresenterImpl;
 import com.miaxis.inspection.utils.CommonUtil;
 import com.miaxis.inspection.view.ILoginView;
 import com.miaxis.inspection.view.fragment.ConfigFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends BaseActivity implements ConfigFragment.OnConfigClickListener, ILoginView {
 
@@ -123,9 +102,20 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
         }
     }
 
+    @OnClick(R.id.iv_config)
+    void onConfigClicked() {
+        if (flConfig.getVisibility() == View.VISIBLE) {
+            onHideConfig();
+        } else {
+            onShowConfig();
+        }
+    }
+
+
     @Override
     public void onConfigSave(Config config) {
         onHideConfig();
+        loginPresenter.syncInspector(config);
     }
 
     @Override
@@ -154,6 +144,8 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
     public void onShowConfig() {
         flConfig.setVisibility(View.VISIBLE);
         btnLogin.setVisibility(View.INVISIBLE);
+        spInspectorName.setVisibility(View.INVISIBLE);
+        etPassword.setVisibility(View.INVISIBLE);
         ConfigFragment configFragment = new ConfigFragment();
         getFragmentManager().beginTransaction().replace(R.id.fl_config, configFragment).commit();
     }
@@ -162,6 +154,8 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
     public void onHideConfig() {
         flConfig.setVisibility(View.INVISIBLE);
         btnLogin.setVisibility(View.VISIBLE);
+        spInspectorName.setVisibility(View.VISIBLE);
+        etPassword.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.miaxis.inspection.model;
 
+import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.entity.Inspector;
-import com.miaxis.inspection.presenter.ILoginPresenter;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class InspectorModelImpl implements IInspectorModel {
     }
 
     @Override
-    public List<Inspector> findAllInspector(String orgCode, String ip, String port) {
+    public List<Inspector> findAllInspector(Config config) {
         return null;
     }
 
