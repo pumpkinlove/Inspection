@@ -1,10 +1,9 @@
 package com.miaxis.inspection.model.remote.retrofit;
 
-import android.database.Observable;
-
 import com.miaxis.inspection.entity.ResponseEntity;
-import com.miaxis.inspection.entity.comm.Task;
+import com.miaxis.inspection.entity.comm.CommTask;
 
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -15,6 +14,6 @@ import retrofit2.http.Query;
 public interface DownTaskNet {
 
     @GET("anbao/api/downTask")
-    Observable<ResponseEntity<Task>> downTask(@Query("bankcode")String orgCode);
+    Observable<ResponseEntity<CommTask>> downTask(@Query("bankcode")String orgCode);
 
 }

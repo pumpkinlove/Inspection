@@ -29,10 +29,10 @@ public class Task implements Serializable {
     private String taskName;        //任务名称
     private String taskCode;        //任务编号
 
-    private Date beginTime;
-    private Date endTime;
-    private String frequencyType;
-    private int status; // 0 待执行 1 执行中 2 已完成
+    private int circleType;         //重复类型  1 次/日 2 次/周 3 次/月 4 次/季 5 次/年
+    private String circleTypeName;
+
+    private int status;             // 0 待执行 1 执行中 2 已完成  区别于服务端任务状态 1 未启动 2 已启动 3 重复
     private String statusName;
 
     private Long inspectFormId;
@@ -50,16 +50,14 @@ public class Task implements Serializable {
     @Generated(hash = 1469429066)
     private transient TaskDao myDao;
 
-    @Generated(hash = 210016470)
-    public Task(Long id, String taskName, String taskCode, Date beginTime,
-            Date endTime, String frequencyType, int status, String statusName,
-            Long inspectFormId) {
+    @Generated(hash = 1179177462)
+    public Task(Long id, String taskName, String taskCode, int circleType,
+            String circleTypeName, int status, String statusName, Long inspectFormId) {
         this.id = id;
         this.taskName = taskName;
         this.taskCode = taskCode;
-        this.beginTime = beginTime;
-        this.endTime = endTime;
-        this.frequencyType = frequencyType;
+        this.circleType = circleType;
+        this.circleTypeName = circleTypeName;
         this.status = status;
         this.statusName = statusName;
         this.inspectFormId = inspectFormId;
@@ -93,28 +91,20 @@ public class Task implements Serializable {
         this.taskCode = taskCode;
     }
 
-    public Date getBeginTime() {
-        return this.beginTime;
+    public int getCircleType() {
+        return this.circleType;
     }
 
-    public void setBeginTime(Date beginTime) {
-        this.beginTime = beginTime;
+    public void setCircleType(int circleType) {
+        this.circleType = circleType;
     }
 
-    public Date getEndTime() {
-        return this.endTime;
+    public String getCircleTypeName() {
+        return this.circleTypeName;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getFrequencyType() {
-        return this.frequencyType;
-    }
-
-    public void setFrequencyType(String frequencyType) {
-        this.frequencyType = frequencyType;
+    public void setCircleTypeName(String circleTypeName) {
+        this.circleTypeName = circleTypeName;
     }
 
     public int getStatus() {
@@ -148,8 +138,7 @@ public class Task implements Serializable {
     @Generated(hash = 1950508874)
     public InspectForm getInspectForm() {
         Long __key = this.inspectFormId;
-        if (inspectForm__resolvedKey == null
-                || !inspectForm__resolvedKey.equals(__key)) {
+        if (inspectForm__resolvedKey == null || !inspectForm__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -244,6 +233,7 @@ public class Task implements Serializable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTaskDao() : null;
     }
+
 
 
 

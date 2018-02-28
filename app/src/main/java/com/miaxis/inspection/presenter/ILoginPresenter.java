@@ -1,6 +1,9 @@
 package com.miaxis.inspection.presenter;
 
+import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.entity.Inspector;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/2/28 0028.
@@ -8,13 +11,15 @@ import com.miaxis.inspection.entity.Inspector;
 
 public interface ILoginPresenter {
 
-    void syncInspector(String orgCode);
+    void checkConfig();
+
+    void syncInspector(Config config);
+
+    void onShowInspectorList(List<Inspector> inspectorList);
 
     void doLogin(Inspector inspector, String password);
 
     void onClearPassword();
-
-    void onLogin();
 
     void onLoginSucceed();
 
@@ -23,5 +28,13 @@ public interface ILoginPresenter {
     void onShowConfig();
 
     void onHideConfig();
+
+    void showProgressMessage(String message);
+
+    void showProgressDialog();
+
+    void hideProgressDialog();
+
+    void setProgressDialogCancelable(boolean cancelable);
 
 }

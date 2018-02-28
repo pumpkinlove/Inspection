@@ -4,6 +4,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
@@ -26,12 +27,19 @@ public class InspectForm implements Serializable {
     private Long id;
     private String name;
     private String code;
+
+    private int roleCode;
     private String roleName;
-    private String roleCode;
+
     private int type;
     private String typeName;
+
     private String requirement;
     private int completionRate;
+
+    private String opUser;
+    private String opUsername;
+    private Date opDate;
 
     @ToMany(referencedJoinProperty = "inspectFormId")
     private List<InspectItem> inspectItemList;
@@ -44,19 +52,22 @@ public class InspectForm implements Serializable {
     @Generated(hash = 996973078)
     private transient InspectFormDao myDao;
 
-    @Generated(hash = 1617805843)
-    public InspectForm(Long id, String name, String code, String roleName,
-            String roleCode, int type, String typeName, String requirement,
-            int completionRate) {
+    @Generated(hash = 595118714)
+    public InspectForm(Long id, String name, String code, int roleCode, String roleName, int type,
+            String typeName, String requirement, int completionRate, String opUser, String opUsername,
+            Date opDate) {
         this.id = id;
         this.name = name;
         this.code = code;
-        this.roleName = roleName;
         this.roleCode = roleCode;
+        this.roleName = roleName;
         this.type = type;
         this.typeName = typeName;
         this.requirement = requirement;
         this.completionRate = completionRate;
+        this.opUser = opUser;
+        this.opUsername = opUsername;
+        this.opDate = opDate;
     }
 
     @Generated(hash = 1814758225)
@@ -95,11 +106,11 @@ public class InspectForm implements Serializable {
         this.roleName = roleName;
     }
 
-    public String getRoleCode() {
+    public int getRoleCode() {
         return this.roleCode;
     }
 
-    public void setRoleCode(String roleCode) {
+    public void setRoleCode(int roleCode) {
         this.roleCode = roleCode;
     }
 
@@ -133,6 +144,30 @@ public class InspectForm implements Serializable {
 
     public void setCompletionRate(int completionRate) {
         this.completionRate = completionRate;
+    }
+
+    public String getOpUser() {
+        return this.opUser;
+    }
+
+    public void setOpUser(String opUser) {
+        this.opUser = opUser;
+    }
+
+    public String getOpUsername() {
+        return this.opUsername;
+    }
+
+    public void setOpUsername(String opUsername) {
+        this.opUsername = opUsername;
+    }
+
+    public Date getOpDate() {
+        return this.opDate;
+    }
+
+    public void setOpDate(Date opDate) {
+        this.opDate = opDate;
     }
 
     /**
@@ -206,5 +241,6 @@ public class InspectForm implements Serializable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInspectFormDao() : null;
     }
+
 
 }

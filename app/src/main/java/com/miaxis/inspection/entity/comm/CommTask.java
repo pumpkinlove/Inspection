@@ -4,8 +4,10 @@ import com.miaxis.inspection.entity.Organization;
 
 import java.util.List;
 
-public class Task {
+public class CommTask {
 	private static final long serialVersionUID = 1L;
+
+	private Long id;
 	private String taskCode;          //任务编号
 	private String taskName;          //任务名
 	private Integer taskTimesType;    //任务执行日期（每日，每周，每月，每季度，每年）
@@ -26,6 +28,20 @@ public class Task {
 	private String opDate;
 	private String opUser;
 	private String opUserName;
+
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getTaskCode() {
 		return taskCode;
 	}

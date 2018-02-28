@@ -1,10 +1,19 @@
 package com.miaxis.inspection.entity;
 
+import com.miaxis.inspection.entity.comm.Permission;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.JoinProperty;
+import org.greenrobot.greendao.annotation.ToMany;
 
 import java.io.Serializable;
+import java.util.List;
+import org.greenrobot.greendao.DaoException;
+import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
+import com.miaxis.inspection.model.local.greenDao.gen.PermissionDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectorDao;
 
 /**
  * 检察员
@@ -27,6 +36,10 @@ public class Inspector implements Serializable {
     private String opDate;
     private String opUser;
     private String opUserName;
+    private String password;
+
+    @ToMany(joinProperties = {@JoinProperty(name = "censorCode", referencedName = "inspectorCode")})
+    private List<Permission> permissionList;
 
     private String finger0;
     private String finger1;
@@ -38,12 +51,21 @@ public class Inspector implements Serializable {
     private String finger7;
     private String finger8;
     private String finger9;
-    @Generated(hash = 1047909453)
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /** Used for active entity operations. */
+    @Generated(hash = 1614975461)
+    private transient InspectorDao myDao;
+    @Generated(hash = 1898726963)
     public Inspector(Long id, String censorName, String censorCode, String bankCode,
             String roleId, String phoneNo, String idCard, String opDate,
-            String opUser, String opUserName, String finger0, String finger1,
-            String finger2, String finger3, String finger4, String finger5,
-            String finger6, String finger7, String finger8, String finger9) {
+            String opUser, String opUserName, String password, String finger0,
+            String finger1, String finger2, String finger3, String finger4,
+            String finger5, String finger6, String finger7, String finger8,
+            String finger9) {
         this.id = id;
         this.censorName = censorName;
         this.censorCode = censorCode;
@@ -54,6 +76,7 @@ public class Inspector implements Serializable {
         this.opDate = opDate;
         this.opUser = opUser;
         this.opUserName = opUserName;
+        this.password = password;
         this.finger0 = finger0;
         this.finger1 = finger1;
         this.finger2 = finger2;
@@ -187,6 +210,77 @@ public class Inspector implements Serializable {
     }
     public void setFinger9(String finger9) {
         this.finger9 = finger9;
+    }
+    public String getPassword() {
+        return this.password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1563937008)
+    public List<Permission> getPermissionList() {
+        if (permissionList == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            PermissionDao targetDao = daoSession.getPermissionDao();
+            List<Permission> permissionListNew = targetDao._queryInspector_PermissionList(censorCode);
+            synchronized (this) {
+                if (permissionList == null) {
+                    permissionList = permissionListNew;
+                }
+            }
+        }
+        return permissionList;
+    }
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 1150459409)
+    public synchronized void resetPermissionList() {
+        permissionList = null;
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 591977457)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getInspectorDao() : null;
     }
 
 

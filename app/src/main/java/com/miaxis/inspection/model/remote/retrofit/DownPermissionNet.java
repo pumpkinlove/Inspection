@@ -1,10 +1,9 @@
 package com.miaxis.inspection.model.remote.retrofit;
 
-import android.database.Observable;
-
 import com.miaxis.inspection.entity.ResponseEntity;
 import com.miaxis.inspection.entity.comm.Permission;
 
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 

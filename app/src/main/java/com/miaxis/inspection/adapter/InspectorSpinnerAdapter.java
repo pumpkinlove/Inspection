@@ -57,21 +57,17 @@ public class InspectorSpinnerAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        ViewHolder holder = null;
+        ViewHolder holder;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_spinner_inspector, null);
-
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
         } else {
-
+            holder = (ViewHolder) convertView.getTag();
         }
-
-        View view = inflater.inflate(R.layout.item_spinner_inspector,null);
-
-
-
-        return view;
-
-
+        holder.tvInspectorCode.setText(inspectorList.get(position).getCensorCode());
+        holder.tvInspectorName.setText(inspectorList.get(position).getCensorName());
+        return convertView;
     }
 
 

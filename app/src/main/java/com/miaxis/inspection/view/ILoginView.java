@@ -1,5 +1,9 @@
 package com.miaxis.inspection.view;
 
+import com.miaxis.inspection.entity.Inspector;
+
+import java.util.List;
+
 /**
  * Created by Administrator on 2018/2/28 0028.
  */
@@ -7,8 +11,6 @@ package com.miaxis.inspection.view;
 public interface ILoginView {
 
     void onClearPassword();
-
-    void onLogin();
 
     void onLoginSucceed();
 
@@ -18,6 +20,13 @@ public interface ILoginView {
 
     void onHideConfig();
 
-    void onSyncInspector();
+    void onShowInspectorList(List<Inspector> inspectorList);
 
+    void showProgressMessage(String message);
+
+    void showProgressDialog();
+
+    void hideProgressDialog();
+
+    void setProgressDialogCancelable(boolean cancelable);
 }

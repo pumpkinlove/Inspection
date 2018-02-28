@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -31,7 +32,10 @@ import com.miaxis.inspection.model.local.greenDao.gen.InspectContentDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
 import com.miaxis.inspection.model.remote.retrofit.DownInspectPointNet;
+import com.miaxis.inspection.presenter.ILoginPresenter;
+import com.miaxis.inspection.presenter.LoginPresenterImpl;
 import com.miaxis.inspection.utils.CommonUtil;
+import com.miaxis.inspection.view.ILoginView;
 import com.miaxis.inspection.view.fragment.ConfigFragment;
 
 import java.util.ArrayList;
@@ -46,7 +50,7 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LoginActivity extends BaseActivity implements ConfigFragment.OnConfigClickListener {
+public class LoginActivity extends BaseActivity implements ConfigFragment.OnConfigClickListener, ILoginView {
 
     @BindView(R.id.fl_config)
     FrameLayout flConfig;
@@ -65,6 +69,9 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
     private InspectorSpinnerAdapter spinnerAdapter;
     private List<Inspector> inspectorList;
 
+    private ILoginPresenter loginPresenter;
+    private Inspector inspector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +87,7 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
 
     @Override
     protected void initData() {
-        inspectorList = Inspection_App.getInstance().getDaoSession().getInspectorDao().loadAll();
+        loginPresenter = new LoginPresenterImpl(this);
         spinnerAdapter = new InspectorSpinnerAdapter(inspectorList, this);
     }
 
@@ -90,36 +97,35 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
         tvVersion.setText(R.string.version);
         tvVersion.append(CommonUtil.getVerName(this));
         spInspectorName.setAdapter(spinnerAdapter);
+        spInspectorName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                inspector = inspectorList.get(i);
+                onClearPassword();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void checkConfig() {
-        Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
-        toggleConfigFragment(config == null);
-    }
-
-    private void toggleConfigFragment(boolean showConfigFragment) {
-        if (showConfigFragment) {
-            flConfig.setVisibility(View.VISIBLE);
-            btnLogin.setVisibility(View.INVISIBLE);
-            ConfigFragment configFragment = new ConfigFragment();
-            getFragmentManager().beginTransaction().replace(R.id.fl_config, configFragment).commit();
-        } else {
-            flConfig.setVisibility(View.INVISIBLE);
-            btnLogin.setVisibility(View.VISIBLE);
-        }
+        loginPresenter.checkConfig();
     }
 
     @OnClick(R.id.btn_login)
     void onLoginClicked() {
-//        pdLogin.show();
-        startActivity(new Intent(this, MainActivity.class));
-//        Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
-//        downloadInspectPoint(config);
+        String password = etPassword.getText().toString();
+        if (!TextUtils.isEmpty(password)) {
+            loginPresenter.doLogin(inspector, password);
+        }
     }
 
     @Override
     public void onConfigSave(Config config) {
-        toggleConfigFragment(config == null);
+        onHideConfig();
     }
 
     @Override
@@ -127,93 +133,61 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
 
     }
 
-    /**
-     * 下载检查点
-     */
-    private void downloadInspectPoint(Config config) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl("http://" + config.getIp() + ":" + config.getPort())
-                .build();
-
-        DownInspectPointNet net = retrofit.create(DownInspectPointNet.class);
-
-        net.downloadInspectPoint(config.getOrgCode())
-                .subscribeOn(Schedulers.newThread())
-                .doOnNext(new Consumer<ResponseEntity<CheckPoint>>() {
-                    @Override
-                    public void accept(ResponseEntity<CheckPoint> checkPointResponseEntity) throws Exception {
-                        String code = checkPointResponseEntity.getCode();
-                        if ("200".equals(code)) {
-                            DaoSession daoSession = Inspection_App.getInstance().getDaoSession();
-                            InspectPointDao pointDao = daoSession.getInspectPointDao();
-                            InspectItemDao itemDao = daoSession.getInspectItemDao();
-                            InspectContentDao contentDao = daoSession.getInspectContentDao();
-
-                            List<InspectPoint> aPointList = pointDao.loadAll();
-                            List<InspectItem> aItemList = itemDao.loadAll();
-                            List<InspectContent> aContentList = contentDao.loadAll();
-
-                            List<CheckPoint> checkPointList = checkPointResponseEntity.getListData();
-                            List<InspectPoint> inspectPointList = new ArrayList<>();
-                            for (int i = 0; i < checkPointList.size(); i++) {
-                                CheckPoint checkPoint = checkPointList.get(i);
-                                CheckProject checkProject = checkPoint.getProject();
-                                InspectPoint inspectPoint = new InspectPoint();
-                                inspectPoint.setId(checkPoint.getId());
-                                inspectPoint.setRfid(checkPoint.getCpRfid());
-                                inspectPoint.setBound(TextUtils.isEmpty(checkPoint.getCpRfid()));
-                                inspectPoint.setPointName(checkPoint.getCpName());
-                                inspectPoint.setOrganizationId(Long.valueOf(checkPoint.getBankId()));
-                                inspectPoint.setInspectItemId(checkProject.getId());
-
-                                inspectPointList.add(inspectPoint);
-
-                                InspectItem inspectItem = new InspectItem();
-                                inspectItem.setId(checkProject.getId());
-                                inspectItem.setName(checkProject.getcProjectName());
-
-                                itemDao.insertOrReplace(inspectItem);
-
-                                List<CheckProjectContent> checkContentList = checkPoint.getProjectContent();
-                                if (checkContentList != null && checkContentList.size() > 0) {
-                                    List<InspectContent> contentList = new ArrayList<>();
-                                    for (int j = 0; j < checkContentList.size(); j++) {
-                                        InspectContent content = new InspectContent();
-                                        content.setId(checkContentList.get(j).getId());
-                                        content.setName(checkContentList.get(j).getcProjectContent());
-                                        content.setInspectItemId(checkProject.getId());
-                                        content.setResultTypeId(Long.valueOf(checkContentList.get(j).getcProjectStatus()));
-                                        contentList.add(content);
-                                    }
-                                    if (contentList.size() > 0) {
-                                        contentDao.insertOrReplaceInTx(contentList);
-                                    }
-                                }
-                            }
-                            if (inspectPointList.size() > 0) {
-                                pointDao.insertOrReplaceInTx(inspectPointList);
-                            }
-
-                        } else {
-
-                        }
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ResponseEntity<CheckPoint>>() {
-                    @Override
-                    public void accept(ResponseEntity<CheckPoint> checkPointResponseEntity) throws Exception {
-
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.e("tag", "throwable " + throwable.getMessage());
-                    }
-                });
-
+    @Override
+    public void onClearPassword() {
+        etPassword.setText(null);
     }
 
+    @Override
+    public void onLoginSucceed() {
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra("LoginInspector", inspector);
+        startActivity(i);
+    }
+
+    @Override
+    public void onLoginFailed() {
+        // TODO: 2018/2/28  登录失败提示
+    }
+
+    @Override
+    public void onShowConfig() {
+        flConfig.setVisibility(View.VISIBLE);
+        btnLogin.setVisibility(View.INVISIBLE);
+        ConfigFragment configFragment = new ConfigFragment();
+        getFragmentManager().beginTransaction().replace(R.id.fl_config, configFragment).commit();
+    }
+
+    @Override
+    public void onHideConfig() {
+        flConfig.setVisibility(View.INVISIBLE);
+        btnLogin.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onShowInspectorList(List<Inspector> inspectorList) {
+        this.inspectorList = inspectorList;
+        spinnerAdapter.setInspectorList(inspectorList);
+        spinnerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showProgressMessage(String message) {
+        pdLogin.setMessage(message);
+    }
+
+    @Override
+    public void showProgressDialog() {
+        pdLogin.show();
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        pdLogin.dismiss();
+    }
+
+    @Override
+    public void setProgressDialogCancelable(boolean cancelable) {
+        pdLogin.setCancelable(cancelable);
+    }
 }

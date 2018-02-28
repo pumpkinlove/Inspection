@@ -79,57 +79,6 @@ public class Inspection_App extends Application {
 
 //        initInspectLog();
 //        initInspectContentLog();
-        initTask();
-    }
-
-    private void initTask() {
-        TaskDao taskDao = mDaoSession.getTaskDao();
-        List<Task> taskList = taskDao.loadAll();
-        if (taskList == null || taskList.size() == 0) {
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(2018,2,8, 6,0,0);
-            Date d1 = calendar.getTime();
-            calendar.set(2018,2,8, 23,59,59);
-            Date d2 = calendar.getTime();
-            calendar.set(2018,2,7, 6,0,0);
-            Date d3 = calendar.getTime();
-            calendar.set(2018,2,7, 23,59,59);
-            Date d4 = calendar.getTime();
-            calendar.set(2018,2,6, 6,0,0);
-            Date d5 = calendar.getTime();
-            calendar.set(2018,2,6, 23,59,59);
-            Date d6 = calendar.getTime();
-
-            taskList = new ArrayList<>();
-
-            Task task1 = new Task();
-            task1.setInspectFormId(1L);
-            task1.setTaskName("日常检查任务");
-            task1.setBeginTime(d1);
-            task1.setEndTime(d2);
-
-            taskList.add(task1);
-
-            Task task2 = new Task();
-            task2.setInspectFormId(2L);
-            task2.setTaskName("日常检查任务");
-            task2.setBeginTime(d3);
-            task2.setEndTime(d4);
-
-            taskList.add(task2);
-
-            Task task3 = new Task();
-            task3.setInspectFormId(3L);
-            task3.setTaskName("月度检查任务");
-            task3.setBeginTime(d5);
-            task3.setEndTime(d6);
-
-            taskList.add(task3);
-
-            taskDao.saveInTx(taskList);
-
-        }
     }
 
     private void initResultType() {
