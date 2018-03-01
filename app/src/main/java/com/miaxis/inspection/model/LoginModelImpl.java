@@ -91,6 +91,7 @@ public class LoginModelImpl implements ILoginModel {
     @Override
     public void checkPassword(Inspector inspector, String password) {
         if (password.equals(inspector.getPassword())) {
+            Inspection_App.setCurInspector(inspector);
             Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
             doLogin(inspector, config);
         } else {
@@ -299,7 +300,7 @@ public class LoginModelImpl implements ILoginModel {
             inspectForm.setRequirement(checkForm.getcProjectContent());
             inspectForm.setCompletionRate(checkForm.getcProjectComplete());
             inspectForm.setRoleName(checkForm.getcProjectRole());
-            inspectForm.setOpDate(DateUtil.fromMonthDay(checkForm.getOpDate()));
+//            inspectForm.setOpDate(DateUtil.fromMonthDay(checkForm.getOpDate()));
             inspectForm.setOpUser(checkForm.getOpUser());
             inspectForm.setOpUsername(checkForm.getOpUserName());
 
@@ -345,6 +346,7 @@ public class LoginModelImpl implements ILoginModel {
             InspectItem inspectItem = new InspectItem();
             inspectItem.setId(checkProject.getId());
             inspectItem.setName(checkProject.getcProjectName());
+            inspectItem.setInspectFormCode(checkProject.getParentCode());
 
             itemDao.insertOrReplace(inspectItem);
 
@@ -356,7 +358,7 @@ public class LoginModelImpl implements ILoginModel {
                     content.setId(checkContentList.get(j).getId());
                     content.setName(checkContentList.get(j).getcProjectContent());
                     content.setInspectItemId(checkProject.getId());
-                    content.setResultTypeId(Long.valueOf(checkContentList.get(j).getcProjectStatus()));
+                    content.setResultType(Integer.valueOf(checkContentList.get(j).getcProjectStatus()));
                     contentList.add(content);
                 }
                 if (contentList.size() > 0) {

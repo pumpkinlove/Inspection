@@ -14,12 +14,13 @@ import com.miaxis.inspection.adapter.SimpleContentAdapter;
 import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.entity.InspectContent;
 import com.miaxis.inspection.entity.InspectContentLog;
+import com.miaxis.inspection.entity.InspectForm;
 import com.miaxis.inspection.entity.InspectItem;
 import com.miaxis.inspection.entity.InspectLog;
 import com.miaxis.inspection.entity.InspectPoint;
-import com.miaxis.inspection.entity.ResultType;
 import com.miaxis.inspection.entity.Task;
 import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectFormDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectLogDao;
 import com.miaxis.inspection.model.local.greenDao.gen.TaskDao;
 import com.miaxis.inspection.view.custom.SimpleDialog;
@@ -73,8 +74,11 @@ public class DoInspectItemActivity extends BaseActivity {
 
         inspectItem = inspectPoint.getInspectItem();
 
-        TaskDao taskDao = Inspection_App.getInstance().getDaoSession().getTaskDao();
-        task = taskDao.queryBuilder().where(TaskDao.Properties.InspectFormId.eq(inspectItem.getInspectForm().getId())).unique();
+
+        InspectFormDao formDao = mDaoSession.getInspectFormDao();
+        InspectForm inspectForm = formDao.queryBuilder().where(InspectFormDao.Properties.Code.eq(inspectItem.getInspectFormCode())).unique();
+        TaskDao taskDao = mDaoSession.getTaskDao();
+        task = taskDao.queryBuilder().where(TaskDao.Properties.InspectFormId.eq(inspectForm.getId())).unique();
 
         inspectLog = logDao.queryBuilder().where(InspectLogDao.Properties.InspectItemId.eq(inspectItem.getId())).unique();
 
@@ -152,8 +156,7 @@ public class DoInspectItemActivity extends BaseActivity {
                 contentLogList = inspectLog.getContentList();
                 inspectLog.setResult("正常");
                 for (int i = 0; i < contentLogList.size(); i++) {
-                    ResultType resultType = contentLogList.get(i).getResult();
-                    if (resultType.getIsProblem()) {
+                    if (contentLogList.get(i).getHasProblem()) {
                         inspectLog.setResult("异常");
                     }
                 }

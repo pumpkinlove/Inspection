@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.DaoException;
 import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
@@ -41,7 +42,7 @@ public class InspectForm implements Serializable {
     private String opUsername;
     private Date opDate;
 
-    @ToMany(referencedJoinProperty = "inspectFormId")
+    @ToMany(joinProperties = {@JoinProperty(name = "code", referencedName = "inspectFormCode")})
     private List<InspectItem> inspectItemList;
 
     /** Used to resolve relations */
@@ -174,7 +175,7 @@ public class InspectForm implements Serializable {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 1792122271)
+    @Generated(hash = 1182676231)
     public List<InspectItem> getInspectItemList() {
         if (inspectItemList == null) {
             final DaoSession daoSession = this.daoSession;
@@ -182,8 +183,7 @@ public class InspectForm implements Serializable {
                 throw new DaoException("Entity is detached from DAO context");
             }
             InspectItemDao targetDao = daoSession.getInspectItemDao();
-            List<InspectItem> inspectItemListNew = targetDao
-                    ._queryInspectForm_InspectItemList(id);
+            List<InspectItem> inspectItemListNew = targetDao._queryInspectForm_InspectItemList(code);
             synchronized (this) {
                 if (inspectItemList == null) {
                     inspectItemList = inspectItemListNew;

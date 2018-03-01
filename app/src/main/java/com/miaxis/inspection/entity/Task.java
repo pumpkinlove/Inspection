@@ -24,7 +24,7 @@ public class Task implements Serializable {
 
     private static final long serialVersionUID = 8625953958144822983L;
 
-    @Id(autoincrement = true)
+    @Id
     private Long id;
     private String taskName;        //任务名称
     private String taskCode;        //任务编号

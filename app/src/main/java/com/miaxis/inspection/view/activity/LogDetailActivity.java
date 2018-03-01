@@ -58,7 +58,7 @@ public class LogDetailActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 InspectContentLog contentLog = mLog.getContentList().get(position);
-                if (contentLog.getResult().getIsProblem()) {
+                if (contentLog.getHasProblem()) {
                     ProblemDetailDialog problemDetailDialog = new ProblemDetailDialog();
                     problemDetailDialog.setProblemDescription(contentLog.getDescription());
                     problemDetailDialog.setPhotoList(contentLog.getProblemPhotoList());

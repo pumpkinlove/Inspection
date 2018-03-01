@@ -1,5 +1,6 @@
 package com.miaxis.inspection.view.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
@@ -16,17 +17,21 @@ import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.PointManageAdapter;
 import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.entity.InspectPoint;
+import com.miaxis.inspection.presenter.IPointManagePresenter;
+import com.miaxis.inspection.presenter.PointManagePresenterImpl;
+import com.miaxis.inspection.view.IPointManageView;
 import com.miaxis.inspection.view.custom.SimpleDialog;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PointManageActivity extends BaseActivity {
+public class PointManageActivity extends BaseActivity implements IPointManageView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -37,6 +42,12 @@ public class PointManageActivity extends BaseActivity {
 
     private List<InspectPoint> pointList;
     private PointManageAdapter adapter;
+
+    private ProgressDialog pdPointManage;
+
+    private SimpleDialog unboundDialog;
+
+    private IPointManagePresenter pointManagePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +61,7 @@ public class PointManageActivity extends BaseActivity {
     }
 
     private void initToolBar() {
+        pointManagePresenter = new PointManagePresenterImpl(this);
         toolbar.setTitle("检查点管理");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -98,8 +110,10 @@ public class PointManageActivity extends BaseActivity {
                         InspectPoint point = pointList.get(position);
                         point.setBound(false);
                         point.setRfid(null);
-                        Inspection_App.getInstance().getDaoSession().getInspectPointDao().update(point);
-                        adapter.notifyDataSetChanged();
+                        point.setOpDate(new Date());
+                        point.setOpUserCode(Inspection_App.getCurInspector().getCensorCode());
+                        point.setOpUserName(Inspection_App.getCurInspector().getCensorName());
+                        pointManagePresenter.updatePoint(point);
                         sd.dismiss();
                     }
                 });
@@ -118,13 +132,15 @@ public class PointManageActivity extends BaseActivity {
     @Override
     protected void initView() {
         initToolBar();
+        pdPointManage = new ProgressDialog(this);
+        pdPointManage.setCancelable(false);
         rvPoint.setLayoutManager(new LinearLayoutManager(this));
         rvPoint.setAdapter(adapter);
 
         srlPoint.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                srlPoint.setRefreshing(false);
+                pointManagePresenter.loadInspectPoints();
             }
         });
     }
@@ -138,21 +154,15 @@ public class PointManageActivity extends BaseActivity {
             }
             if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                 InspectPoint point;
-                try {
-                    String result = bundle.getString(CodeUtils.RESULT_STRING);
-                    point = pointList.get(requestCode);        //这里requestCode 就是position
-                    point.setRfid(result);
-                    point.setBound(true);
-                    Inspection_App.getInstance().getDaoSession().getInspectPointDao().save(point);
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(PointManageActivity.this, "绑定成功", Toast.LENGTH_LONG).show();
-                } catch (SQLiteConstraintException e) {
-                    Toast.makeText(PointManageActivity.this, "绑定失败，编码重复", Toast.LENGTH_LONG).show();
-                    // TODO: 2018/2/6 异常 数据恢复
-                } catch (Exception ex) {
-                    Toast.makeText(PointManageActivity.this, "绑定失败", Toast.LENGTH_LONG).show();
-                }
-
+                String result = bundle.getString(CodeUtils.RESULT_STRING);
+                point = pointList.get(requestCode);        //这里requestCode 就是position
+                point.setRfid(result);
+                point.setBound(true);
+                point.setOpDate(new Date());
+                point.setOpUserCode(Inspection_App.getCurInspector().getCensorCode());
+                point.setOpUserName(Inspection_App.getCurInspector().getCensorName());
+                pointManagePresenter.updatePoint(point);
+                Toast.makeText(PointManageActivity.this, "绑定成功", Toast.LENGTH_LONG).show();
             } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
                 Toast.makeText(PointManageActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
             }
@@ -160,4 +170,44 @@ public class PointManageActivity extends BaseActivity {
     }
 
 
+    @Override
+    public void stopRefresh() {
+        srlPoint.setRefreshing(false);
+    }
+
+    @Override
+    public void showInspectPoints(List<InspectPoint> inspectPointList) {
+        adapter.setPointList(inspectPointList);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        pdPointManage.show();
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        pdPointManage.dismiss();
+    }
+
+    @Override
+    public void setProgressDialogMessage(String message) {
+        pdPointManage.setMessage(message);
+    }
+
+    @Override
+    public void setProgressDialogCancelable(boolean cancelable) {
+        pdPointManage.setCancelable(cancelable);
+    }
+
+    @Override
+    public void showUnboundDialog() {
+
+    }
+
+    @Override
+    public void hideUnboundDialog() {
+
+    }
 }

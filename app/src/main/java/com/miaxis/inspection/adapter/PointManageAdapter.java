@@ -23,6 +23,7 @@ import butterknife.OnClick;
 public class PointManageAdapter extends RecyclerView.Adapter<PointManageAdapter.ViewHolder> {
 
     private OnItemClickListener listener;
+
     private List<InspectPoint> pointList;
     private Context context;
 
@@ -116,4 +117,7 @@ public class PointManageAdapter extends RecyclerView.Adapter<PointManageAdapter.
         void onDelRfid(View view, int position);
     }
 
+    public void setPointList(List<InspectPoint> pointList) {
+        this.pointList = pointList;
+    }
 }

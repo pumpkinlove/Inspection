@@ -33,6 +33,6 @@ public interface IInspectorModel {
      * 查询全部检查员
      * @return
      */
-    List<Inspector> findAllInspector(Config config);
+    void findAllInspector(Config config);
 
 }

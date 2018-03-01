@@ -13,7 +13,6 @@ import org.greenrobot.greendao.DaoException;
 import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
 import com.miaxis.inspection.model.local.greenDao.gen.ProblemPhotoDao;
 import com.miaxis.inspection.model.local.greenDao.gen.ProblemTypeDao;
-import com.miaxis.inspection.model.local.greenDao.gen.ResultTypeDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectContentDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectContentLogDao;
 
@@ -36,9 +35,8 @@ public class InspectContentLog implements Serializable {
 
     private Date opDate;
 
-    private Long resultTypeId;
-    @ToOne(joinProperty = "resultTypeId")
-    private ResultType result;
+    private String resultType;          //检查结果类型
+    private boolean hasProblem;         //检查结果是否有问题
     private String description;         //问题描述
 
     private Long problemTypeId;            //问题类型
@@ -56,15 +54,15 @@ public class InspectContentLog implements Serializable {
     @Generated(hash = 1054412929)
     private transient InspectContentLogDao myDao;
 
-    @Generated(hash = 904601417)
-    public InspectContentLog(Long id, Long inspectLogId, Long contentId,
-            Date opDate, Long resultTypeId, String description,
-            Long problemTypeId) {
+    @Generated(hash = 2051729375)
+    public InspectContentLog(Long id, Long inspectLogId, Long contentId, Date opDate, String resultType,
+            boolean hasProblem, String description, Long problemTypeId) {
         this.id = id;
         this.inspectLogId = inspectLogId;
         this.contentId = contentId;
         this.opDate = opDate;
-        this.resultTypeId = resultTypeId;
+        this.resultType = resultType;
+        this.hasProblem = hasProblem;
         this.description = description;
         this.problemTypeId = problemTypeId;
     }
@@ -105,12 +103,12 @@ public class InspectContentLog implements Serializable {
         this.opDate = opDate;
     }
 
-    public Long getResultTypeId() {
-        return this.resultTypeId;
+    public String getResultType() {
+        return this.resultType;
     }
 
-    public void setResultTypeId(Long resultTypeId) {
-        this.resultTypeId = resultTypeId;
+    public void setResultType(String resultType) {
+        this.resultType = resultType;
     }
 
     public String getDescription() {
@@ -159,38 +157,6 @@ public class InspectContentLog implements Serializable {
             this.inspectContent = inspectContent;
             contentId = inspectContent == null ? null : inspectContent.getId();
             inspectContent__resolvedKey = contentId;
-        }
-    }
-
-    @Generated(hash = 446399057)
-    private transient Long result__resolvedKey;
-
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 549235915)
-    public ResultType getResult() {
-        Long __key = this.resultTypeId;
-        if (result__resolvedKey == null || !result__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            ResultTypeDao targetDao = daoSession.getResultTypeDao();
-            ResultType resultNew = targetDao.load(__key);
-            synchronized (this) {
-                result = resultNew;
-                result__resolvedKey = __key;
-            }
-        }
-        return result;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 208257253)
-    public void setResult(ResultType result) {
-        synchronized (this) {
-            this.result = result;
-            resultTypeId = result == null ? null : result.getId();
-            result__resolvedKey = resultTypeId;
         }
     }
 
@@ -298,6 +264,15 @@ public class InspectContentLog implements Serializable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInspectContentLogDao() : null;
     }
+
+    public boolean getHasProblem() {
+        return this.hasProblem;
+    }
+
+    public void setHasProblem(boolean hasProblem) {
+        this.hasProblem = hasProblem;
+    }
+
 
 
 

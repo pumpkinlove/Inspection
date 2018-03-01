@@ -5,6 +5,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
 
 import java.io.Serializable;
+import java.util.Date;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Unique;
@@ -35,6 +37,10 @@ public class InspectPoint implements Serializable {
     private boolean bound;
     private String bindCode;
 
+    private Date opDate;
+    private String opUserCode;
+    private String opUserName;
+
     private Long inspectItemId;
     @ToOne(joinProperty = "inspectItemId")
     private InspectItem inspectItem;        //所属检查项
@@ -50,10 +56,10 @@ public class InspectPoint implements Serializable {
     /** Used for active entity operations. */
     @Generated(hash = 2085032999)
     private transient InspectPointDao myDao;
-    @Generated(hash = 214871711)
-    public InspectPoint(Long id, String code, String rfid, String pointName,
-            String itemName, boolean bound, String bindCode, Long inspectItemId,
-            Long organizationId) {
+    @Generated(hash = 778774051)
+    public InspectPoint(Long id, String code, String rfid, String pointName, String itemName,
+            boolean bound, String bindCode, Date opDate, String opUserCode, String opUserName,
+            Long inspectItemId, Long organizationId) {
         this.id = id;
         this.code = code;
         this.rfid = rfid;
@@ -61,6 +67,9 @@ public class InspectPoint implements Serializable {
         this.itemName = itemName;
         this.bound = bound;
         this.bindCode = bindCode;
+        this.opDate = opDate;
+        this.opUserCode = opUserCode;
+        this.opUserName = opUserName;
         this.inspectItemId = inspectItemId;
         this.organizationId = organizationId;
     }
@@ -219,6 +228,24 @@ public class InspectPoint implements Serializable {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInspectPointDao() : null;
+    }
+    public Date getOpDate() {
+        return this.opDate;
+    }
+    public void setOpDate(Date opDate) {
+        this.opDate = opDate;
+    }
+    public String getOpUserCode() {
+        return this.opUserCode;
+    }
+    public void setOpUserCode(String opUserCode) {
+        this.opUserCode = opUserCode;
+    }
+    public String getOpUserName() {
+        return this.opUserName;
+    }
+    public void setOpUserName(String opUserName) {
+        this.opUserName = opUserName;
     }
 
 }

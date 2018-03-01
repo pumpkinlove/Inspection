@@ -12,7 +12,7 @@ public class CheckPoint {
 	private CheckProject project;       //检查项
 	private String cpRfid;				//检查点Rfid
 	private String cpCreateDate;		//检查创建日期
-	private Integer bankId;             //检查点银行Id
+	private Long bankId;             	//检查点银行Id
 	private String bankCode;			//检查点银行
 	private String bankNode;			//检查点银行节点
 	private String bankName;            //所属银行名称
@@ -109,10 +109,10 @@ public class CheckPoint {
 	public void setProject(CheckProject project) {
 		this.project = project;
 	}
-	public Integer getBankId() {
+	public Long getBankId() {
 		return bankId;
 	}
-	public void setBankId(Integer bankId) {
+	public void setBankId(Long bankId) {
 		this.bankId = bankId;
 	}
 	public String getcProjectCode() {

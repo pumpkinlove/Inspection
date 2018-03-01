@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -31,12 +30,12 @@ import com.miaxis.inspection.entity.InspectContentLog;
 import com.miaxis.inspection.entity.InspectLog;
 import com.miaxis.inspection.entity.ProblemPhoto;
 import com.miaxis.inspection.entity.ProblemType;
-import com.miaxis.inspection.entity.ResultType;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectContentLogDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectLogDao;
 import com.miaxis.inspection.model.local.greenDao.gen.ProblemPhotoDao;
 import com.miaxis.inspection.utils.CommonUtil;
 import com.miaxis.inspection.utils.PictureUtil;
+import com.miaxis.inspection.utils.ResultType;
 import com.miaxis.inspection.view.custom.BottomMenu;
 
 import java.io.File;
@@ -70,12 +69,18 @@ public class DoInspectContentActivity extends BaseActivity {
     EditText etProblemDescription;
     @BindView(R.id.rv_pic_description)
     RecyclerView rvPicDescription;
+    @BindView(R.id.tv_resultType1)
+    TextView tvResultType1;
+    @BindView(R.id.tv_resultType2)
+    TextView tvResultType2;
 
     private InspectContent inspectContent;
 
     private View.OnClickListener menuListener;
 
-    private ResultType selectedResultType;
+    private String selectedResultType;
+    private boolean hasProblem;
+
     private ProblemType selectedProblemType;
 
     private BottomMenu bottomMenu;
@@ -155,96 +160,78 @@ public class DoInspectContentActivity extends BaseActivity {
     }
 
     private void loadResultType() {
-        final List<ResultType> resultTypes = Inspection_App.getInstance().getDaoSession().getResultTypeDao().loadAll();
-        for (int i = 0; i < resultTypes.size(); i++) {
-            ResultType type = resultTypes.get(i);
-            TextView tv = new TextView(this);
-            tv.setText(type.getResultName());
-            tv.setTextColor(getResources().getColor(R.color.gray_dark));
-            tv.setGravity(Gravity.CENTER);
-            tv.setFocusable(true);
-            tv.setClickable(true);
-            tv.setElevation(5);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 120, 1);
-            if (i == 0) {
-                params.setMargins(0, 0, 10, 10);
-            } else if (i == resultTypes.size() - 1) {
-                params.setMargins(10, 0, 0, 10);
-            } else {
-                params.setMargins(10, 0, 10, 10);
-            }
-            tv.setLayoutParams(params);
-            if (type.getIsProblem()) {
-                tv.setBackground(getDrawable(R.drawable.red_check_bg));
-                final int finalI1 = i;
-                tv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        LinearLayout parent = (LinearLayout) view.getParent();
-                        for (int i = 0; i < parent.getChildCount(); i++) {
-                            TextView child = (TextView) parent.getChildAt(i);
-                            child.setSelected(false);
-                            child.setTextColor(getResources().getColor(R.color.gray_dark));
-                        }
-                        TextView tv = ((TextView) view);
-                        tv.setTextColor(getResources().getColor(R.color.red));
-                        tv.setSelected(true);
-                        svProblem.setVisibility(View.VISIBLE);
-                        selectedResultType = resultTypes.get(finalI1);
-                    }
-                });
-            } else {
-                tv.setBackground(getDrawable(R.drawable.green_check_bg));
-                final int finalI = i;
-                tv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        LinearLayout parent = (LinearLayout) view.getParent();
-                        for (int i = 0; i < parent.getChildCount(); i++) {
-                            TextView child = (TextView) parent.getChildAt(i);
-                            child.setSelected(false);
-                            child.setTextColor(getResources().getColor(R.color.gray_dark));
-                        }
-                        TextView tv = ((TextView) view);
-                        tv.setTextColor(getResources().getColor(R.color.green_dark));
-                        tv.setSelected(true);
-                        svProblem.setVisibility(View.INVISIBLE);
-                        selectedResultType = resultTypes.get(finalI);
-                    }
-                });
-            }
-            llResultType.addView(tv);
+        switch (inspectContent.getResultType()) {
+            case ResultType.NORMAL_UNNORMAL:
+                tvResultType1.setText("正常");
+                tvResultType2.setText("异常");
+                break;
+            case ResultType.BROKEN_NOT_BROKEN:
+                tvResultType1.setText("未损坏");
+                tvResultType2.setText("损坏");
+                break;
+            case ResultType.CLEAR_NOT_CLEAR:
+                tvResultType1.setText("清理");
+                tvResultType2.setText("未清理");
+                break;
         }
-
-    }
-
-    private void initListener() {
-
-        menuListener = new View.OnClickListener() {
+        tvResultType1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (view.getId()) {
+                hasProblem = false;
+                tvResultType1.setSelected(true);
+                tvResultType1.setTextColor(getResources().getColor(R.color.green_dark));
+
+                tvResultType2.setSelected(false);
+                tvResultType2.setTextColor(getResources().getColor(R.color.gray_dark));
+
+                svProblem.setVisibility(View.INVISIBLE);
+                selectedResultType = tvResultType1.getText().toString();
+            }
+        });
+
+        tvResultType2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hasProblem = true;
+                tvResultType2.setSelected(true);
+                tvResultType2.setTextColor(getResources().getColor(R.color.red));
+
+                tvResultType1.setSelected(false);
+                tvResultType1.setTextColor(getResources().getColor(R.color.gray_dark));
+
+                svProblem.setVisibility(View.VISIBLE);
+                selectedResultType = tvResultType2.getText().toString();
+            }
+        });
+    }
+
+    private void initListener(){
+
+        menuListener = new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                switch(view.getId()){
                     case R.id.btn_menu_1:
-                        isCameraCapture = true;
+                        isCameraCapture=true;
                         bottomMenu.popupWindow.dismiss();
-                        filePathCache = Environment.getExternalStorageDirectory() + "/problemPhoto/" + new Date().getTime() + ".jpg";
-                        File vFile = new File(filePathCache);
-                        if (!vFile.exists()) {
-                            File vDirPath = vFile.getParentFile(); //new File(vFile.getParent());
+                        filePathCache = Environment.getExternalStorageDirectory()+"/problemPhoto/"+new Date().getTime()+".jpg";
+                        File vFile=new File(filePathCache);
+                        if(!vFile.exists()){
+                            File vDirPath=vFile.getParentFile(); //new File(vFile.getParent());
                             vDirPath.mkdirs();
                         }
-                        Uri uri = Uri.fromFile(vFile);
-                        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        i.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                        startActivityForResult(i, photoNo);
+                        Uri uri=Uri.fromFile(vFile);
+                        Intent i=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        i.putExtra(MediaStore.EXTRA_OUTPUT,uri);
+                        startActivityForResult(i,photoNo);
                         break;
                     case R.id.btn_menu_2:
-                        isCameraCapture = false;
+                        isCameraCapture=false;
                         bottomMenu.popupWindow.dismiss();
-                        Intent intent = new Intent(
+                        Intent intent=new Intent(
                                 Intent.ACTION_PICK,
                                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(intent, photoNo);
+                        startActivityForResult(intent,photoNo);
                         break;
                     case R.id.btn_menu_3:
                         bottomMenu.popupWindow.dismiss();
@@ -254,37 +241,37 @@ public class DoInspectContentActivity extends BaseActivity {
         };
     }
 
-    private void loadProblemType() {
+    private void loadProblemType(){
         final List<ProblemType> problemTypeList = Inspection_App.getInstance().getDaoSession().getProblemTypeDao().loadAll();
         for (int i = 0; i < problemTypeList.size(); i++) {
-            ProblemType type = problemTypeList.get(i);
-            TextView tv = new TextView(this);
+            ProblemType type=problemTypeList.get(i);
+            TextView tv=new TextView(this);
             tv.setText(type.getTypeName());
             tv.setTextColor(getResources().getColor(R.color.gray_dark));
             tv.setGravity(Gravity.CENTER);
             tv.setFocusable(true);
             tv.setClickable(true);
 
-            GridLayout.Spec rowSpec = GridLayout.spec(i / 3, 1f);
-            GridLayout.Spec columnSpec = GridLayout.spec(i % 3, 1f);
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
+            GridLayout.Spec rowSpec=GridLayout.spec(i/3,1f);
+            GridLayout.Spec columnSpec=GridLayout.spec(i%3,1f);
+            GridLayout.LayoutParams params=new GridLayout.LayoutParams(rowSpec,columnSpec);
             params.height = 100;
             params.width = 0;
-            params.setMargins(10, 0, 10, 10);
+            params.setMargins(10,0,10,10);
 
             tv.setLayoutParams(params);
             tv.setBackground(getDrawable(R.drawable.orange_check_bg));
-            final int finalI = i;
-            tv.setOnClickListener(new View.OnClickListener() {
+            final int finalI=i;
+            tv.setOnClickListener(new View.OnClickListener(){
                 @Override
-                public void onClick(View view) {
-                    GridLayout parent = (GridLayout) view.getParent();
-                    for (int i = 0; i < parent.getChildCount(); i++) {
-                        TextView child = (TextView) parent.getChildAt(i);
+                public void onClick(View view){
+                    GridLayout parent=(GridLayout)view.getParent();
+                    for(int i=0;i<parent.getChildCount();i++){
+                        TextView child=(TextView)parent.getChildAt(i);
                         child.setSelected(false);
                         child.setTextColor(getResources().getColor(R.color.gray_dark));
                     }
-                    TextView tv = ((TextView) view);
+                    TextView tv=((TextView)view);
                     tv.setTextColor(getResources().getColor(R.color.dark));
                     tv.setSelected(true);
                     selectedProblemType = problemTypeList.get(finalI);
@@ -295,85 +282,80 @@ public class DoInspectContentActivity extends BaseActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
 
-        if (isCameraCapture) {
-            if (resultCode == RESULT_OK) {
+        if(isCameraCapture){
+            if(resultCode==RESULT_OK){
                 setupPhoto(new File(filePathCache));
             }
-        } else {
-            ContentResolver resolver = getContentResolver();
-            if (resultCode == RESULT_OK) {
-                try {
+        }else{
+            ContentResolver resolver=getContentResolver();
+            if(resultCode==RESULT_OK){
+                try{
                     // 获得图片的uri
-                    Uri originalUri = data.getData();
-                    setupPhoto(CommonUtil.getFileByUri(originalUri, this));
-                } catch (Exception e) {
+                    Uri originalUri=data.getData();
+                    setupPhoto(CommonUtil.getFileByUri(originalUri,this));
+                }catch(Exception e){
                     System.out.println(e.getMessage());
                 }
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode,resultCode,data);
     }
 
-    private void setupPhoto(File file) {
+    private void setupPhoto(File file){
         ProblemPhoto photo;
 
-        if (photoList.size() == photoNo + 1) {
+        if(photoList.size() == photoNo+1){
             photo = new ProblemPhoto();
             photoList.add(photo);
-        } else {
+        }else{
             photo = photoList.get(photoList.size() - photoNo - 1);
         }
         photo.setPicUrl(file.getAbsolutePath());
         photoAdapter.notifyDataSetChanged();
     }
 
-    private void initAddNewPhotoItem() {
-        ProblemPhoto addNew = new ProblemPhoto();
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.new_photo);
+    private void initAddNewPhotoItem(){
+        ProblemPhoto addNew=new ProblemPhoto();
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.new_photo);
         addNew.setPicData(PictureUtil.bitmapToBytes(bitmap));
         photoList.add(addNew);
     }
 
-    private void submit() {
-        if (inspectLogId == -1L) {
-            Toast.makeText(this, "缺少日志id", Toast.LENGTH_SHORT).show();
+    private void submit(){
+        if(inspectLogId == -1L){
+            Toast.makeText(this,"缺少日志id", Toast.LENGTH_SHORT).show();
             return;
         }
-        InspectLogDao inspectLogDao = Inspection_App.getInstance().getDaoSession().getInspectLogDao();
-        InspectLog inspectLog = inspectLogDao.queryBuilder().where(InspectLogDao.Properties.Id.eq(inspectLogId)).unique();
-        if (inspectLog == null) {
-            Toast.makeText(this, "查询根检查日志失败", Toast.LENGTH_SHORT).show();
+        InspectLogDao inspectLogDao= Inspection_App.getInstance().getDaoSession().getInspectLogDao();
+        InspectLog inspectLog=inspectLogDao.queryBuilder().where(InspectLogDao.Properties.Id.eq(inspectLogId)).unique();
+        if(inspectLog == null){
+            Toast.makeText(this,"查询根检查日志失败",Toast.LENGTH_SHORT).show();
             return;
         }
-        InspectContentLog contentLog = new InspectContentLog();
+        InspectContentLog contentLog=new InspectContentLog();
         contentLog.setInspectLogId(inspectLog.getId());
         contentLog.setInspectLogId(inspectLogId);
         contentLog.setOpDate(new Date());
         contentLog.setContentId(inspectContent.getId());
-        contentLog.setResult(selectedResultType);
-        if (selectedResultType.getIsProblem()) {
+        contentLog.setResultType(selectedResultType);
+        if(contentLog.getHasProblem()){
             contentLog.setProblemTypeId(selectedProblemType.getId());
             contentLog.setDescription(etProblemDescription.getText().toString());
         }
-        InspectContentLogDao contentLogDao = Inspection_App.getInstance().getDaoSession().getInspectContentLogDao();
+        InspectContentLogDao contentLogDao=Inspection_App.getInstance().getDaoSession().getInspectContentLogDao();
         contentLogDao.save(contentLog);
-        Long contentLogId = contentLog.getId();
-        ProblemPhotoDao problemPhotoDao = Inspection_App.getInstance().getDaoSession().getProblemPhotoDao();
+        Long contentLogId=contentLog.getId();
+        ProblemPhotoDao problemPhotoDao=Inspection_App.getInstance().getDaoSession().getProblemPhotoDao();
         photoList.remove(0);
-        for (int i = 0; i < photoList.size(); i ++) {
+        for (int i=0;i<photoList.size();i++) {
             photoList.get(i).setContentLogId(contentLogId);
         }
         problemPhotoDao.saveInTx(photoList);
 
         inspectLog.setInspected(true);
         inspectLog.setOpDate(new Date());
-        if (selectedResultType.getIsProblem()) {
-            inspectLog.setResult("异常");
-        } else {
-            inspectLog.setResult("正常");
-        }
         inspectLogDao.save(inspectLog);
 
         finish();

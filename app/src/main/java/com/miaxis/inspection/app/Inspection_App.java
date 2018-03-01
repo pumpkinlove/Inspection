@@ -4,15 +4,11 @@ import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.miaxis.inspection.entity.InspectContent;
-import com.miaxis.inspection.entity.InspectContentLog;
 import com.miaxis.inspection.entity.InspectForm;
 import com.miaxis.inspection.entity.InspectItem;
-import com.miaxis.inspection.entity.InspectLog;
-import com.miaxis.inspection.entity.InspectPoint;
+import com.miaxis.inspection.entity.Inspector;
 import com.miaxis.inspection.entity.Organization;
 import com.miaxis.inspection.entity.ProblemType;
-import com.miaxis.inspection.entity.ResultType;
-import com.miaxis.inspection.entity.Task;
 import com.miaxis.inspection.model.local.greenDao.GreenDaoContext;
 import com.miaxis.inspection.model.local.greenDao.gen.DaoMaster;
 import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
@@ -21,13 +17,9 @@ import com.miaxis.inspection.model.local.greenDao.gen.InspectFormDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
 import com.miaxis.inspection.model.local.greenDao.gen.OrganizationDao;
 import com.miaxis.inspection.model.local.greenDao.gen.ProblemTypeDao;
-import com.miaxis.inspection.model.local.greenDao.gen.ResultTypeDao;
-import com.miaxis.inspection.model.local.greenDao.gen.TaskDao;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,6 +32,8 @@ public class Inspection_App extends Application {
     private DaoSession mDaoSession;
     private static Inspection_App app;
 
+    private static Inspector curInspector;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -47,7 +41,7 @@ public class Inspection_App extends Application {
         app = this;
 
         ZXingLibrary.initDisplayOpinion(this);
-
+        initProblemType();
 //        testDao();
     }
 
@@ -69,7 +63,6 @@ public class Inspection_App extends Application {
 
     private void testDao() {
 
-        initResultType();
         initProblemType();
         initOrganization();
 
@@ -79,27 +72,6 @@ public class Inspection_App extends Application {
 
 //        initInspectLog();
 //        initInspectContentLog();
-    }
-
-    private void initResultType() {
-        ResultTypeDao typeDao = mDaoSession.getResultTypeDao();
-        List<ResultType> resultTypeList = typeDao.loadAll();
-        if (resultTypeList == null || resultTypeList.size() == 0) {
-            resultTypeList = new ArrayList<>();
-
-            ResultType type1 = new ResultType();
-            type1.setIsProblem(false);
-            type1.setResultName("正常");
-            resultTypeList.add(type1);
-
-            ResultType type2 = new ResultType();
-            type2.setIsProblem(true);
-            type2.setResultName("异常");
-            resultTypeList.add(type2);
-
-            typeDao.saveInTx(resultTypeList);
-
-        }
     }
 
     private void initProblemType() {
@@ -247,4 +219,12 @@ public class Inspection_App extends Application {
         }
     }
 
+
+    public static Inspector getCurInspector() {
+        return curInspector;
+    }
+
+    public static void setCurInspector(Inspector curInspector) {
+        Inspection_App.curInspector = curInspector;
+    }
 }

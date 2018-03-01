@@ -27,8 +27,11 @@ public class InspectItem implements Serializable {
     @Id(autoincrement = true)
     private Long id;
     private String name;
+    private String code;
 
-    private Long inspectFormId;            //所属表单id
+    private String inspectFormCode;            //所属表单id
+
+    private Long inspectFormId;
     @ToOne(joinProperty = "inspectFormId")
     private InspectForm inspectForm;
 
@@ -52,17 +55,13 @@ public class InspectItem implements Serializable {
     /** Used for active entity operations. */
     @Generated(hash = 624423172)
     private transient InspectItemDao myDao;
-
-    @Generated(hash = 1912765686)
-    private transient Long inspectForm__resolvedKey;
-
-    @Generated(hash = 1166922348)
-    private transient Long inspectItem__resolvedKey;
-    @Generated(hash = 1599760318)
-    public InspectItem(Long id, String name, Long inspectFormId, Long inspectItemId, int count,
-            String frequencyType) {
+    @Generated(hash = 1674190670)
+    public InspectItem(Long id, String name, String code, String inspectFormCode, Long inspectFormId,
+            Long inspectItemId, int count, String frequencyType) {
         this.id = id;
         this.name = name;
+        this.code = code;
+        this.inspectFormCode = inspectFormCode;
         this.inspectFormId = inspectFormId;
         this.inspectItemId = inspectItemId;
         this.count = count;
@@ -83,11 +82,11 @@ public class InspectItem implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public Long getInspectFormId() {
-        return this.inspectFormId;
+    public String getInspectFormCode() {
+        return this.inspectFormCode;
     }
-    public void setInspectFormId(Long inspectFormId) {
-        this.inspectFormId = inspectFormId;
+    public void setInspectFormCode(String inspectFormCode) {
+        this.inspectFormCode = inspectFormCode;
     }
     public Long getInspectItemId() {
         return this.inspectItemId;
@@ -107,6 +106,8 @@ public class InspectItem implements Serializable {
     public void setFrequencyType(String frequencyType) {
         this.frequencyType = frequencyType;
     }
+    @Generated(hash = 1912765686)
+    private transient Long inspectForm__resolvedKey;
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1950508874)
     public InspectForm getInspectForm() {
@@ -134,11 +135,14 @@ public class InspectItem implements Serializable {
             inspectForm__resolvedKey = inspectFormId;
         }
     }
+    @Generated(hash = 1166922348)
+    private transient Long inspectItem__resolvedKey;
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 1160851564)
     public InspectItem getInspectItem() {
         Long __key = this.inspectItemId;
-        if (inspectItem__resolvedKey == null || !inspectItem__resolvedKey.equals(__key)) {
+        if (inspectItem__resolvedKey == null
+                || !inspectItem__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -173,7 +177,8 @@ public class InspectItem implements Serializable {
                 throw new DaoException("Entity is detached from DAO context");
             }
             ExecuteTimeDao targetDao = daoSession.getExecuteTimeDao();
-            List<ExecuteTime> timeListNew = targetDao._queryInspectItem_TimeList(id);
+            List<ExecuteTime> timeListNew = targetDao
+                    ._queryInspectItem_TimeList(id);
             synchronized (this) {
                 if (timeList == null) {
                     timeList = timeListNew;
@@ -253,6 +258,19 @@ public class InspectItem implements Serializable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInspectItemDao() : null;
     }
+    public Long getInspectFormId() {
+        return this.inspectFormId;
+    }
+    public void setInspectFormId(Long inspectFormId) {
+        this.inspectFormId = inspectFormId;
+    }
+    public String getCode() {
+        return this.code;
+    }
+    public void setCode(String code) {
+        this.code = code;
+    }
+
 
 
 }

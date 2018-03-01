@@ -27,8 +27,8 @@ public class InspectorModelImpl implements IInspectorModel {
     }
 
     @Override
-    public List<Inspector> findAllInspector(Config config) {
-        return null;
+    public void findAllInspector(Config config) {
+
     }
 
 
