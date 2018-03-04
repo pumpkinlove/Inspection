@@ -3,13 +3,14 @@ package com.miaxis.inspection.view.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -41,8 +42,10 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
     Spinner spInspectorName;
     @BindView(R.id.et_password)
     EditText etPassword;
-    @BindView(R.id.ll_input)
-    LinearLayout llInput;
+    @BindView(R.id.iv_config)
+    ImageView ivConfig;
+    @BindView(R.id.cv_login)
+    CardView cvLogin;
 
     private ProgressDialog pdLogin;
     private InspectorSpinnerAdapter spinnerAdapter;
@@ -143,19 +146,17 @@ public class LoginActivity extends BaseActivity implements ConfigFragment.OnConf
     @Override
     public void onShowConfig() {
         flConfig.setVisibility(View.VISIBLE);
-        btnLogin.setVisibility(View.INVISIBLE);
-        spInspectorName.setVisibility(View.INVISIBLE);
-        etPassword.setVisibility(View.INVISIBLE);
+        btnLogin.setVisibility(View.GONE);
+        cvLogin.setVisibility(View.GONE);
         ConfigFragment configFragment = new ConfigFragment();
         getFragmentManager().beginTransaction().replace(R.id.fl_config, configFragment).commit();
     }
 
     @Override
     public void onHideConfig() {
-        flConfig.setVisibility(View.INVISIBLE);
+        flConfig.setVisibility(View.GONE);
         btnLogin.setVisibility(View.VISIBLE);
-        spInspectorName.setVisibility(View.VISIBLE);
-        etPassword.setVisibility(View.VISIBLE);
+        cvLogin.setVisibility(View.VISIBLE);
     }
 
     @Override

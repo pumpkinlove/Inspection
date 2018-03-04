@@ -38,6 +38,7 @@ public class InspectPointLog implements Serializable {
     private Date opDate;                //操作时间
     private String opInspectorCode;     //操作检查员编号
     private String opInspectorName;     //操作检查员姓名
+    private int resultType;             //0正常 1异常
     private String result;              //检查结果
 
     private boolean uploaded;           //是否已上传
@@ -58,16 +59,17 @@ public class InspectPointLog implements Serializable {
     @Generated(hash = 385790236)
     private transient InspectPointLogDao myDao;
 
-    @Generated(hash = 24667238)
+    @Generated(hash = 1806650746)
     public InspectPointLog(Long id, String pointLogCode, Long inspectItemId, Date opDate,
-            String opInspectorCode, String opInspectorName, String result, boolean uploaded,
-            boolean inspected, Long inspectPointId) {
+            String opInspectorCode, String opInspectorName, int resultType, String result,
+            boolean uploaded, boolean inspected, Long inspectPointId) {
         this.id = id;
         this.pointLogCode = pointLogCode;
         this.inspectItemId = inspectItemId;
         this.opDate = opDate;
         this.opInspectorCode = opInspectorCode;
         this.opInspectorName = opInspectorName;
+        this.resultType = resultType;
         this.result = result;
         this.uploaded = uploaded;
         this.inspected = inspected;
@@ -292,6 +294,14 @@ public class InspectPointLog implements Serializable {
 
     public void setOpInspectorCode(String opInspectorCode) {
         this.opInspectorCode = opInspectorCode;
+    }
+
+    public int getResultType() {
+        return this.resultType;
+    }
+
+    public void setResultType(int resultType) {
+        this.resultType = resultType;
     }
 
 

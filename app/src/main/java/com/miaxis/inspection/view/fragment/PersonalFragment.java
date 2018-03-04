@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.PointManageAdapter;
+import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.view.activity.ConfigActivity;
 import com.miaxis.inspection.view.activity.InspectorListActivity;
 import com.miaxis.inspection.view.activity.PointManageActivity;
@@ -86,6 +87,10 @@ public class PersonalFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        tvInspectorName.setText(Inspection_App.getCurInspector().getCensorName());
+        tvInspectorCode.setText(Inspection_App.getCurInspector().getCensorCode());
+
         return view;
     }
 

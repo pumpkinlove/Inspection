@@ -16,8 +16,11 @@ import com.miaxis.inspection.entity.Task;
 import com.miaxis.inspection.entity.comm.CheckPoint;
 import com.miaxis.inspection.entity.comm.CheckProject;
 import com.miaxis.inspection.entity.comm.CheckProjectContent;
+import com.miaxis.inspection.entity.comm.CheckProjectTime;
 import com.miaxis.inspection.entity.comm.CommTask;
 import com.miaxis.inspection.entity.comm.Permission;
+import com.miaxis.inspection.entity.comm.TaskTime;
+import com.miaxis.inspection.model.local.greenDao.gen.CheckProjectTimeDao;
 import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectContentDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectFormDao;
@@ -26,6 +29,7 @@ import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectorDao;
 import com.miaxis.inspection.model.local.greenDao.gen.PermissionDao;
 import com.miaxis.inspection.model.local.greenDao.gen.TaskDao;
+import com.miaxis.inspection.model.local.greenDao.gen.TaskTimeDao;
 import com.miaxis.inspection.model.remote.retrofit.DownInspectPointNet;
 import com.miaxis.inspection.model.remote.retrofit.DownInspectorNet;
 import com.miaxis.inspection.model.remote.retrofit.DownPermissionNet;
@@ -281,9 +285,14 @@ public class LoginModelImpl implements ILoginModel {
     private void analysisTaskResp(ResponseEntity<CommTask> taskResponseEntity) throws ParseException {
         TaskDao taskDao = Inspection_App.getInstance().getDaoSession().getTaskDao();
         InspectFormDao formDao = Inspection_App.getInstance().getDaoSession().getInspectFormDao();
+        TaskTimeDao taskTimeDao = Inspection_App.getInstance().getDaoSession().getTaskTimeDao();
+
 
         List<Task> aTaskList = taskDao.loadAll();
         List<InspectForm> aFormList = formDao.loadAll();
+        List<TaskTime> aTaskTimeList = taskTimeDao.loadAll();
+
+        taskTimeDao.deleteAll();
 
         List<CommTask> commTaskList = taskResponseEntity.getListData();
         List<Task> taskList = new ArrayList<>();
@@ -309,6 +318,15 @@ public class LoginModelImpl implements ILoginModel {
             task.setTaskName(commTask.getTaskName());
             task.setId(commTask.getId());
             task.setInspectFormId(inspectForm.getId());
+            task.setCircleType(commTask.getTaskTimesType());
+            task.setCircleTypeName(commTask.getTaskTimesName());
+            task.setTaskCode(commTask.getTaskCode());
+            task.setTaskWarnRate(Integer.valueOf(commTask.getTaskWarnRate()));
+            task.setTaskWarnRateType(Integer.valueOf(commTask.getTaskWarnRateType()));
+            task.setTaskWarnTime(Integer.valueOf(commTask.getTaskWarnTime()));
+
+            List<TaskTime> tt = commTask.getTaskTime();
+            taskTimeDao.insertOrReplaceInTx(tt);
 
             taskList.add(task);
         }
@@ -323,10 +341,14 @@ public class LoginModelImpl implements ILoginModel {
         InspectPointDao pointDao = daoSession.getInspectPointDao();
         InspectItemDao itemDao = daoSession.getInspectItemDao();
         InspectContentDao contentDao = daoSession.getInspectContentDao();
+        CheckProjectTimeDao checkProjectTimeDao = daoSession.getCheckProjectTimeDao();
 
         List<InspectPoint> aPointList = pointDao.loadAll();
         List<InspectItem> aItemList = itemDao.loadAll();
         List<InspectContent> aContentList = contentDao.loadAll();
+        List<CheckProjectTime> aCPT = checkProjectTimeDao.loadAll();
+
+        checkProjectTimeDao.deleteAll();
 
         List<CheckPoint> checkPointList = checkPointResponseEntity.getListData();
         List<InspectPoint> inspectPointList = new ArrayList<>();
@@ -335,6 +357,7 @@ public class LoginModelImpl implements ILoginModel {
             CheckProject checkProject = checkPoint.getProject();
             InspectPoint inspectPoint = new InspectPoint();
             inspectPoint.setId(checkPoint.getId());
+            inspectPoint.setCode(checkPoint.getCpCode());
             inspectPoint.setRfid(checkPoint.getCpRfid());
             inspectPoint.setBound(!TextUtils.isEmpty(checkPoint.getCpRfid()));
             inspectPoint.setPointName(checkPoint.getCpName());
@@ -347,6 +370,12 @@ public class LoginModelImpl implements ILoginModel {
             inspectItem.setId(checkProject.getId());
             inspectItem.setName(checkProject.getcProjectName());
             inspectItem.setInspectFormCode(checkProject.getParentCode());
+            inspectItem.setCode(checkProject.getcProjectCode());
+            inspectItem.setCount(checkProject.getcProjectTimes());
+            inspectItem.setFrequencyType(checkProject.getcProjectTimesType());
+
+            List<CheckProjectTime> cpt = checkProject.getcProjectTime();
+            checkProjectTimeDao.insertOrReplaceInTx(cpt);
 
             itemDao.insertOrReplace(inspectItem);
 
@@ -442,7 +471,7 @@ public class LoginModelImpl implements ILoginModel {
                     @Override
                     public void accept(ResponseEntity<CheckPoint> responseEntity) throws Exception {
                         if (TextUtils.equals(responseEntity.getCode(), "200")) {
-                            loginPresenter.showProgressMessage("检查员权限下载完成！正在下载任务...");
+                            loginPresenter.showProgressMessage("检查点信息下载完成！正在下载任务...");
                         } else {
                             loginPresenter.showProgressMessage(responseEntity.getMessage());
                             loginPresenter.setProgressDialogCancelable(true);

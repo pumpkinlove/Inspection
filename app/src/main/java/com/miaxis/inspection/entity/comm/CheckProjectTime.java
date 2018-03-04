@@ -2,6 +2,7 @@ package com.miaxis.inspection.entity.comm;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 /**
  * Created by xu.nan on 2018/2/26.
@@ -9,30 +10,39 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class CheckProjectTime {
 
+    @Id(autoincrement = true)
+    private Long id;
     private String cProjectCode;
     private Integer cProjectTimesType;
-    private String cProjectwarnWeekDay;
-    private String cProjectwarnMonth;
-    private String cProjectwarnday;
-    private String cProjectstartTime;
-    private String cProjectendTime;
-    private String cProjectwarnTime;
-    @Generated(hash = 1496780006)
-    public CheckProjectTime(String cProjectCode, Integer cProjectTimesType,
-            String cProjectwarnWeekDay, String cProjectwarnMonth,
-            String cProjectwarnday, String cProjectstartTime,
-            String cProjectendTime, String cProjectwarnTime) {
+    private String cProjectWarnWeekDay;
+    private String cProjectWarnMonth;
+    private String cProjectWrnday;
+    private String cProjectStartTime;
+    private String cProjectEndTime;
+    private String cProjectWarnTime;
+    @Generated(hash = 1507209356)
+    public CheckProjectTime(Long id, String cProjectCode, Integer cProjectTimesType,
+            String cProjectWarnWeekDay, String cProjectWarnMonth,
+            String cProjectWrnday, String cProjectStartTime, String cProjectEndTime,
+            String cProjectWarnTime) {
+        this.id = id;
         this.cProjectCode = cProjectCode;
         this.cProjectTimesType = cProjectTimesType;
-        this.cProjectwarnWeekDay = cProjectwarnWeekDay;
-        this.cProjectwarnMonth = cProjectwarnMonth;
-        this.cProjectwarnday = cProjectwarnday;
-        this.cProjectstartTime = cProjectstartTime;
-        this.cProjectendTime = cProjectendTime;
-        this.cProjectwarnTime = cProjectwarnTime;
+        this.cProjectWarnWeekDay = cProjectWarnWeekDay;
+        this.cProjectWarnMonth = cProjectWarnMonth;
+        this.cProjectWrnday = cProjectWrnday;
+        this.cProjectStartTime = cProjectStartTime;
+        this.cProjectEndTime = cProjectEndTime;
+        this.cProjectWarnTime = cProjectWarnTime;
     }
     @Generated(hash = 1159443729)
     public CheckProjectTime() {
+    }
+    public Long getId() {
+        return this.id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
     public String getCProjectCode() {
         return this.cProjectCode;
@@ -46,41 +56,41 @@ public class CheckProjectTime {
     public void setCProjectTimesType(Integer cProjectTimesType) {
         this.cProjectTimesType = cProjectTimesType;
     }
-    public String getCProjectwarnWeekDay() {
-        return this.cProjectwarnWeekDay;
+    public String getCProjectWarnWeekDay() {
+        return this.cProjectWarnWeekDay;
     }
-    public void setCProjectwarnWeekDay(String cProjectwarnWeekDay) {
-        this.cProjectwarnWeekDay = cProjectwarnWeekDay;
+    public void setCProjectWarnWeekDay(String cProjectWarnWeekDay) {
+        this.cProjectWarnWeekDay = cProjectWarnWeekDay;
     }
-    public String getCProjectwarnMonth() {
-        return this.cProjectwarnMonth;
+    public String getCProjectWarnMonth() {
+        return this.cProjectWarnMonth;
     }
-    public void setCProjectwarnMonth(String cProjectwarnMonth) {
-        this.cProjectwarnMonth = cProjectwarnMonth;
+    public void setCProjectWarnMonth(String cProjectWarnMonth) {
+        this.cProjectWarnMonth = cProjectWarnMonth;
     }
-    public String getCProjectwarnday() {
-        return this.cProjectwarnday;
+    public String getCProjectWrnday() {
+        return this.cProjectWrnday;
     }
-    public void setCProjectwarnday(String cProjectwarnday) {
-        this.cProjectwarnday = cProjectwarnday;
+    public void setCProjectWrnday(String cProjectWrnday) {
+        this.cProjectWrnday = cProjectWrnday;
     }
-    public String getCProjectstartTime() {
-        return this.cProjectstartTime;
+    public String getCProjectStartTime() {
+        return this.cProjectStartTime;
     }
-    public void setCProjectstartTime(String cProjectstartTime) {
-        this.cProjectstartTime = cProjectstartTime;
+    public void setCProjectStartTime(String cProjectStartTime) {
+        this.cProjectStartTime = cProjectStartTime;
     }
-    public String getCProjectendTime() {
-        return this.cProjectendTime;
+    public String getCProjectEndTime() {
+        return this.cProjectEndTime;
     }
-    public void setCProjectendTime(String cProjectendTime) {
-        this.cProjectendTime = cProjectendTime;
+    public void setCProjectEndTime(String cProjectEndTime) {
+        this.cProjectEndTime = cProjectEndTime;
     }
-    public String getCProjectwarnTime() {
-        return this.cProjectwarnTime;
+    public String getCProjectWarnTime() {
+        return this.cProjectWarnTime;
     }
-    public void setCProjectwarnTime(String cProjectwarnTime) {
-        this.cProjectwarnTime = cProjectwarnTime;
+    public void setCProjectWarnTime(String cProjectWarnTime) {
+        this.cProjectWarnTime = cProjectWarnTime;
     }
 
 }

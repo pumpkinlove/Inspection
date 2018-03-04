@@ -255,7 +255,7 @@ public class DoInspectContentActivity extends BaseActivity {
         };
     }
 
-    private void loadProblemType(){
+    private void loadProblemType() {
         final List<ProblemType> problemTypeList = Inspection_App.getInstance().getDaoSession().getProblemTypeDao().loadAll();
         for (int i = 0; i < problemTypeList.size(); i++) {
             ProblemType type=problemTypeList.get(i);
@@ -342,14 +342,9 @@ public class DoInspectContentActivity extends BaseActivity {
             Toast.makeText(this,"缺少日志编号", Toast.LENGTH_SHORT).show();
             return;
         }
-        InspectPointLogDao inspectLogDao= Inspection_App.getInstance().getDaoSession().getInspectPointLogDao();
-        InspectPointLog inspectPointLog = inspectLogDao.queryBuilder().where(InspectPointLogDao.Properties.PointLogCode.eq(inspectPointLogCode)).unique();
-        if(inspectPointLog == null){
-            Toast.makeText(this,"查询根检查日志失败",Toast.LENGTH_SHORT).show();
-            return;
-        }
         InspectContentLog contentLog = new InspectContentLog();
-        contentLog.setPointLogCode(inspectPointLog.getPointLogCode());
+        contentLog.setUploaded(false);
+        contentLog.setPointLogCode(inspectPointLogCode);
         contentLog.setOpDate(new Date());
         contentLog.setContentId(inspectContent.getId());
         contentLog.setResultType(selectedResultType);
@@ -360,19 +355,20 @@ public class DoInspectContentActivity extends BaseActivity {
         }
         InspectContentLogDao contentLogDao=Inspection_App.getInstance().getDaoSession().getInspectContentLogDao();
         contentLogDao.save(contentLog);
-        Long contentLogId=contentLog.getId();
-        ProblemPhotoDao problemPhotoDao=Inspection_App.getInstance().getDaoSession().getProblemPhotoDao();
-        photoList.remove(0);
-        for (int i=0;i<photoList.size();i++) {
-            photoList.get(i).setContentLogId(contentLogId);
+
+
+        if(contentLog.getHasProblem()){
+            Long contentLogId=contentLog.getId();
+            ProblemPhotoDao problemPhotoDao=Inspection_App.getInstance().getDaoSession().getProblemPhotoDao();
+            photoList.remove(0);    //去除
+            for (int i=0;i<photoList.size();i++) {
+                photoList.get(i).setContentLogId(contentLogId);
+            }
+            problemPhotoDao.saveInTx(photoList);
         }
-        problemPhotoDao.saveInTx(photoList);
 
-        inspectPointLog.setInspected(true);
-        inspectPointLog.setOpDate(new Date());
-        inspectLogDao.save(inspectPointLog);
 
-        finish();
+        uploadContentLog(contentLog);
 
     }
 
@@ -403,6 +399,7 @@ public class DoInspectContentActivity extends BaseActivity {
                 .subscribe(new Consumer<ResponseEntity<String>>() {
                     @Override
                     public void accept(ResponseEntity<String> responseEntity) throws Exception {
+                        setResult(111);
                         finish();
                     }
                 }, new Consumer<Throwable>() {
@@ -411,6 +408,7 @@ public class DoInspectContentActivity extends BaseActivity {
                         contentLog.setUploaded(false);
                         InspectContentLogDao contentLogDao = Inspection_App.getInstance().getDaoSession().getInspectContentLogDao();
                         contentLogDao.insertOrReplace(contentLog);
+                        setResult(-111);
                         finish();
                     }
                 });
@@ -428,7 +426,9 @@ public class DoInspectContentActivity extends BaseActivity {
         checkContentLog.setOpUser(Inspection_App.getCurInspector().getOpUserName());
         checkContentLog.setDescription(contentLog.getDescription());
         checkContentLog.setProjectContent(inspectContent.getName());
-        checkContentLog.setErrorType(Integer.valueOf(contentLog.getProblemType().getType()+""));
+        if (contentLog.getHasProblem()) {
+            checkContentLog.setErrorType(Integer.valueOf(contentLog.getProblemType().getType()+""));
+        }
         checkContentLog.setResult(contentLog.getResultType());
 
         return new Gson().toJson(checkContentLog);

@@ -2,18 +2,20 @@ package com.miaxis.inspection.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+
+import com.miaxis.inspection.entity.comm.TaskTime;
 import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
-import com.miaxis.inspection.model.local.greenDao.gen.ExecuteTimeDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectFormDao;
 import com.miaxis.inspection.model.local.greenDao.gen.TaskDao;
+import com.miaxis.inspection.model.local.greenDao.gen.TaskTimeDao;
 
 /**
  * 检查任务
@@ -39,8 +41,14 @@ public class Task implements Serializable {
     @ToOne(joinProperty = "inspectFormId")
     private InspectForm inspectForm;
 
-    @ToMany(referencedJoinProperty = "taskId")
-    private List<ExecuteTime> excuteTimes;
+    @ToMany(joinProperties = {@JoinProperty(name = "id", referencedName = "taskId")})
+    private List<TaskTime> taskTime;
+
+    private int taskWarnRate;
+    private int taskWarnRateType;
+    private int taskWarnTime;
+    private int executeStatus;
+
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -50,9 +58,10 @@ public class Task implements Serializable {
     @Generated(hash = 1469429066)
     private transient TaskDao myDao;
 
-    @Generated(hash = 1179177462)
-    public Task(Long id, String taskName, String taskCode, int circleType,
-            String circleTypeName, int status, String statusName, Long inspectFormId) {
+    @Generated(hash = 1745329964)
+    public Task(Long id, String taskName, String taskCode, int circleType, String circleTypeName,
+            int status, String statusName, Long inspectFormId, int taskWarnRate, int taskWarnRateType,
+            int taskWarnTime, int executeStatus) {
         this.id = id;
         this.taskName = taskName;
         this.taskCode = taskCode;
@@ -61,6 +70,10 @@ public class Task implements Serializable {
         this.status = status;
         this.statusName = statusName;
         this.inspectFormId = inspectFormId;
+        this.taskWarnRate = taskWarnRate;
+        this.taskWarnRateType = taskWarnRateType;
+        this.taskWarnTime = taskWarnTime;
+        this.executeStatus = executeStatus;
     }
 
     @Generated(hash = 733837707)
@@ -167,28 +180,28 @@ public class Task implements Serializable {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 1698233468)
-    public List<ExecuteTime> getExcuteTimes() {
-        if (excuteTimes == null) {
+    @Generated(hash = 196979413)
+    public List<TaskTime> getTaskTime() {
+        if (taskTime == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            ExecuteTimeDao targetDao = daoSession.getExecuteTimeDao();
-            List<ExecuteTime> excuteTimesNew = targetDao._queryTask_ExcuteTimes(id);
+            TaskTimeDao targetDao = daoSession.getTaskTimeDao();
+            List<TaskTime> taskTimeNew = targetDao._queryTask_TaskTime(id);
             synchronized (this) {
-                if (excuteTimes == null) {
-                    excuteTimes = excuteTimesNew;
+                if (taskTime == null) {
+                    taskTime = taskTimeNew;
                 }
             }
         }
-        return excuteTimes;
+        return taskTime;
     }
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 1585256792)
-    public synchronized void resetExcuteTimes() {
-        excuteTimes = null;
+    @Generated(hash = 1606353414)
+    public synchronized void resetTaskTime() {
+        taskTime = null;
     }
 
     /**
@@ -234,6 +247,39 @@ public class Task implements Serializable {
         myDao = daoSession != null ? daoSession.getTaskDao() : null;
     }
 
+    public int getTaskWarnRate() {
+        return this.taskWarnRate;
+    }
+
+    public void setTaskWarnRate(int taskWarnRate) {
+        this.taskWarnRate = taskWarnRate;
+    }
+
+    public int getTaskWarnRateType() {
+        return this.taskWarnRateType;
+    }
+
+    public void setTaskWarnRateType(int taskWarnRateType) {
+        this.taskWarnRateType = taskWarnRateType;
+    }
+
+    public int getTaskWarnTime() {
+        return this.taskWarnTime;
+    }
+
+    public void setTaskWarnTime(int taskWarnTime) {
+        this.taskWarnTime = taskWarnTime;
+    }
+
+    public int getExecuteStatus() {
+        return this.executeStatus;
+    }
+
+    public void setExecuteStatus(int executeStatus) {
+        this.executeStatus = executeStatus;
+    }
+
+    
 
 
 

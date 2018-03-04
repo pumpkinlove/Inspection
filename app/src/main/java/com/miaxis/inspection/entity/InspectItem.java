@@ -2,6 +2,7 @@ package com.miaxis.inspection.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 
@@ -9,11 +10,13 @@ import java.io.Serializable;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+
+import com.miaxis.inspection.entity.comm.CheckProjectTime;
 import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectContentDao;
-import com.miaxis.inspection.model.local.greenDao.gen.ExecuteTimeDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectFormDao;
+import com.miaxis.inspection.model.local.greenDao.gen.CheckProjectTimeDao;
 
 /**
  * 检查项
@@ -39,14 +42,14 @@ public class InspectItem implements Serializable {
     @ToOne(joinProperty = "inspectItemId")
     private InspectItem inspectItem;
 
-    @ToMany(referencedJoinProperty = "inspectItemId")
-    private List<ExecuteTime> timeList;
+    @ToMany(joinProperties = {@JoinProperty(name = "code", referencedName = "cProjectCode")})
+    private List<CheckProjectTime> checkProjectTime;
 
     @ToMany(referencedJoinProperty = "inspectItemId")
     private List<InspectContent> inspectContentList;
 
     private int count;
-    private String frequencyType;
+    private int frequencyType;          //1
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -55,9 +58,9 @@ public class InspectItem implements Serializable {
     /** Used for active entity operations. */
     @Generated(hash = 624423172)
     private transient InspectItemDao myDao;
-    @Generated(hash = 1674190670)
-    public InspectItem(Long id, String name, String code, String inspectFormCode, Long inspectFormId,
-            Long inspectItemId, int count, String frequencyType) {
+    @Generated(hash = 1059476683)
+    public InspectItem(Long id, String name, String code, String inspectFormCode,
+            Long inspectFormId, Long inspectItemId, int count, int frequencyType) {
         this.id = id;
         this.name = name;
         this.code = code;
@@ -82,11 +85,23 @@ public class InspectItem implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+    public String getCode() {
+        return this.code;
+    }
+    public void setCode(String code) {
+        this.code = code;
+    }
     public String getInspectFormCode() {
         return this.inspectFormCode;
     }
     public void setInspectFormCode(String inspectFormCode) {
         this.inspectFormCode = inspectFormCode;
+    }
+    public Long getInspectFormId() {
+        return this.inspectFormId;
+    }
+    public void setInspectFormId(Long inspectFormId) {
+        this.inspectFormId = inspectFormId;
     }
     public Long getInspectItemId() {
         return this.inspectItemId;
@@ -100,10 +115,10 @@ public class InspectItem implements Serializable {
     public void setCount(int count) {
         this.count = count;
     }
-    public String getFrequencyType() {
+    public int getFrequencyType() {
         return this.frequencyType;
     }
-    public void setFrequencyType(String frequencyType) {
+    public void setFrequencyType(int frequencyType) {
         this.frequencyType = frequencyType;
     }
     @Generated(hash = 1912765686)
@@ -141,8 +156,7 @@ public class InspectItem implements Serializable {
     @Generated(hash = 1160851564)
     public InspectItem getInspectItem() {
         Long __key = this.inspectItemId;
-        if (inspectItem__resolvedKey == null
-                || !inspectItem__resolvedKey.equals(__key)) {
+        if (inspectItem__resolvedKey == null || !inspectItem__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -169,28 +183,28 @@ public class InspectItem implements Serializable {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 958694251)
-    public List<ExecuteTime> getTimeList() {
-        if (timeList == null) {
+    @Generated(hash = 1754733009)
+    public List<CheckProjectTime> getCheckProjectTime() {
+        if (checkProjectTime == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            ExecuteTimeDao targetDao = daoSession.getExecuteTimeDao();
-            List<ExecuteTime> timeListNew = targetDao
-                    ._queryInspectItem_TimeList(id);
+            CheckProjectTimeDao targetDao = daoSession.getCheckProjectTimeDao();
+            List<CheckProjectTime> checkProjectTimeNew = targetDao
+                    ._queryInspectItem_CheckProjectTime(code);
             synchronized (this) {
-                if (timeList == null) {
-                    timeList = timeListNew;
+                if (checkProjectTime == null) {
+                    checkProjectTime = checkProjectTimeNew;
                 }
             }
         }
-        return timeList;
+        return checkProjectTime;
     }
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 495182591)
-    public synchronized void resetTimeList() {
-        timeList = null;
+    @Generated(hash = 1961670676)
+    public synchronized void resetCheckProjectTime() {
+        checkProjectTime = null;
     }
     /**
      * To-many relationship, resolved on first access (and after reset).
@@ -258,18 +272,7 @@ public class InspectItem implements Serializable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInspectItemDao() : null;
     }
-    public Long getInspectFormId() {
-        return this.inspectFormId;
-    }
-    public void setInspectFormId(Long inspectFormId) {
-        this.inspectFormId = inspectFormId;
-    }
-    public String getCode() {
-        return this.code;
-    }
-    public void setCode(String code) {
-        this.code = code;
-    }
+
 
 
 

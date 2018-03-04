@@ -23,8 +23,12 @@ import com.miaxis.inspection.adapter.LogAdapter;
 import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.entity.InspectPointLog;
 import com.miaxis.inspection.entity.InspectPoint;
+import com.miaxis.inspection.entity.Task;
+import com.miaxis.inspection.entity.comm.TaskTime;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectPointLogDao;
+import com.miaxis.inspection.model.local.greenDao.gen.TaskDao;
+import com.miaxis.inspection.utils.FrequencyType;
 import com.miaxis.inspection.view.activity.DoInspectItemActivity;
 import com.miaxis.inspection.view.activity.LogDetailActivity;
 import com.miaxis.inspection.view.activity.LogListActivity;
@@ -199,7 +203,7 @@ public class HomePageFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        logList = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao().queryBuilder().where(InspectPointLogDao.Properties.Inspected.eq(true)).list();
+        logList = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao().loadAll();
         logAdapter.setLogList(logList);
         logAdapter.notifyDataSetChanged();
 
@@ -211,5 +215,37 @@ public class HomePageFragment extends Fragment {
     void moreLog() {
         startActivity(new Intent(getActivity(), LogListActivity.class));
     }
+
+
+    private int countToDoPoint() {
+        int count = 0;
+        TaskDao taskDao = Inspection_App.getInstance().getDaoSession().getTaskDao();
+
+        List<Task> taskList = taskDao.loadAll();
+        for (int i = 0; i < taskList.size(); i ++) {
+            Task task = taskList.get(i);
+            switch (task.getCircleType()) {
+                case FrequencyType.PER_DAY:
+                    for (int j = 0; j < task.getTaskTime().size(); j++) {
+                        TaskTime taskTime = task.getTaskTime().get(j);
+                        taskTime.getTaskStartDay();
+
+                    }
+                    break;
+                case FrequencyType.PER_WEEK:
+                    break;
+                case FrequencyType.PER_MONTH:
+                    break;
+                case FrequencyType.PER_SEASON:
+                    break;
+                case FrequencyType.PER_YEAR:
+                    break;
+            }
+        }
+
+        return count;
+
+    }
+
 
 }

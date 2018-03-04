@@ -58,7 +58,7 @@ public class LogListActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        logList = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao().queryBuilder().where(InspectPointLogDao.Properties.Inspected.eq(true)).list();
+        logList = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao().loadAll();
         logAdapter = new LogAdapter(logList, this);
         logAdapter.setListener(new LogAdapter.OnItemClickListener() {
             @Override

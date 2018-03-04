@@ -5,9 +5,10 @@ package com.miaxis.inspection.utils;
  */
 
 public interface FrequencyType {
-    String PER_DAY = "次/天";
-    String PER_WEEK = "次/周";
-    String PER_MONTH = "次/月";
-    String PER_SEASON = "次/季度";
-    String PER_YEAR = "次/年";
+    int NEVER = 0;      //永不
+    int PER_DAY = 1;    //"次/天";
+    int PER_WEEK = 2;   //"次/周";
+    int PER_MONTH = 3;  //"次/月";
+    int PER_SEASON = 4; //"次/季度";
+    int PER_YEAR = 5;   //"次/年";
 }

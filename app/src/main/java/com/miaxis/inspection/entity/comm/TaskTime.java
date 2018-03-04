@@ -9,7 +9,7 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class TaskTime {
 
-    private String  taskId;
+    private Long  taskId;
     private Integer taskTimesType;
     private String  taskStartTime;
     private String  taskStartDay;
@@ -19,8 +19,8 @@ public class TaskTime {
     private String  taskWarnDay;
     private String  taskWarnWeekDay;
     private String  taskWarnMonth;
-    @Generated(hash = 575945729)
-    public TaskTime(String taskId, Integer taskTimesType, String taskStartTime,
+    @Generated(hash = 1584044633)
+    public TaskTime(Long taskId, Integer taskTimesType, String taskStartTime,
             String taskStartDay, String taskEndTime, String taskEndDay,
             String taskWarnTime, String taskWarnDay, String taskWarnWeekDay,
             String taskWarnMonth) {
@@ -38,10 +38,10 @@ public class TaskTime {
     @Generated(hash = 1763742976)
     public TaskTime() {
     }
-    public String getTaskId() {
+    public Long getTaskId() {
         return this.taskId;
     }
-    public void setTaskId(String taskId) {
+    public void setTaskId(Long taskId) {
         this.taskId = taskId;
     }
     public Integer getTaskTimesType() {
