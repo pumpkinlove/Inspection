@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,18 +23,26 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.ProblemPhotoAdapter;
 import com.miaxis.inspection.app.Inspection_App;
+import com.miaxis.inspection.entity.Config;
 import com.miaxis.inspection.entity.InspectContent;
 import com.miaxis.inspection.entity.InspectContentLog;
-import com.miaxis.inspection.entity.InspectLog;
+import com.miaxis.inspection.entity.InspectItem;
+import com.miaxis.inspection.entity.InspectPointLog;
 import com.miaxis.inspection.entity.ProblemPhoto;
 import com.miaxis.inspection.entity.ProblemType;
+import com.miaxis.inspection.entity.ResponseEntity;
+import com.miaxis.inspection.entity.comm.CheckContentLog;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectContentLogDao;
-import com.miaxis.inspection.model.local.greenDao.gen.InspectLogDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectPointLogDao;
 import com.miaxis.inspection.model.local.greenDao.gen.ProblemPhotoDao;
+import com.miaxis.inspection.model.remote.retrofit.LogNet;
 import com.miaxis.inspection.utils.CommonUtil;
+import com.miaxis.inspection.utils.DateUtil;
 import com.miaxis.inspection.utils.PictureUtil;
 import com.miaxis.inspection.utils.ResultType;
 import com.miaxis.inspection.view.custom.BottomMenu;
@@ -46,6 +55,11 @@ import java.util.List;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DoInspectContentActivity extends BaseActivity {
 
@@ -89,7 +103,7 @@ public class DoInspectContentActivity extends BaseActivity {
     private int photoNo;
     private boolean isCameraCapture;
     private String filePathCache;
-    private Long inspectLogId;
+    private String inspectPointLogCode;
 
 
     @Override
@@ -136,7 +150,7 @@ public class DoInspectContentActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        inspectLogId = getIntent().getLongExtra("inspectLogId", -1L);
+        inspectPointLogCode = getIntent().getStringExtra("pointLogCode");
         inspectContent = (InspectContent) getIntent().getSerializableExtra("content");
         photoList = new ArrayList<>();
         initAddNewPhotoItem();
@@ -324,22 +338,22 @@ public class DoInspectContentActivity extends BaseActivity {
     }
 
     private void submit(){
-        if(inspectLogId == -1L){
-            Toast.makeText(this,"缺少日志id", Toast.LENGTH_SHORT).show();
+        if (inspectPointLogCode == null) {
+            Toast.makeText(this,"缺少日志编号", Toast.LENGTH_SHORT).show();
             return;
         }
-        InspectLogDao inspectLogDao= Inspection_App.getInstance().getDaoSession().getInspectLogDao();
-        InspectLog inspectLog=inspectLogDao.queryBuilder().where(InspectLogDao.Properties.Id.eq(inspectLogId)).unique();
-        if(inspectLog == null){
+        InspectPointLogDao inspectLogDao= Inspection_App.getInstance().getDaoSession().getInspectPointLogDao();
+        InspectPointLog inspectPointLog = inspectLogDao.queryBuilder().where(InspectPointLogDao.Properties.PointLogCode.eq(inspectPointLogCode)).unique();
+        if(inspectPointLog == null){
             Toast.makeText(this,"查询根检查日志失败",Toast.LENGTH_SHORT).show();
             return;
         }
-        InspectContentLog contentLog=new InspectContentLog();
-        contentLog.setInspectLogId(inspectLog.getId());
-        contentLog.setInspectLogId(inspectLogId);
+        InspectContentLog contentLog = new InspectContentLog();
+        contentLog.setPointLogCode(inspectPointLog.getPointLogCode());
         contentLog.setOpDate(new Date());
         contentLog.setContentId(inspectContent.getId());
         contentLog.setResultType(selectedResultType);
+        contentLog.setHasProblem(hasProblem);
         if(contentLog.getHasProblem()){
             contentLog.setProblemTypeId(selectedProblemType.getId());
             contentLog.setDescription(etProblemDescription.getText().toString());
@@ -354,12 +368,73 @@ public class DoInspectContentActivity extends BaseActivity {
         }
         problemPhotoDao.saveInTx(photoList);
 
-        inspectLog.setInspected(true);
-        inspectLog.setOpDate(new Date());
-        inspectLogDao.save(inspectLog);
+        inspectPointLog.setInspected(true);
+        inspectPointLog.setOpDate(new Date());
+        inspectLogDao.save(inspectPointLog);
 
         finish();
 
     }
+
+    private void uploadContentLog(final InspectContentLog contentLog) {
+        Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl("http://" + config.getIp() + ":" + config.getPort())
+                .build();
+        LogNet net = retrofit.create(LogNet.class);
+
+        net.uploadContentLog(fetchContentLog(contentLog))
+                .subscribeOn(Schedulers.newThread())
+                .doOnNext(new Consumer<ResponseEntity<String>>() {
+                    @Override
+                    public void accept(ResponseEntity<String> responseEntity) throws Exception {
+                        if (TextUtils.equals("200", responseEntity.getCode())) {
+                            contentLog.setUploaded(true);
+                        } else {
+                            contentLog.setUploaded(false);
+                        }
+                        InspectContentLogDao contentLogDao = Inspection_App.getInstance().getDaoSession().getInspectContentLogDao();
+                        contentLogDao.insertOrReplace(contentLog);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseEntity<String>>() {
+                    @Override
+                    public void accept(ResponseEntity<String> responseEntity) throws Exception {
+                        finish();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        contentLog.setUploaded(false);
+                        InspectContentLogDao contentLogDao = Inspection_App.getInstance().getDaoSession().getInspectContentLogDao();
+                        contentLogDao.insertOrReplace(contentLog);
+                        finish();
+                    }
+                });
+
+    }
+
+    private String fetchContentLog(InspectContentLog contentLog) {
+        CheckContentLog checkContentLog = new CheckContentLog();
+        InspectContent inspectContent = contentLog.getInspectContent();
+        InspectItem inspectItem = inspectContent.getInspectItem();
+        checkContentLog.setProjectFormCode(inspectItem.getInspectFormCode());
+        checkContentLog.setProjectCode(inspectItem.getCode());
+        checkContentLog.setcPointLogCode(contentLog.getPointLogCode());
+        checkContentLog.setOpDate(DateUtil.toHourMinString(contentLog.getOpDate()));
+        checkContentLog.setOpUser(Inspection_App.getCurInspector().getOpUserName());
+        checkContentLog.setDescription(contentLog.getDescription());
+        checkContentLog.setProjectContent(inspectContent.getName());
+        checkContentLog.setErrorType(Integer.valueOf(contentLog.getProblemType().getType()+""));
+        checkContentLog.setResult(contentLog.getResultType());
+
+        return new Gson().toJson(checkContentLog);
+
+    }
+
+
 
 }

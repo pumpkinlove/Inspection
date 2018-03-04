@@ -2,19 +2,17 @@ package com.miaxis.inspection.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.LogAdapter;
 import com.miaxis.inspection.app.Inspection_App;
-import com.miaxis.inspection.entity.InspectLog;
-import com.miaxis.inspection.model.local.greenDao.gen.InspectLogDao;
+import com.miaxis.inspection.entity.InspectPointLog;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectPointLogDao;
 
 import java.util.List;
 
@@ -28,7 +26,7 @@ public class LogListActivity extends BaseActivity {
     @BindView(R.id.rv_log)
     RecyclerView rvLog;
 
-    private List<InspectLog> logList;
+    private List<InspectPointLog> logList;
     private LogAdapter logAdapter;
 
     @Override
@@ -60,7 +58,7 @@ public class LogListActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        logList = Inspection_App.getInstance().getDaoSession().getInspectLogDao().queryBuilder().where(InspectLogDao.Properties.Inspected.eq(true)).list();
+        logList = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao().queryBuilder().where(InspectPointLogDao.Properties.Inspected.eq(true)).list();
         logAdapter = new LogAdapter(logList, this);
         logAdapter.setListener(new LogAdapter.OnItemClickListener() {
             @Override

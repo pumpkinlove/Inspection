@@ -21,10 +21,10 @@ import android.widget.Toast;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.LogAdapter;
 import com.miaxis.inspection.app.Inspection_App;
-import com.miaxis.inspection.entity.InspectLog;
+import com.miaxis.inspection.entity.InspectPointLog;
 import com.miaxis.inspection.entity.InspectPoint;
-import com.miaxis.inspection.model.local.greenDao.gen.InspectLogDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectPointLogDao;
 import com.miaxis.inspection.view.activity.DoInspectItemActivity;
 import com.miaxis.inspection.view.activity.LogDetailActivity;
 import com.miaxis.inspection.view.activity.LogListActivity;
@@ -65,7 +65,7 @@ public class HomePageFragment extends Fragment {
 
     private QBadgeView badgeView;
     private LogAdapter logAdapter;
-    private List<InspectLog> logList;
+    private List<InspectPointLog> logList;
 
     public HomePageFragment() {
         // Required empty public constructor
@@ -99,7 +99,7 @@ public class HomePageFragment extends Fragment {
     }
 
     private void initData() {
-        logList = Inspection_App.getInstance().getDaoSession().getInspectLogDao().queryBuilder().where(InspectLogDao.Properties.Inspected.eq(true)).list();
+        logList = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao().queryBuilder().where(InspectPointLogDao.Properties.Inspected.eq(true)).list();
         logAdapter = new LogAdapter(logList, getContext());
         logAdapter.setListener(new LogAdapter.OnItemClickListener() {
             @Override
@@ -199,7 +199,7 @@ public class HomePageFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        logList = Inspection_App.getInstance().getDaoSession().getInspectLogDao().queryBuilder().where(InspectLogDao.Properties.Inspected.eq(true)).list();
+        logList = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao().queryBuilder().where(InspectPointLogDao.Properties.Inspected.eq(true)).list();
         logAdapter.setLogList(logList);
         logAdapter.notifyDataSetChanged();
 

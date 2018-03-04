@@ -12,7 +12,7 @@ import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.LogContentDetailAdapter;
 import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.entity.InspectContentLog;
-import com.miaxis.inspection.entity.InspectLog;
+import com.miaxis.inspection.entity.InspectPointLog;
 import com.miaxis.inspection.utils.DateUtil;
 import com.miaxis.inspection.view.custom.ProblemDetailDialog;
 
@@ -34,7 +34,7 @@ public class LogDetailActivity extends BaseActivity {
     @BindView(R.id.rv_content)
     RecyclerView rvContent;
 
-    private InspectLog mLog;
+    private InspectPointLog mLog;
     private LogContentDetailAdapter contentDetailAdapter;
 
 
@@ -51,7 +51,7 @@ public class LogDetailActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        mLog = (InspectLog) getIntent().getSerializableExtra("log");
+        mLog = (InspectPointLog) getIntent().getSerializableExtra("log");
         mLog.__setDaoSession(Inspection_App.getInstance().getDaoSession());
         contentDetailAdapter = new LogContentDetailAdapter(mLog.getContentList(), this);
         contentDetailAdapter.setListener(new LogContentDetailAdapter.OnItemClickListener() {

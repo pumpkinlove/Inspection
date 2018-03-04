@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.miaxis.inspection.R;
-import com.miaxis.inspection.entity.InspectItem;
-import com.miaxis.inspection.entity.InspectLog;
+import com.miaxis.inspection.entity.InspectPointLog;
 import com.miaxis.inspection.utils.DateUtil;
 
 import java.util.List;
@@ -25,15 +24,15 @@ import butterknife.OnClick;
 
 public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
-    public void setLogList(List<InspectLog> logList) {
+    public void setLogList(List<InspectPointLog> logList) {
         this.logList = logList;
     }
 
     private OnItemClickListener listener;
-    private List<InspectLog> logList;
+    private List<InspectPointLog> logList;
     private Context context;
 
-    public LogAdapter(List<InspectLog> logList, Context context) {
+    public LogAdapter(List<InspectPointLog> logList, Context context) {
         this.logList = logList;
         this.context = context;
     }
@@ -54,7 +53,7 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        InspectLog log = logList.get(position);
+        InspectPointLog log = logList.get(position);
         if (log.getInspected()) {
             holder.tvLogPoint.setText(log.getInspectPoint().getPointName());
             holder.tvLogTime.setText(DateUtil.toHourMinString(log.getOpDate()));

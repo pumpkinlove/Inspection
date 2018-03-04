@@ -2,6 +2,7 @@ package com.miaxis.inspection.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
 
@@ -14,25 +15,28 @@ import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectContentLogDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
-import com.miaxis.inspection.model.local.greenDao.gen.InspectLogDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectPointLogDao;
 
 /**
  * 历史检查记录
  * Created by xu.nan on 2018/1/29.
  */
 @Entity
-public class InspectLog implements Serializable {
+public class InspectPointLog implements Serializable {
 
     private static final long serialVersionUID = -1999623990756333415L;
 
     @Id(autoincrement = true)
     private Long id;
 
+    private String pointLogCode;
+
     private Long inspectItemId;         //对应检查项id
     @ToOne(joinProperty = "inspectItemId")
     private InspectItem inspectItem;
 
     private Date opDate;                //操作时间
+    private String opInspectorCode;     //操作检查员编号
     private String opInspectorName;     //操作检查员姓名
     private String result;              //检查结果
 
@@ -43,7 +47,7 @@ public class InspectLog implements Serializable {
     @ToOne(joinProperty = "inspectPointId")
     private InspectPoint inspectPoint;
 
-    @ToMany(referencedJoinProperty = "inspectLogId")
+    @ToMany(joinProperties = {@JoinProperty(name = "pointLogCode", referencedName = "pointLogCode")})
     private List<InspectContentLog> contentList;    //下属检查内容日志
 
     /** Used to resolve relations */
@@ -51,16 +55,18 @@ public class InspectLog implements Serializable {
     private transient DaoSession daoSession;
 
     /** Used for active entity operations. */
-    @Generated(hash = 2012460397)
-    private transient InspectLogDao myDao;
+    @Generated(hash = 385790236)
+    private transient InspectPointLogDao myDao;
 
-    @Generated(hash = 641234548)
-    public InspectLog(Long id, Long inspectItemId, Date opDate,
-            String opInspectorName, String result, boolean uploaded,
+    @Generated(hash = 24667238)
+    public InspectPointLog(Long id, String pointLogCode, Long inspectItemId, Date opDate,
+            String opInspectorCode, String opInspectorName, String result, boolean uploaded,
             boolean inspected, Long inspectPointId) {
         this.id = id;
+        this.pointLogCode = pointLogCode;
         this.inspectItemId = inspectItemId;
         this.opDate = opDate;
+        this.opInspectorCode = opInspectorCode;
         this.opInspectorName = opInspectorName;
         this.result = result;
         this.uploaded = uploaded;
@@ -68,8 +74,8 @@ public class InspectLog implements Serializable {
         this.inspectPointId = inspectPointId;
     }
 
-    @Generated(hash = 7584571)
-    public InspectLog() {
+    @Generated(hash = 971602257)
+    public InspectPointLog() {
     }
 
     public Long getId() {
@@ -78,6 +84,14 @@ public class InspectLog implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPointLogCode() {
+        return this.pointLogCode;
+    }
+
+    public void setPointLogCode(String pointLogCode) {
+        this.pointLogCode = pointLogCode;
     }
 
     public Long getInspectItemId() {
@@ -143,8 +157,7 @@ public class InspectLog implements Serializable {
     @Generated(hash = 1160851564)
     public InspectItem getInspectItem() {
         Long __key = this.inspectItemId;
-        if (inspectItem__resolvedKey == null
-                || !inspectItem__resolvedKey.equals(__key)) {
+        if (inspectItem__resolvedKey == null || !inspectItem__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -176,8 +189,7 @@ public class InspectLog implements Serializable {
     @Generated(hash = 619315470)
     public InspectPoint getInspectPoint() {
         Long __key = this.inspectPointId;
-        if (inspectPoint__resolvedKey == null
-                || !inspectPoint__resolvedKey.equals(__key)) {
+        if (inspectPoint__resolvedKey == null || !inspectPoint__resolvedKey.equals(__key)) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -206,7 +218,7 @@ public class InspectLog implements Serializable {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 118991638)
+    @Generated(hash = 1476747840)
     public List<InspectContentLog> getContentList() {
         if (contentList == null) {
             final DaoSession daoSession = this.daoSession;
@@ -215,7 +227,7 @@ public class InspectLog implements Serializable {
             }
             InspectContentLogDao targetDao = daoSession.getInspectContentLogDao();
             List<InspectContentLog> contentListNew = targetDao
-                    ._queryInspectLog_ContentList(id);
+                    ._queryInspectPointLog_ContentList(pointLogCode);
             synchronized (this) {
                 if (contentList == null) {
                     contentList = contentListNew;
@@ -268,11 +280,20 @@ public class InspectLog implements Serializable {
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1734926653)
+    @Generated(hash = 122657080)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getInspectLogDao() : null;
+        myDao = daoSession != null ? daoSession.getInspectPointLogDao() : null;
     }
+
+    public String getOpInspectorCode() {
+        return this.opInspectorCode;
+    }
+
+    public void setOpInspectorCode(String opInspectorCode) {
+        this.opInspectorCode = opInspectorCode;
+    }
+
 
 
 

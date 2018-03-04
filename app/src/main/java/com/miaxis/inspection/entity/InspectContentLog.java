@@ -27,7 +27,8 @@ public class InspectContentLog implements Serializable {
     @Id(autoincrement = true)
     private Long id;
 
-    private Long inspectLogId;
+    private String pointLogCode;
+    private boolean uploaded;
 
     private Long contentId;
     @ToOne(joinProperty = "contentId")
@@ -54,11 +55,13 @@ public class InspectContentLog implements Serializable {
     @Generated(hash = 1054412929)
     private transient InspectContentLogDao myDao;
 
-    @Generated(hash = 2051729375)
-    public InspectContentLog(Long id, Long inspectLogId, Long contentId, Date opDate, String resultType,
-            boolean hasProblem, String description, Long problemTypeId) {
+    @Generated(hash = 722504119)
+    public InspectContentLog(Long id, String pointLogCode, boolean uploaded, Long contentId,
+            Date opDate, String resultType, boolean hasProblem, String description,
+            Long problemTypeId) {
         this.id = id;
-        this.inspectLogId = inspectLogId;
+        this.pointLogCode = pointLogCode;
+        this.uploaded = uploaded;
         this.contentId = contentId;
         this.opDate = opDate;
         this.resultType = resultType;
@@ -79,12 +82,12 @@ public class InspectContentLog implements Serializable {
         this.id = id;
     }
 
-    public Long getInspectLogId() {
-        return this.inspectLogId;
+    public String getPointLogCode() {
+        return this.pointLogCode;
     }
 
-    public void setInspectLogId(Long inspectLogId) {
-        this.inspectLogId = inspectLogId;
+    public void setPointLogCode(String pointLogCode) {
+        this.pointLogCode = pointLogCode;
     }
 
     public Long getContentId() {
@@ -109,6 +112,14 @@ public class InspectContentLog implements Serializable {
 
     public void setResultType(String resultType) {
         this.resultType = resultType;
+    }
+
+    public boolean getHasProblem() {
+        return this.hasProblem;
+    }
+
+    public void setHasProblem(boolean hasProblem) {
+        this.hasProblem = hasProblem;
     }
 
     public String getDescription() {
@@ -265,15 +276,12 @@ public class InspectContentLog implements Serializable {
         myDao = daoSession != null ? daoSession.getInspectContentLogDao() : null;
     }
 
-    public boolean getHasProblem() {
-        return this.hasProblem;
+    public boolean getUploaded() {
+        return this.uploaded;
     }
 
-    public void setHasProblem(boolean hasProblem) {
-        this.hasProblem = hasProblem;
+    public void setUploaded(boolean uploaded) {
+        this.uploaded = uploaded;
     }
-
-
-
 
 }

@@ -16,13 +16,14 @@ import com.miaxis.inspection.entity.InspectContent;
 import com.miaxis.inspection.entity.InspectContentLog;
 import com.miaxis.inspection.entity.InspectForm;
 import com.miaxis.inspection.entity.InspectItem;
-import com.miaxis.inspection.entity.InspectLog;
+import com.miaxis.inspection.entity.InspectPointLog;
 import com.miaxis.inspection.entity.InspectPoint;
 import com.miaxis.inspection.entity.Task;
 import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectFormDao;
-import com.miaxis.inspection.model.local.greenDao.gen.InspectLogDao;
+import com.miaxis.inspection.model.local.greenDao.gen.InspectPointLogDao;
 import com.miaxis.inspection.model.local.greenDao.gen.TaskDao;
+import com.miaxis.inspection.utils.DateUtil;
 import com.miaxis.inspection.view.custom.SimpleDialog;
 
 import java.util.Date;
@@ -46,13 +47,15 @@ public class DoInspectItemActivity extends BaseActivity {
     private InspectPoint inspectPoint;
     private InspectItem inspectItem;
     private SimpleContentAdapter adapter;
-    private InspectLog inspectLog;
+    private InspectPointLog pointLog;
     private List<InspectContentLog> contentLogList;
     private List<InspectContent> contentList;
     private Task task;
 
-    private InspectLogDao logDao;
+    private InspectPointLogDao pointLogDao;
     private DaoSession mDaoSession;
+
+    private String pointLogCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,39 +69,38 @@ public class DoInspectItemActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+
         mDaoSession = Inspection_App.getInstance().getDaoSession();
-        logDao = mDaoSession.getInspectLogDao();
+        pointLogDao = mDaoSession.getInspectPointLogDao();
 
         inspectPoint = (InspectPoint) getIntent().getSerializableExtra("point");
         inspectPoint.__setDaoSession(mDaoSession);
 
         inspectItem = inspectPoint.getInspectItem();
 
-
         InspectFormDao formDao = mDaoSession.getInspectFormDao();
         InspectForm inspectForm = formDao.queryBuilder().where(InspectFormDao.Properties.Code.eq(inspectItem.getInspectFormCode())).unique();
         TaskDao taskDao = mDaoSession.getTaskDao();
         task = taskDao.queryBuilder().where(TaskDao.Properties.InspectFormId.eq(inspectForm.getId())).unique();
 
-        inspectLog = logDao.queryBuilder().where(InspectLogDao.Properties.InspectItemId.eq(inspectItem.getId())).unique();
-
-        if (inspectLog == null) {
-            inspectLog = new InspectLog();
-            inspectLog.setInspectPointId(inspectPoint.getId());
-//            inspectLog.setTaskId(task.getId());
-            inspectLog.setInspectItemId(inspectItem.getId());
-            logDao.save(inspectLog);
-        }
-
         contentList = inspectItem.getInspectContentList();
-        contentLogList = inspectLog.getContentList();
+        contentLogList = pointLog.getContentList();
+
+        pointLogCode = inspectPoint.getCode() + "_" + new Date().getTime();
+
+        pointLog = new InspectPointLog();
+        pointLog.setInspectItemId(inspectItem.getId());
+        pointLog.setInspectItem(inspectItem);
+        pointLog.setPointLogCode(pointLogCode);
+        pointLog.setInspectPointId(inspectPoint.getId());
+        pointLog.setInspectPoint(inspectPoint);
 
         adapter = new SimpleContentAdapter(contentList, contentLogList, this);
         adapter.setListener(new SimpleContentAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Intent i = new Intent(DoInspectItemActivity.this, DoInspectContentActivity.class);
-                i.putExtra("inspectLogId", inspectLog.getId());
+                i.putExtra("pointLogCode", pointLogCode);
                 i.putExtra("content", contentList.get(position));
                 startActivity(i);
             }
@@ -119,9 +121,9 @@ public class DoInspectItemActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         mDaoSession.clear();
-        inspectLog = logDao.queryBuilder().where(InspectLogDao.Properties.InspectItemId.eq(inspectItem.getId())).unique();
+        pointLog = pointLogDao.queryBuilder().where(InspectPointLogDao.Properties.InspectItemId.eq(inspectItem.getId())).unique();
         contentList = inspectItem.getInspectContentList();
-        contentLogList = inspectLog.getContentList();
+        contentLogList = pointLog.getContentList();
         adapter.setContentList(contentList);
         adapter.setContentLogList(contentLogList);
         adapter.notifyDataSetChanged();
@@ -150,18 +152,18 @@ public class DoInspectItemActivity extends BaseActivity {
         sd.setConfirmListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inspectLog.setInspected(true);
-                inspectLog.setInspectPointId(inspectPoint.getId());
-                inspectLog.setOpDate(new Date());
-                contentLogList = inspectLog.getContentList();
-                inspectLog.setResult("正常");
+                pointLog.setInspected(true);
+                pointLog.setOpDate(new Date());
+                pointLog.setOpInspectorCode(Inspection_App.getCurInspector().getCensorCode());
+                pointLog.setOpInspectorName(Inspection_App.getCurInspector().getCensorName());
+                contentLogList = pointLog.getContentList();
+                pointLog.setResult("正常");
                 for (int i = 0; i < contentLogList.size(); i++) {
                     if (contentLogList.get(i).getHasProblem()) {
-                        inspectLog.setResult("异常");
+                        pointLog.setResult("异常");
                     }
                 }
-                inspectLog.setOpInspectorName("测试检查员");
-                Inspection_App.getInstance().getDaoSession().getInspectLogDao().save(inspectLog);
+                Inspection_App.getInstance().getDaoSession().getInspectPointLogDao().save(pointLog);
                 sd.dismiss();
                 finish();
             }

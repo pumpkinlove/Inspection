@@ -61,12 +61,14 @@ public class SimpleContentAdapter extends RecyclerView.Adapter<SimpleContentAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
         InspectContent content = contentList.get(position);
         holder.tvContentName.setText(content.getName());
-        InspectContentLog contentLog = contentLogList.get(position);
-        holder.tvStatus.setText(contentLog.getResultType());
-        if (contentLog.getHasProblem()) {
-            holder.tvStatus.setTextColor(context.getResources().getColor(R.color.red));
-        } else {
-            holder.tvStatus.setTextColor(context.getResources().getColor(R.color.green_dark));
+        if (contentLogList.size() == contentList.size()) {
+            InspectContentLog contentLog = contentLogList.get(position);
+            holder.tvStatus.setText(contentLog.getResultType());
+            if (contentLog.getHasProblem()) {
+                holder.tvStatus.setTextColor(context.getResources().getColor(R.color.red));
+            } else {
+                holder.tvStatus.setTextColor(context.getResources().getColor(R.color.green_dark));
+            }
         }
     }
 

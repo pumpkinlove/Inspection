@@ -23,7 +23,6 @@ import com.miaxis.inspection.presenter.IPointManagePresenter;
 import com.miaxis.inspection.utils.DateUtil;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -60,6 +59,7 @@ public class PointManageModelImpl implements IPointManageModel {
                     public CheckPoint apply(InspectPoint inspectPoint) throws Exception {
                         inspectPoint.__setDaoSession(Inspection_App.getInstance().getDaoSession());
                         CheckPoint checkPoint = new CheckPoint();
+                        checkPoint.setId(inspectPoint.getId());
                         checkPoint.setBankCode(inspectPoint.getOrganization().getBankcode());
                         checkPoint.setBankId(inspectPoint.getOrganization().getId());
                         checkPoint.setCpRfid(inspectPoint.getRfid());
@@ -72,9 +72,9 @@ public class PointManageModelImpl implements IPointManageModel {
                         return checkPoint;
                     }
                 })
-                .flatMap(new Function<CheckPoint, ObservableSource<ResponseEntity>>() {
+                .flatMap(new Function<CheckPoint, ObservableSource<ResponseEntity<String>>>() {
                     @Override
-                    public ObservableSource<ResponseEntity> apply(CheckPoint checkPoint) throws Exception {
+                    public ObservableSource<ResponseEntity<String>> apply(CheckPoint checkPoint) throws Exception {
                         Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
                         Retrofit retrofit = new Retrofit.Builder()
                                 .addConverterFactory(GsonConverterFactory.create())
@@ -138,6 +138,8 @@ public class PointManageModelImpl implements IPointManageModel {
                     public void accept(ResponseEntity<CheckPoint> responseEntity) throws Exception {
                         if (responseEntity.getCode().equals("200")) {
                             pointManagePresenter.stopRefresh();
+                            InspectPointDao pointDao = Inspection_App.getInstance().getDaoSession().getInspectPointDao();
+                            pointManagePresenter.showInspectPoints(pointDao.loadAll());
                         } else {
                             pointManagePresenter.stopRefresh();
                             pointManagePresenter.setProgressDialogMessage(responseEntity.getMessage());
@@ -174,7 +176,7 @@ public class PointManageModelImpl implements IPointManageModel {
             InspectPoint inspectPoint = new InspectPoint();
             inspectPoint.setId(checkPoint.getId());
             inspectPoint.setRfid(checkPoint.getCpRfid());
-            inspectPoint.setBound(TextUtils.isEmpty(checkPoint.getCpRfid()));
+            inspectPoint.setBound(!TextUtils.isEmpty(checkPoint.getCpRfid()));
             inspectPoint.setPointName(checkPoint.getCpName());
             inspectPoint.setOrganizationId(Long.valueOf(checkPoint.getBankId()));
             inspectPoint.setInspectItemId(checkProject.getId());
