@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.entity.InspectItem;
+import com.miaxis.inspection.entity.comm.CheckProjectTime;
 
 import java.util.List;
 
@@ -48,8 +49,10 @@ public class InspectItemAdapter extends RecyclerView.Adapter<InspectItemAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         InspectItem item = inspectItemList.get(position);
-        holder.tvItemSeq.setText("" + item.getId());
+        List<CheckProjectTime> itemTime = item.getCheckProjectTime();
+
         holder.tvItemName.setText(item.getName());
+
         holder.tvItemProgress.setText(String.format(context.getString(R.string.item_progress_format),2, 1));
     }
 
@@ -69,8 +72,6 @@ public class InspectItemAdapter extends RecyclerView.Adapter<InspectItemAdapter.
         TextView tvItemName;
         @BindView(R.id.tv_item_progress)
         TextView tvItemProgress;
-        @BindView(R.id.tv_item_seq)
-        TextView tvItemSeq;
 
         ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);

@@ -24,6 +24,7 @@ import butterknife.OnClick;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private OnTaskClickListener listener;
+
     private List<Task> taskList;
     private Context context;
 
@@ -89,6 +90,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     public interface OnTaskClickListener {
         void onTaskClick(View view, int position);
+    }
+
+    public void setTaskList(List<Task> taskList) {
+        this.taskList = taskList;
     }
 
 }

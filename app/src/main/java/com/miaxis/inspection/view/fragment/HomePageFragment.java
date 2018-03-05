@@ -21,14 +21,17 @@ import android.widget.Toast;
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.LogAdapter;
 import com.miaxis.inspection.app.Inspection_App;
+import com.miaxis.inspection.entity.InspectItem;
 import com.miaxis.inspection.entity.InspectPointLog;
 import com.miaxis.inspection.entity.InspectPoint;
 import com.miaxis.inspection.entity.Task;
+import com.miaxis.inspection.entity.comm.CheckProjectTime;
 import com.miaxis.inspection.entity.comm.TaskTime;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectPointLogDao;
 import com.miaxis.inspection.model.local.greenDao.gen.TaskDao;
-import com.miaxis.inspection.utils.FrequencyType;
+import com.miaxis.inspection.utils.DateUtil;
+import com.miaxis.inspection.utils.RemindFrequencyType;
 import com.miaxis.inspection.view.activity.DoInspectItemActivity;
 import com.miaxis.inspection.view.activity.LogDetailActivity;
 import com.miaxis.inspection.view.activity.LogListActivity;
@@ -36,6 +39,9 @@ import com.miaxis.inspection.view.activity.PointListActivity;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -70,6 +76,7 @@ public class HomePageFragment extends Fragment {
     private QBadgeView badgeView;
     private LogAdapter logAdapter;
     private List<InspectPointLog> logList;
+    private List<InspectPoint> toDoPointList;
 
     public HomePageFragment() {
         // Required empty public constructor
@@ -124,14 +131,13 @@ public class HomePageFragment extends Fragment {
     }
 
     private void initBadge() {
-        InspectPointDao pointDao = Inspection_App.getInstance().getDaoSession().getInspectPointDao();
-        List<InspectPoint> pointList = pointDao.queryBuilder().where(InspectPointDao.Properties.Bound.eq(true)).list();
-        if (pointList.size() == 0) {
+        countToDoPoint();
+        if (toDoPointList.size() == 0) {
             badgeView.setVisibility(View.GONE);
         } else {
             badgeView.setVisibility(View.VISIBLE);
             badgeView.setBadgeGravity(Gravity.CENTER | Gravity.END);
-            badgeView.bindTarget(tvToDoPoint).setBadgeNumber(pointList.size());
+            badgeView.bindTarget(tvToDoPoint).setBadgeNumber(toDoPointList.size());
             badgeView.setBadgeTextSize(16, true);
         }
     }
@@ -216,34 +222,146 @@ public class HomePageFragment extends Fragment {
         startActivity(new Intent(getActivity(), LogListActivity.class));
     }
 
+    private void countToDoPoint() {
+        toDoPointList = new ArrayList<>();
+        InspectPointDao pointDao = Inspection_App.getInstance().getDaoSession().getInspectPointDao();
+        List<InspectPoint> pointList = pointDao.loadAll();
+        for (int i = 0; i < pointList.size(); i ++) {
+            InspectPoint point = pointList.get(i);
+            InspectItem inspectItem = point.getInspectItem();
+            List<CheckProjectTime> checkProjectTimes = inspectItem.getCheckProjectTime();
+            switch (inspectItem.getFrequencyType()) {
+                case RemindFrequencyType.PER_DAY:
+                    if (checkProjectTimes != null && checkProjectTimes.size() > 0) {
+                        for (int j = 0; j < checkProjectTimes.size(); j ++) {
+                            CheckProjectTime cpt = checkProjectTimes.get(j);
+                            String st = DateUtil.getTimeOfDay(cpt.getCProjectStartTime());
+                            Date std = DateUtil.strToDate(st, "yyyy-MM-dd HH:mm:ss");
 
-    private int countToDoPoint() {
-        int count = 0;
-        TaskDao taskDao = Inspection_App.getInstance().getDaoSession().getTaskDao();
+                            String et = DateUtil.getTimeOfDay(cpt.getCProjectEndTime());
+                            Date etd = DateUtil.strToDate(et, "yyyy-MM-dd HH:mm:ss");
 
-        List<Task> taskList = taskDao.loadAll();
-        for (int i = 0; i < taskList.size(); i ++) {
-            Task task = taskList.get(i);
-            switch (task.getCircleType()) {
-                case FrequencyType.PER_DAY:
-                    for (int j = 0; j < task.getTaskTime().size(); j++) {
-                        TaskTime taskTime = task.getTaskTime().get(j);
-                        taskTime.getTaskStartDay();
+                            Long c = System.currentTimeMillis();
 
+                            if (c <= etd.getTime() && c >= std.getTime()) {
+                                InspectPointLogDao pointLogDao = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao();
+                                List<InspectPointLog> pointLogs = pointLogDao.queryBuilder()
+                                        .where(InspectPointLogDao.Properties.InspectPointId.eq(point.getId()))
+                                        .where(InspectPointLogDao.Properties.OpDate.between(std, etd))
+                                        .list();
+                                if (pointLogs == null || pointLogs.size() == 0) {
+                                    toDoPointList.add(point);
+                                    break;
+                                }
+                            }
+                        }
                     }
+
                     break;
-                case FrequencyType.PER_WEEK:
+                case RemindFrequencyType.PER_WEEK:
+                    if (checkProjectTimes != null && checkProjectTimes.size() > 0) {
+                        for (int j = 0; j < checkProjectTimes.size(); j ++) {
+                            CheckProjectTime cpt = checkProjectTimes.get(j);
+                            Calendar c = Calendar.getInstance();
+
+                            Date bd = DateUtil.getDayOfThisWeek0(1);
+                            Date ed = DateUtil.getDayOfThisWeek0(7);
+
+                            Long cur = System.currentTimeMillis();
+
+                            if (cur <= ed.getTime() && cur >= bd.getTime()) {
+                                InspectPointLogDao pointLogDao = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao();
+                                List<InspectPointLog> pointLogs = pointLogDao.queryBuilder()
+                                        .where(InspectPointLogDao.Properties.InspectPointId.eq(point.getId()))
+                                        .where(InspectPointLogDao.Properties.OpDate.between(bd, ed))
+                                        .list();
+                                if (pointLogs == null || pointLogs.size() == 0) {
+                                    toDoPointList.add(point);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     break;
-                case FrequencyType.PER_MONTH:
+                case RemindFrequencyType.PER_MONTH:
+                    if (checkProjectTimes != null && checkProjectTimes.size() > 0) {
+                        for (int j = 0; j < checkProjectTimes.size(); j ++) {
+
+                            Date bd = DateUtil.getFirstDayOfThisMonth();
+                            Date ed = DateUtil.getLastDayOfThisMonth();
+
+                            Long cur = System.currentTimeMillis();
+
+                            if (cur <= ed.getTime() && cur >= bd.getTime()) {
+                                InspectPointLogDao pointLogDao = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao();
+                                List<InspectPointLog> pointLogs = pointLogDao.queryBuilder()
+                                        .where(InspectPointLogDao.Properties.InspectPointId.eq(point.getId()))
+                                        .where(InspectPointLogDao.Properties.OpDate.between(bd, ed))
+                                        .list();
+                                if (pointLogs == null || pointLogs.size() == 0) {
+                                    toDoPointList.add(point);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     break;
-                case FrequencyType.PER_SEASON:
+                case RemindFrequencyType.PER_SEASON:
+                    if (checkProjectTimes != null && checkProjectTimes.size() > 0) {
+                        for (int j = 0; j < checkProjectTimes.size(); j ++) {
+                            CheckProjectTime cpt = checkProjectTimes.get(j);
+                            Calendar c = Calendar.getInstance();
+
+                            Date bd = DateUtil.getDayOfThisWeek0(1);
+                            Date ed = DateUtil.getDayOfThisWeek0(7);
+
+                            Long cur = System.currentTimeMillis();
+
+                            if (cur <= ed.getTime() && cur >= bd.getTime()) {
+                                InspectPointLogDao pointLogDao = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao();
+                                List<InspectPointLog> pointLogs = pointLogDao.queryBuilder()
+                                        .where(InspectPointLogDao.Properties.InspectPointId.eq(point.getId()))
+                                        .where(InspectPointLogDao.Properties.OpDate.between(bd, ed))
+                                        .list();
+                                if (pointLogs == null || pointLogs.size() == 0) {
+                                    toDoPointList.add(point);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     break;
-                case FrequencyType.PER_YEAR:
+                case RemindFrequencyType.PER_YEAR:
+                    if (checkProjectTimes != null && checkProjectTimes.size() > 0) {
+                        for (int j = 0; j < checkProjectTimes.size(); j ++) {
+                            CheckProjectTime cpt = checkProjectTimes.get(j);
+                            Calendar c = Calendar.getInstance();
+
+                            Date bd = DateUtil.getFirstDayOfThisYear();
+                            Date ed = DateUtil.getLastDayOfThisYear();
+
+                            Long cur = System.currentTimeMillis();
+
+                            if (cur <= ed.getTime() && cur >= bd.getTime()) {
+                                InspectPointLogDao pointLogDao = Inspection_App.getInstance().getDaoSession().getInspectPointLogDao();
+                                List<InspectPointLog> pointLogs = pointLogDao.queryBuilder()
+                                        .where(InspectPointLogDao.Properties.InspectPointId.eq(point.getId()))
+                                        .where(InspectPointLogDao.Properties.OpDate.between(bd, ed))
+                                        .list();
+                                if (pointLogs == null || pointLogs.size() == 0) {
+                                    toDoPointList.add(point);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     break;
             }
         }
-
-        return count;
 
     }
 

@@ -22,6 +22,7 @@ import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,8 +38,6 @@ public class ItemListActivity extends BaseActivity {
     Toolbar toolbar;
     @BindView(R.id.rv_item)
     RecyclerView rvItem;
-    @BindView(R.id.srl_item)
-    SwipeRefreshLayout srlItem;
 
     private InspectItemAdapter adapter;
     private List<InspectItem> itemList;
@@ -126,7 +125,13 @@ public class ItemListActivity extends BaseActivity {
                     @Override
                     public InspectPoint apply(String rfid) throws Exception {
                         InspectPointDao pointDao = Inspection_App.getInstance().getDaoSession().getInspectPointDao();
-                        return pointDao.queryBuilder().where(InspectPointDao.Properties.Rfid.eq(rfid)).unique();
+                        InspectPoint point = pointDao.queryBuilder().where(InspectPointDao.Properties.Rfid.eq(rfid)).unique();
+                        for (int i = 0; i < itemList.size(); i ++) {
+                            if (Objects.equals(itemList.get(i).getId(), point.getInspectItemId())) {
+                                return point;
+                            }
+                        }
+                        return null;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

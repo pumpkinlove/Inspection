@@ -326,6 +326,9 @@ public class LoginModelImpl implements ILoginModel {
             task.setTaskWarnTime(Integer.valueOf(commTask.getTaskWarnTime()));
 
             List<TaskTime> tt = commTask.getTaskTime();
+            for (int j = 0; j < tt.size(); j ++) {
+                tt.get(j).setTaskId(commTask.getId());
+            }
             taskTimeDao.insertOrReplaceInTx(tt);
 
             taskList.add(task);
@@ -375,6 +378,9 @@ public class LoginModelImpl implements ILoginModel {
             inspectItem.setFrequencyType(checkProject.getcProjectTimesType());
 
             List<CheckProjectTime> cpt = checkProject.getcProjectTime();
+            for (int j = 0; j < cpt.size(); j ++) {
+                cpt.get(j).setCProjectCode(checkProject.getcProjectCode());
+            }
             checkProjectTimeDao.insertOrReplaceInTx(cpt);
 
             itemDao.insertOrReplace(inspectItem);

@@ -13,6 +13,7 @@ import com.miaxis.inspection.adapter.MainFragmentAdapter;
 import com.miaxis.inspection.view.fragment.HomePageFragment;
 import com.miaxis.inspection.view.fragment.MyTaskFragment;
 import com.miaxis.inspection.view.fragment.PersonalFragment;
+import com.miaxis.inspection.view.fragment.TaskToDoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +64,11 @@ public class MainActivity extends BaseActivity
         List<Fragment> fragmentList = new ArrayList<>();
         HomePageFragment homePageFragment = new HomePageFragment();
         fragmentList.add(homePageFragment);
-        MyTaskFragment myTaskFragment = MyTaskFragment.newInstance();
-        fragmentList.add(myTaskFragment);
+//        MyTaskFragment myTaskFragment = MyTaskFragment.newInstance();
+//        fragmentList.add(myTaskFragment);
+        TaskToDoFragment toDoFragment = new TaskToDoFragment();
+        fragmentList.add(toDoFragment);
+
         PersonalFragment personalFragment = PersonalFragment.newInstance("", "");
         fragmentList.add(personalFragment);
 

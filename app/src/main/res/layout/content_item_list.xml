@@ -9,29 +9,14 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_main">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srl_item"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_item"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_item"
-            
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
+    </android.support.v7.widget.RecyclerView>
 
-        </android.support.v7.widget.RecyclerView>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-    <Button
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="@color/white"
-        android:background="@drawable/orange_btn_bg"
-        android:id="@+id/btn_submit"
-        android:text="@string/submit"
-        android:layout_width="match_parent"
-        android:layout_height="45dp" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,10 +1,11 @@
 package com.miaxis.inspection.utils;
 
 /**
+ * 提醒频率
  * Created by xu.nan on 2018/2/8.
  */
 
-public interface FrequencyType {
+public interface RemindFrequencyType {
     int NEVER = 0;      //永不
     int PER_DAY = 1;    //"次/天";
     int PER_WEEK = 2;   //"次/周";

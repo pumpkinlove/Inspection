@@ -1019,7 +1019,6 @@ public class DateUtil {
 
     /**
      * 获得星期几
-     * @param pTime
      * @return
      * @throws Exception
      */
@@ -1119,4 +1118,87 @@ public class DateUtil {
         return f.format(c.getTime());
     }
 
+    public static Date getDayOfThisWeek0(int i) {
+        Calendar c = Calendar.getInstance();
+        int day_of_week = c.get(Calendar.DAY_OF_WEEK) - 1;
+        if (day_of_week == 0)
+            day_of_week = 7;
+        c.add(Calendar.DATE, - day_of_week + i);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.SECOND, 0);
+        return c.getTime();
+    }
+
+    public static Date getFirstDayOfThisMonth() {
+        Calendar c = Calendar.getInstance();
+        int minDay = c.getActualMinimum(Calendar.DAY_OF_MONTH) - 1;
+        c.set( c.get(Calendar.YEAR), c.get(Calendar.MONTH), minDay, 0, 0, 0);
+        return c.getTime();
+    }
+
+    public static Date getLastDayOfThisMonth() {
+        Calendar c = Calendar.getInstance();
+        int maxDay = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+        c.set( c.get(Calendar.YEAR), c.get(Calendar.MONTH), maxDay, 23, 59, 59);
+        return c.getTime();
+    }
+
+    public static Date getFirstDayOfThisSeason() {
+        Calendar c = Calendar.getInstance();
+        int minDay = c.getActualMinimum(Calendar.DAY_OF_MONTH) - 1;
+        int minMonth = getSeasonFirstMonth(c.get(Calendar.MONTH));
+        c.set( c.get(Calendar.YEAR), minMonth, minDay, 0, 0, 0);
+        return c.getTime();
+    }
+
+    public static Date getLastDayOfThisSeason() {
+        Calendar c = Calendar.getInstance();
+        int maxDay = c.getActualMaximum(Calendar.DAY_OF_YEAR);
+        int maxMonth = getSeasonLastMonth(c.get(Calendar.MONTH));
+        c.set( c.get(Calendar.YEAR), maxMonth, maxDay, 23, 59, 59);
+        return c.getTime();
+    }
+
+    private static int getSeasonFirstMonth(int month) {
+        if (month >= 1 && month <=3) {
+            return 1;
+        } else if (month >= 4 && month <= 6 ) {
+            return 4;
+        } else if (month >= 7 && month <= 9) {
+            return 7;
+        } else if (month >= 10 && month <= 12) {
+            return 10;
+        } else {
+            return -1;
+        }
+    }
+
+    private static int getSeasonLastMonth(int month) {
+        if (month >= 1 && month <= 3) {
+            return 3;
+        } else if (month >= 4 && month <= 6 ) {
+            return 6;
+        } else if (month >= 7 && month <= 9) {
+            return 9;
+        } else if (month >= 10 && month <= 12) {
+            return 12;
+        } else {
+            return -1;
+        }
+    }
+
+    public static Date getFirstDayOfThisYear() {
+        Calendar c = Calendar.getInstance();
+        int minDay = c.getActualMinimum(Calendar.DAY_OF_YEAR) - 1;
+        c.set( c.get(Calendar.YEAR), 1, minDay, 0, 0, 0);
+        return c.getTime();
+    }
+
+    public static Date getLastDayOfThisYear() {
+        Calendar c = Calendar.getInstance();
+        int maxDay = c.getActualMaximum(Calendar.DAY_OF_YEAR);
+        c.set( c.get(Calendar.YEAR), 1, maxDay, 23, 59, 59);
+        return c.getTime();
+    }
 }

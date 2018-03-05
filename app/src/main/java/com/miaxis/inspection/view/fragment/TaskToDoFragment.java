@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,15 @@ import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.TaskAdapter;
 import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.entity.Task;
+import com.miaxis.inspection.entity.comm.TaskTime;
+import com.miaxis.inspection.model.local.greenDao.gen.TaskDao;
+import com.miaxis.inspection.model.local.greenDao.gen.TaskTimeDao;
+import com.miaxis.inspection.utils.DateUtil;
+import com.miaxis.inspection.utils.RemindFrequencyType;
 import com.miaxis.inspection.view.activity.ItemListActivity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -70,8 +77,16 @@ public class TaskToDoFragment extends Fragment implements SwipeRefreshLayout.OnR
         unbinder.unbind();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("====", "task to do onResume");
+        srlTaskToDo.setRefreshing(true);
+        onRefresh();
+    }
+
     private void initData() {
-        taskList = Inspection_App.getInstance().getDaoSession().getTaskDao().loadAll();
+        taskList = new ArrayList<>();
         adapter = new TaskAdapter(taskList, getContext());
 
     }
@@ -93,25 +108,24 @@ public class TaskToDoFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        Observable.create(new ObservableOnSubscribe<String>() {
-            @Override
-            public void subscribe(@NonNull ObservableEmitter<String> e) {
-                try {
-                    Thread.sleep(500);
-                    e.onNext("onRefresh");
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        })
+        Observable
+                .create(new ObservableOnSubscribe<List<Task>>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<List<Task>> e) throws Exception {
+                        e.onNext(findToDoTask());
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
+                .subscribe(new Consumer<List<Task>>() {
                     @Override
-                    public void accept(String s) throws Exception {
-//                        Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+                    public void accept(List<Task> toDoTaskList) throws Exception {
+                        taskList = toDoTaskList;
+                        adapter.setTaskList(taskList);
+                        adapter.notifyDataSetChanged();
                         srlTaskToDo.setRefreshing(false);
                     }
+
                 });
     }
 
@@ -159,4 +173,66 @@ public class TaskToDoFragment extends Fragment implements SwipeRefreshLayout.OnR
         });
 
     }
+
+    private List<Task> findToDoTask() {
+        TaskDao taskDao = Inspection_App.getInstance().getDaoSession().getTaskDao();
+        List<Task> taskList = taskDao.loadAll();
+        List<Task> toDoTaskList = new ArrayList<>();
+        for (int i = 0; i < taskList.size(); i ++) {
+            Task task = taskList.get(i);
+            switch (task.getCircleType()) {
+                case RemindFrequencyType.NEVER:
+                    TaskTime taskTime = task.getTaskTime().get(0);
+                    String startTime = DateUtil.getTimeOfDay(taskTime.getTaskStartTime());
+                    Date startTimeDate = DateUtil.strToDate(startTime, "yyyy-MM-dd HH:mm:ss");
+
+                    String endTime = DateUtil.getTimeOfDay(taskTime.getTaskEndTime());
+                    Date endTimeDate = DateUtil.strToDate(endTime, "yyyy-MM-dd HH:mm:ss");
+
+                    Long cur = System.currentTimeMillis();
+
+                    if (cur <= endTimeDate.getTime() && cur >= startTimeDate.getTime()) {
+                        toDoTaskList.add(task);
+                    }
+
+                    break;
+                case RemindFrequencyType.PER_DAY:
+                    List<TaskTime> taskTimeList = task.getTaskTime();
+                    for (int j = 0; j < taskTimeList.size(); j ++) {
+                        TaskTime tt = taskTimeList.get(j);
+                        String st = DateUtil.getTimeOfDay(tt.getTaskStartTime());
+                        Date std = DateUtil.strToDate(st, "yyyy-MM-dd HH:mm:ss");
+
+                        String et = DateUtil.getTimeOfDay(tt.getTaskEndTime());
+                        Date etd = DateUtil.strToDate(et, "yyyy-MM-dd HH:mm:ss");
+
+                        Long c = System.currentTimeMillis();
+
+                        if (c <= etd.getTime() && c >= std.getTime()) {
+                            toDoTaskList.add(task);
+                            break;
+                        }
+                    }
+                    break;
+                case RemindFrequencyType.PER_WEEK:
+                    toDoTaskList.add(task);
+                    break;
+                case RemindFrequencyType.PER_MONTH:
+                    toDoTaskList.add(task);
+                    break;
+                case RemindFrequencyType.PER_SEASON:
+                    toDoTaskList.add(task);
+                    break;
+                case RemindFrequencyType.PER_YEAR:
+                    toDoTaskList.add(task);
+                    break;
+
+            }
+        }
+        return toDoTaskList;
+
+
+    }
+
+
 }
