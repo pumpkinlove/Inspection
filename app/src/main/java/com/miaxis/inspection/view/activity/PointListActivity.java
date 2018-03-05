@@ -50,9 +50,14 @@ public class PointListActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        InspectPointDao pointDao = Inspection_App.getInstance().getDaoSession().getInspectPointDao();
-        pointList = pointDao.queryBuilder().where(InspectPointDao.Properties.Bound.eq(true)).list();
 
+        pointList = new ArrayList<>();
+
+        int toDoPointCount = getIntent().getIntExtra("toDoPointCount", 0);
+        for (int i = 0; i < toDoPointCount; i ++) {
+            InspectPoint point = (InspectPoint) getIntent().getSerializableExtra("toDoPoint" + i);
+            pointList.add(point);
+        }
         adapter = new SimplePointAdapter(pointList, this);
         adapter.setListener(new SimplePointAdapter.OnItemClickListener() {
             @Override

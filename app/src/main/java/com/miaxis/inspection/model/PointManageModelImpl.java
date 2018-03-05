@@ -53,7 +53,7 @@ public class PointManageModelImpl implements IPointManageModel {
         pointManagePresenter.setProgressDialogCancelable(false);
         Observable
                 .just(inspectPoint)
-                .observeOn(Schedulers.newThread())
+                .observeOn(Schedulers.io())
                 .map(new Function<InspectPoint, CheckPoint>() {
                     @Override
                     public CheckPoint apply(InspectPoint inspectPoint) throws Exception {
@@ -72,9 +72,9 @@ public class PointManageModelImpl implements IPointManageModel {
                         return checkPoint;
                     }
                 })
-                .flatMap(new Function<CheckPoint, ObservableSource<ResponseEntity<String>>>() {
+                .flatMap(new Function<CheckPoint, ObservableSource<ResponseEntity>>() {
                     @Override
-                    public ObservableSource<ResponseEntity<String>> apply(CheckPoint checkPoint) throws Exception {
+                    public ObservableSource<ResponseEntity> apply(CheckPoint checkPoint) throws Exception {
                         Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
                         Retrofit retrofit = new Retrofit.Builder()
                                 .addConverterFactory(GsonConverterFactory.create())
@@ -92,7 +92,7 @@ public class PointManageModelImpl implements IPointManageModel {
                     public void accept(ResponseEntity responseEntity) throws Exception {
                         if (TextUtils.equals("200", responseEntity.getCode())) {
                             InspectPointDao pointDao = Inspection_App.getInstance().getDaoSession().getInspectPointDao();
-                            pointDao.update(inspectPoint);
+                            pointDao.insertOrReplace(inspectPoint);
                             pointManagePresenter.showInspectPoints(pointDao.loadAll());
                             pointManagePresenter.setProgressDialogMessage("检查点信息更新完成！");
                             pointManagePresenter.hideProgressDialog();

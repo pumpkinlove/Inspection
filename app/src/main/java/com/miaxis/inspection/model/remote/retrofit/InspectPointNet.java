@@ -19,6 +19,6 @@ public interface InspectPointNet {
 
     @FormUrlEncoded
     @POST("anbao/api/modPoint")
-    Observable<ResponseEntity<String>> updateInspectPoint(@Field("jsonPoint") String jsonPoint);
+    Observable<ResponseEntity> updateInspectPoint(@Field("jsonPoint") String jsonPoint);
 
 }

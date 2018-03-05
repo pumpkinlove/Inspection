@@ -154,7 +154,12 @@ public class HomePageFragment extends Fragment {
 
     @OnClick(R.id.cv_point_to_do)
     void onToDoInspectPoint() {
-        startActivity(new Intent(getContext(), PointListActivity.class));
+        Intent intent = new Intent(getContext(), PointListActivity.class);
+        intent.putExtra("toDoPointCount", toDoPointList.size());
+        for (int i = 0; i < toDoPointList.size(); i ++) {
+            intent.putExtra("toDoPoint" + i, toDoPointList.get(i));
+        }
+        startActivity(intent);
     }
 
 
@@ -311,8 +316,6 @@ public class HomePageFragment extends Fragment {
                 case RemindFrequencyType.PER_SEASON:
                     if (checkProjectTimes != null && checkProjectTimes.size() > 0) {
                         for (int j = 0; j < checkProjectTimes.size(); j ++) {
-                            CheckProjectTime cpt = checkProjectTimes.get(j);
-                            Calendar c = Calendar.getInstance();
 
                             Date bd = DateUtil.getDayOfThisWeek0(1);
                             Date ed = DateUtil.getDayOfThisWeek0(7);
@@ -337,8 +340,6 @@ public class HomePageFragment extends Fragment {
                 case RemindFrequencyType.PER_YEAR:
                     if (checkProjectTimes != null && checkProjectTimes.size() > 0) {
                         for (int j = 0; j < checkProjectTimes.size(); j ++) {
-                            CheckProjectTime cpt = checkProjectTimes.get(j);
-                            Calendar c = Calendar.getInstance();
 
                             Date bd = DateUtil.getFirstDayOfThisYear();
                             Date ed = DateUtil.getLastDayOfThisYear();

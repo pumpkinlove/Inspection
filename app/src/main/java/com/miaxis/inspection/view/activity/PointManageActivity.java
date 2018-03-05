@@ -162,7 +162,6 @@ public class PointManageActivity extends BaseActivity implements IPointManageVie
                 point.setOpUserCode(Inspection_App.getCurInspector().getCensorCode());
                 point.setOpUserName(Inspection_App.getCurInspector().getCensorName());
                 pointManagePresenter.updatePoint(point);
-                Toast.makeText(PointManageActivity.this, "绑定成功", Toast.LENGTH_LONG).show();
             } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
                 Toast.makeText(PointManageActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
             }
