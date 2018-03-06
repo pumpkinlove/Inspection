@@ -47,6 +47,7 @@ import com.miaxis.inspection.utils.DateUtil;
 import com.miaxis.inspection.utils.PictureUtil;
 import com.miaxis.inspection.utils.ResultType;
 import com.miaxis.inspection.view.custom.BottomMenu;
+import com.miaxis.inspection.view.custom.SimpleDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -166,11 +167,7 @@ public class DoInspectContentActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.action_submit:
-                try {
-                    submit();
-                } catch (Exception e) {
-                    finish();
-                }
+                submit();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -390,6 +387,10 @@ public class DoInspectContentActivity extends BaseActivity {
     private void submit() {
         if (inspectPointLogCode == null) {
             Toast.makeText(this, "缺少日志编号", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!tvResultType1.isSelected() && !tvResultType2.isSelected()) {
+            Toast.makeText(this, "请选择检查结果", Toast.LENGTH_SHORT).show();
             return;
         }
         InspectContentLog contentLog = new InspectContentLog();
@@ -615,4 +616,22 @@ public class DoInspectContentActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        final SimpleDialog sd = new SimpleDialog();
+        sd.setMessage("检查内容尚未提交，是否返回上级页面？");
+        sd.setConfirmListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        sd.setCancelListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sd.dismiss();
+            }
+        });
+        sd.show(getFragmentManager(), "back");
+    }
 }
