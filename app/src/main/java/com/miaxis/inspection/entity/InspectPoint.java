@@ -27,7 +27,7 @@ public class InspectPoint implements Serializable {
 
     @Id(autoincrement = true)
     private Long id;
-
+    @Unique
     private String code;
     @Unique
     private String rfid;

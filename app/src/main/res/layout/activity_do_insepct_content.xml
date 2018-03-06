@@ -63,20 +63,22 @@
     </LinearLayout>
 
     <ScrollView
+        android:background="@color/white"
+        android:layout_marginTop="10dp"
         android:id="@+id/sv_problem"
-        android:visibility="invisible"
         android:layout_weight="1"
         android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/activity_padding"
         android:layout_height="0dp">
 
         <LinearLayout
-            android:layout_marginTop="10dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <GridLayout
                 android:id="@+id/gl_problem_type"
+                android:layout_marginTop="5dp"
                 android:layout_marginStart="@dimen/activity_padding"
                 android:layout_marginEnd="@dimen/activity_padding"
                 android:layout_width="match_parent"
@@ -116,7 +118,6 @@
                 android:textColor="@color/blue_band_dark"
                 android:textStyle="bold"
                 android:text="@string/pic_description"
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -131,12 +132,107 @@
                 android:layout_height="wrap_content"
                 android:minHeight="160dp">
 
-            </android.support.v7.widget.RecyclerView>a
+            </android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:layout_marginStart="@dimen/activity_padding"
+                android:layout_marginEnd="@dimen/activity_padding"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/blue_band_dark"
+                android:textStyle="bold"
+                android:text="视频描述"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="@dimen/activity_padding"
+                android:layout_marginEnd="@dimen/activity_padding"
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <Button
+                    android:background="@drawable/blue_btn_bg"
+                    android:textColor="@color/white"
+                    android:id="@+id/btn_video_record"
+                    android:text="点击录制视频"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:visibility="gone"
+                    android:background="@drawable/blue_btn_bg"
+                    android:textColor="@color/white"
+                    android:id="@+id/btn_video_play"
+                    android:text="视频已录制 点击播放"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/tv_video_name"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginStart="@dimen/activity_padding"
+                android:layout_marginEnd="@dimen/activity_padding"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/blue_band_dark"
+                android:textStyle="bold"
+                android:text="音频描述"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="@dimen/activity_padding"
+                android:layout_marginEnd="@dimen/activity_padding"
+                android:layout_marginBottom="@dimen/activity_padding"
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <Button
+                    android:background="@drawable/blue_btn_bg"
+                    android:textColor="@color/white"
+                    android:id="@+id/btn_voice_record"
+                    android:text="点击录音"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:visibility="gone"
+                    android:background="@drawable/blue_btn_bg"
+                    android:textColor="@color/white"
+                    android:id="@+id/btn_voice_play"
+                    android:text="录音已保存 点击播放"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/tv_voice_name"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
-
-
 
 </LinearLayout>

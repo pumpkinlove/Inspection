@@ -53,7 +53,6 @@ public class InspectorAdapter extends RecyclerView.Adapter<InspectorAdapter.View
         Inspector inspector = inspectorList.get(position);
         holder.tvInspectorName.setText(inspector.getCensorName());
         holder.tvInspectorCode.setText(inspector.getCensorCode());
-        holder.tvInspectorRole.setText(inspector.getRoleId());
     }
 
     @Override

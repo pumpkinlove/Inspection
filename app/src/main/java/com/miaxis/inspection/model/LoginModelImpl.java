@@ -35,7 +35,6 @@ import com.miaxis.inspection.model.remote.retrofit.DownInspectorNet;
 import com.miaxis.inspection.model.remote.retrofit.DownPermissionNet;
 import com.miaxis.inspection.model.remote.retrofit.DownTaskNet;
 import com.miaxis.inspection.presenter.ILoginPresenter;
-import com.miaxis.inspection.utils.DateUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -345,11 +344,6 @@ public class LoginModelImpl implements ILoginModel {
         InspectItemDao itemDao = daoSession.getInspectItemDao();
         InspectContentDao contentDao = daoSession.getInspectContentDao();
         CheckProjectTimeDao checkProjectTimeDao = daoSession.getCheckProjectTimeDao();
-
-        List<InspectPoint> aPointList = pointDao.loadAll();
-        List<InspectItem> aItemList = itemDao.loadAll();
-        List<InspectContent> aContentList = contentDao.loadAll();
-        List<CheckProjectTime> aCPT = checkProjectTimeDao.loadAll();
 
         checkProjectTimeDao.deleteAll();
 

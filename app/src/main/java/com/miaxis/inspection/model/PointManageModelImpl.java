@@ -13,6 +13,8 @@ import com.miaxis.inspection.entity.ResponseEntity;
 import com.miaxis.inspection.entity.comm.CheckPoint;
 import com.miaxis.inspection.entity.comm.CheckProject;
 import com.miaxis.inspection.entity.comm.CheckProjectContent;
+import com.miaxis.inspection.entity.comm.CheckProjectTime;
+import com.miaxis.inspection.model.local.greenDao.gen.CheckProjectTimeDao;
 import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectContentDao;
 import com.miaxis.inspection.model.local.greenDao.gen.InspectItemDao;
@@ -53,7 +55,7 @@ public class PointManageModelImpl implements IPointManageModel {
         pointManagePresenter.setProgressDialogCancelable(false);
         Observable
                 .just(inspectPoint)
-                .observeOn(Schedulers.io())
+                .observeOn(Schedulers.newThread())
                 .map(new Function<InspectPoint, CheckPoint>() {
                     @Override
                     public CheckPoint apply(InspectPoint inspectPoint) throws Exception {
@@ -163,10 +165,7 @@ public class PointManageModelImpl implements IPointManageModel {
         InspectPointDao pointDao = daoSession.getInspectPointDao();
         InspectItemDao itemDao = daoSession.getInspectItemDao();
         InspectContentDao contentDao = daoSession.getInspectContentDao();
-
-        List<InspectPoint> aPointList = pointDao.loadAll();
-        List<InspectItem> aItemList = itemDao.loadAll();
-        List<InspectContent> aContentList = contentDao.loadAll();
+        CheckProjectTimeDao checkProjectTimeDao = daoSession.getCheckProjectTimeDao();
 
         List<CheckPoint> checkPointList = checkPointResponseEntity.getListData();
         List<InspectPoint> inspectPointList = new ArrayList<>();
@@ -187,6 +186,15 @@ public class PointManageModelImpl implements IPointManageModel {
             inspectItem.setId(checkProject.getId());
             inspectItem.setName(checkProject.getcProjectName());
             inspectItem.setInspectFormCode(checkProject.getParentCode());
+            inspectItem.setCode(checkProject.getcProjectCode());
+            inspectItem.setCount(checkProject.getcProjectTimes());
+            inspectItem.setFrequencyType(checkProject.getcProjectTimesType());
+
+            List<CheckProjectTime> cpt = checkProject.getcProjectTime();
+            for (int j = 0; j < cpt.size(); j ++) {
+                cpt.get(j).setCProjectCode(checkProject.getcProjectCode());
+            }
+            checkProjectTimeDao.insertOrReplaceInTx(cpt);
 
             itemDao.insertOrReplace(inspectItem);
 

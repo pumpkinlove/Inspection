@@ -6,7 +6,7 @@ package com.miaxis.inspection.entity.comm;
 
 public class CheckPointLog {
 
-    private Integer id;                       //日志ID
+    private Long id;                       //日志ID
     private String cPointLogCode;             //检查项日志编号
     private String cPointCode;                //检查点编码
     private String cPointName;                //检查点名称
@@ -21,11 +21,12 @@ public class CheckPointLog {
     private String opDate;                    //日志记录时间
     private String status;                    //状态(0.正常,1.异常)
 
-    public Integer getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

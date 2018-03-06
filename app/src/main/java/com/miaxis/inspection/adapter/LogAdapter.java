@@ -2,6 +2,7 @@ package com.miaxis.inspection.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,16 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
         if (log.getInspected()) {
             holder.tvLogPoint.setText(log.getInspectPoint().getPointName());
             holder.tvLogTime.setText(DateUtil.toHourMinString(log.getOpDate()));
-            holder.tvLogResult.setText(log.getResult());
+            switch (log.getResultType()) {
+                case 0:
+                    holder.tvLogResult.setTextColor(context.getResources().getColor(R.color.green_dark));
+                    holder.tvLogResult.setText("正常");
+                    break;
+                case 1:
+                    holder.tvLogResult.setTextColor(context.getResources().getColor(R.color.red));
+                    holder.tvLogResult.setText("异常");
+                    break;
+            }
         }
     }
 
