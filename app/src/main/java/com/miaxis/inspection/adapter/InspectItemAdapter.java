@@ -53,7 +53,7 @@ public class InspectItemAdapter extends RecyclerView.Adapter<InspectItemAdapter.
 
         holder.tvItemName.setText(item.getName());
 
-        holder.tvItemProgress.setText(String.format(context.getString(R.string.item_progress_format),2, 1));
+//        holder.tvItemProgress.setText(String.format(context.getString(R.string.item_progress_format),2, 1));
     }
 
     @Override

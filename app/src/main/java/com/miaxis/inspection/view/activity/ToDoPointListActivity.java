@@ -5,16 +5,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.miaxis.inspection.R;
 import com.miaxis.inspection.adapter.SimplePointAdapter;
-import com.miaxis.inspection.app.Inspection_App;
 import com.miaxis.inspection.entity.InspectPoint;
-import com.miaxis.inspection.model.local.greenDao.gen.InspectPointDao;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -23,13 +20,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 
-public class PointListActivity extends BaseActivity {
+public class ToDoPointListActivity extends BaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -62,7 +54,7 @@ public class PointListActivity extends BaseActivity {
         adapter.setListener(new SimplePointAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent i = new Intent(PointListActivity.this, CaptureActivity.class);
+                Intent i = new Intent(ToDoPointListActivity.this, CaptureActivity.class);
                 startActivityForResult(i, position);
             }
         });
@@ -101,14 +93,14 @@ public class PointListActivity extends BaseActivity {
             if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                 String rfid = bundle.getString(CodeUtils.RESULT_STRING);
                 if (!pointList.get(requestCode).getRfid().equals(rfid)) {
-                    Toast.makeText(PointListActivity.this, "错误的二维码", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ToDoPointListActivity.this, "错误的二维码", Toast.LENGTH_LONG).show();
                 } else {
-                    Intent i = new Intent(PointListActivity.this, DoInspectItemActivity.class);
+                    Intent i = new Intent(ToDoPointListActivity.this, DoInspectItemActivity.class);
                     i.putExtra("point", pointList.get(requestCode));
                     startActivity(i);
                 }
             } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
-                Toast.makeText(PointListActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
+                Toast.makeText(ToDoPointListActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
             }
         }
     }

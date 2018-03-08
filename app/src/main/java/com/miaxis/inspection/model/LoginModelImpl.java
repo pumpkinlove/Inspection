@@ -355,7 +355,11 @@ public class LoginModelImpl implements ILoginModel {
             InspectPoint inspectPoint = new InspectPoint();
             inspectPoint.setId(checkPoint.getId());
             inspectPoint.setCode(checkPoint.getCpCode());
-            inspectPoint.setRfid(checkPoint.getCpRfid());
+            if (TextUtils.isEmpty(checkPoint.getCpRfid())) {
+                inspectPoint.setRfid(null);
+            } else {
+                inspectPoint.setRfid(checkPoint.getCpRfid());
+            }
             inspectPoint.setBound(!TextUtils.isEmpty(checkPoint.getCpRfid()));
             inspectPoint.setPointName(checkPoint.getCpName());
             inspectPoint.setOrganizationId(Long.valueOf(checkPoint.getBankId()));

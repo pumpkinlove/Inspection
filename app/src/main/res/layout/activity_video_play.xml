@@ -2,11 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/gray_bg"
-    tools:context="com.miaxis.inspection.view.activity.ToDoPointListActivity">
+    tools:context="com.miaxis.inspection.view.activity.VideoPlayActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,20 +21,27 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!--<android.support.v4.widget.SwipeRefreshLayout-->
-        <!--android:layout_marginTop="10dp"-->
-        <!--android:id="@+id/srl_point"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1">-->
+    <VideoView
+        android:layout_gravity="center"
+        android:id="@+id/vv_play"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_point"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <Button
+        android:background="@drawable/white_btn_bg"
+        android:id="@+id/btn_play"
+        android:text="播放"
+        android:layout_width="match_parent"
+        android:layout_height="45dp" />
 
-        </android.support.v7.widget.RecyclerView>
-
-    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+    <Button
+        android:background="@drawable/white_btn_bg"
+        android:visibility="gone"
+        android:id="@+id/btn_pause"
+        android:textColor="@color/red"
+        android:text="暂停"
+        android:layout_width="match_parent"
+        android:layout_height="45dp" />
 
 </LinearLayout>

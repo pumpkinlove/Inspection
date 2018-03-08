@@ -231,7 +231,6 @@ public class TaskToDoFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
         return toDoTaskList;
 
-
     }
 
 

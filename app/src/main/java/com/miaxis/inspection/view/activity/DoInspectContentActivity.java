@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -51,6 +52,8 @@ import com.miaxis.inspection.view.custom.SimpleDialog;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -134,6 +137,7 @@ public class DoInspectContentActivity extends BaseActivity {
     private Uri videoUri;
     private String videoName;
     private File voiceFile;
+    private Uri voiceUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +171,11 @@ public class DoInspectContentActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.action_submit:
-                submit();
+                try {
+                    submit();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -321,7 +329,7 @@ public class DoInspectContentActivity extends BaseActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         switch (requestCode) {
             case CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
@@ -329,6 +337,14 @@ public class DoInspectContentActivity extends BaseActivity {
                     tvVideoName.setVisibility(View.VISIBLE);
                     btnVideoRecord.setVisibility(View.GONE);
                     tvVideoName.setText(videoName);
+                    btnVideoPlay.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent i = new Intent(DoInspectContentActivity.this, VideoPlayActivity.class);
+                            i.putExtra("uri", data.getData());
+                            startActivity(i);
+                        }
+                    });
                 } else if (resultCode == RESULT_CANCELED) {
                 } else {
                 }
@@ -352,7 +368,7 @@ public class DoInspectContentActivity extends BaseActivity {
                 break;
             case CAPTURE_VOICE_ACTIVITY_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    Uri voiceUri = data.getData();
+                    voiceUri = data.getData();
                     voiceFile = CommonUtil.getFileByUri(voiceUri, this);
                     btnVoicePlay.setVisibility(View.VISIBLE);
                     tvVoiceName.setVisibility(View.VISIBLE);
@@ -384,7 +400,7 @@ public class DoInspectContentActivity extends BaseActivity {
         photoList.add(addNew);
     }
 
-    private void submit() {
+    private void submit() throws UnsupportedEncodingException {
         if (inspectPointLogCode == null) {
             Toast.makeText(this, "缺少日志编号", Toast.LENGTH_SHORT).show();
             return;
@@ -418,10 +434,9 @@ public class DoInspectContentActivity extends BaseActivity {
         }
 
         uploadContentLog(contentLog);
-//        uploadPhoto();
     }
 
-    private void uploadContentLog(final InspectContentLog contentLog) {
+    private void uploadContentLog(final InspectContentLog contentLog) throws UnsupportedEncodingException {
         Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
@@ -430,7 +445,53 @@ public class DoInspectContentActivity extends BaseActivity {
                 .build();
         final LogNet net = retrofit.create(LogNet.class);
 
-        net.uploadContentLog(fetchContentLog(contentLog))
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);//表单类型
+        if (hasProblem) {
+            for (int i = 0; i < photoList.size(); i++) {
+                ProblemPhoto p = photoList.get(i);
+                File mFile = new File(p.getPicUrl());
+                RequestBody photoRequestBody = RequestBody.create(MediaType.parse("image/jpg"), mFile);
+                builder.addFormDataPart("file", mFile.getName(), photoRequestBody);
+                switch (i) {
+                    case 0:
+                        contentLog.setPhotoName1(mFile.getName());
+                        break;
+                    case 1:
+                        contentLog.setPhotoName2(mFile.getName());
+                        break;
+                    case 2:
+                        contentLog.setPhotoName3(mFile.getName());
+                        break;
+                    case 3:
+                        contentLog.setPhotoName4(mFile.getName());
+                        break;
+                    case 4:
+                        contentLog.setPhotoName5(mFile.getName());
+                        break;
+                }
+            }
+
+            if (videoUri != null) {
+                File videoFile = CommonUtil.getFileByUri(videoUri, DoInspectContentActivity.this);
+                RequestBody videoRequestBody = RequestBody.create(MediaType.parse("image/jpg"), videoFile);
+                builder.addFormDataPart("file", videoFile.getName(), videoRequestBody);
+                contentLog.setVideoName(videoFile.getName());
+            }
+            if (voiceUri != null) {
+                RequestBody voiceRequestBody = RequestBody.create(MediaType.parse("image/jpg"), voiceFile);
+                builder.addFormDataPart("file", voiceFile.getName(), voiceRequestBody);
+                contentLog.setVoiceName(voiceFile.getName());
+            }
+        }
+        List<MultipartBody.Part> parts = null;
+        try {
+            parts = builder.build().parts();
+        } catch (Exception e) {
+            parts = builder.addFormDataPart("t", "").build().parts();
+        }
+
+        net.uploadContentLog(fetchContentLog(contentLog), parts)
                 .subscribeOn(Schedulers.newThread())
                 .doOnNext(new Consumer<ResponseEntity<String>>() {
                     @Override
@@ -442,59 +503,6 @@ public class DoInspectContentActivity extends BaseActivity {
                         }
                         InspectContentLogDao contentLogDao = Inspection_App.getInstance().getDaoSession().getInspectContentLogDao();
                         contentLogDao.insertOrReplace(contentLog);
-                    }
-                })
-                .flatMap(new Function<ResponseEntity<String>, ObservableSource<ResponseEntity>>() {
-                    @Override
-                    public ObservableSource<ResponseEntity> apply(ResponseEntity<String> responseEntity) throws Exception {
-                        if (TextUtils.equals("200", responseEntity.getCode())) {
-                            MultipartBody.Builder builder = new MultipartBody.Builder()
-                                    .setType(MultipartBody.FORM);//表单类型
-                            for (int i = 0; i < photoList.size(); i++) {
-                                ProblemPhoto p = photoList.get(i);
-                                File mFile = new File(p.getPicUrl());
-                                RequestBody photoRequestBody = RequestBody.create(MediaType.parse("image/jpg"), mFile);
-                                builder.addFormDataPart("file", mFile.getName(), photoRequestBody);
-                            }
-                            List<MultipartBody.Part> parts = builder.build().parts();
-                            return net.uploadPictures(parts);
-                        } else {
-                            Toast.makeText(DoInspectContentActivity.this, responseEntity.getMessage(), Toast.LENGTH_SHORT).show();
-                            return null;
-                        }
-                    }
-                })
-                .flatMap(new Function<ResponseEntity, ObservableSource<ResponseEntity>>() {
-                    @Override
-                    public ObservableSource<ResponseEntity> apply(ResponseEntity responseEntity) throws Exception {
-                        if (TextUtils.equals("200", responseEntity.getCode())) {
-                            MultipartBody.Builder builder = new MultipartBody.Builder()
-                                    .setType(MultipartBody.FORM);//表单类型
-                                File mFile = CommonUtil.getFileByUri(videoUri, DoInspectContentActivity.this);
-                                RequestBody photoRequestBody = RequestBody.create(MediaType.parse("image/jpg"), mFile);
-                                builder.addFormDataPart("file", mFile.getName(), photoRequestBody);
-                            MultipartBody.Part parts = builder.build().part(0);
-                            return net.uploadVideo(parts);
-                        } else {
-                            Toast.makeText(DoInspectContentActivity.this, responseEntity.getMessage(), Toast.LENGTH_SHORT).show();
-                            return null;
-                        }
-                    }
-                })
-                .flatMap(new Function<ResponseEntity, ObservableSource<ResponseEntity>>() {
-                    @Override
-                    public ObservableSource<ResponseEntity> apply(ResponseEntity responseEntity) throws Exception {
-                        if (TextUtils.equals("200", responseEntity.getCode())) {
-                            MultipartBody.Builder builder = new MultipartBody.Builder()
-                                    .setType(MultipartBody.FORM);//表单类型
-                                RequestBody photoRequestBody = RequestBody.create(MediaType.parse("image/jpg"), voiceFile);
-                                builder.addFormDataPart("file", voiceFile.getName(), photoRequestBody);
-                            MultipartBody.Part part = builder.build().part(0);
-                            return net.uploadVoice(part);
-                        } else {
-                            Toast.makeText(DoInspectContentActivity.this, responseEntity.getMessage(), Toast.LENGTH_SHORT).show();
-                            return null;
-                        }
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -518,44 +526,7 @@ public class DoInspectContentActivity extends BaseActivity {
 
     }
 
-    private void uploadPhoto() {
-        Config config = Inspection_App.getInstance().getDaoSession().getConfigDao().load(1L);
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl("http://" + config.getIp() + ":" + config.getPort())
-                .build();
-        LogNet net = retrofit.create(LogNet.class);
-
-        MultipartBody.Builder builder = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM);//表单类型
-        for (int i = 0; i < photoList.size(); i++) {
-            ProblemPhoto p = photoList.get(i);
-            File mFile = new File(p.getPicUrl());
-            RequestBody photoRequestBody = RequestBody.create(MediaType.parse("image/jpg"), mFile);
-            builder.addFormDataPart("file", mFile.getName(), photoRequestBody);
-        }
-        List<MultipartBody.Part> parts = builder.build().parts();
-
-        net.uploadPictures(parts)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ResponseEntity>() {
-                    @Override
-                    public void accept(ResponseEntity responseEntity) throws Exception {
-                        if (TextUtils.equals("200", responseEntity.getCode())) {
-
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Toast.makeText(DoInspectContentActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private String fetchContentLog(InspectContentLog contentLog) {
+    private String fetchContentLog(InspectContentLog contentLog) throws UnsupportedEncodingException {
         CheckContentLog checkContentLog = new CheckContentLog();
         InspectContent inspectContent = contentLog.getInspectContent();
         InspectItem inspectItem = inspectContent.getInspectItem();
@@ -563,15 +534,25 @@ public class DoInspectContentActivity extends BaseActivity {
         checkContentLog.setProjectCode(inspectItem.getCode());
         checkContentLog.setcPointLogCode(contentLog.getPointLogCode());
         checkContentLog.setOpDate(DateUtil.toHourMinString(contentLog.getOpDate()));
-        checkContentLog.setOpUser(Inspection_App.getCurInspector().getOpUserName());
-        checkContentLog.setDescription(contentLog.getDescription());
-        checkContentLog.setProjectContent(inspectContent.getName());
+        checkContentLog.setOpUser(URLEncoder.encode(Inspection_App.getCurInspector().getOpUserName(),"utf-8"));
+        checkContentLog.setProjectContent(URLEncoder.encode(inspectContent.getName(),"utf-8"));
         if (contentLog.getHasProblem()) {
+            checkContentLog.setStatus(1);
             checkContentLog.setErrorType(Integer.valueOf(contentLog.getProblemType().getType() + ""));
+            checkContentLog.setDescription(URLEncoder.encode(contentLog.getDescription(),"utf-8"));
+            checkContentLog.setPicture0Url(contentLog.getPhotoName1());
+            checkContentLog.setPicture1Url(contentLog.getPhotoName2());
+            checkContentLog.setPicture2Url(contentLog.getPhotoName3());
+            checkContentLog.setPicture3Url(contentLog.getPhotoName4());
+            checkContentLog.setPicture4Url(contentLog.getPhotoName5());
+            checkContentLog.setVideoUrl(contentLog.getVideoName());
+            checkContentLog.setVoiceUrl(contentLog.getVoiceName());
+        } else {
+            checkContentLog.setStatus(0);
         }
         checkContentLog.setResult(contentLog.getResultType());
-
         return new Gson().toJson(checkContentLog);
+
     }
 
     @OnClick(R.id.btn_video_record)
@@ -604,11 +585,6 @@ public class DoInspectContentActivity extends BaseActivity {
         return mediaFile;
     }
 
-    @OnClick(R.id.btn_video_play)
-    void onPlayVideo() {
-
-    }
-
     @OnClick(R.id.btn_voice_record)
     void onRecordVoice() {
         Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
@@ -633,5 +609,21 @@ public class DoInspectContentActivity extends BaseActivity {
             }
         });
         sd.show(getFragmentManager(), "back");
+    }
+
+    @OnClick(R.id.btn_voice_play)
+    void onPlayVoice() {
+//        if (tvVoiceName.getVisibility() == View.VISIBLE && voiceFile != null && TextUtils.isEmpty(tvVoiceName.getText().toString())) {
+//            MediaPlayer mediaPlayer = new MediaPlayer();
+//            try {
+//                mediaPlayer.reset();
+//                mediaPlayer.setDataSource(this, voiceUri);
+//                mediaPlayer.prepare();
+//                mediaPlayer.start();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                Toast.makeText(DoInspectContentActivity.this, "播放录音时遇到错误！", Toast.LENGTH_LONG).show();
+//            }
+//        }
     }
 }

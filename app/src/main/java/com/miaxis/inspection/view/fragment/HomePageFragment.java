@@ -32,7 +32,7 @@ import com.miaxis.inspection.utils.RemindFrequencyType;
 import com.miaxis.inspection.view.activity.DoInspectItemActivity;
 import com.miaxis.inspection.view.activity.LogDetailActivity;
 import com.miaxis.inspection.view.activity.LogListActivity;
-import com.miaxis.inspection.view.activity.PointListActivity;
+import com.miaxis.inspection.view.activity.ToDoPointListActivity;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -151,7 +151,7 @@ public class HomePageFragment extends Fragment {
 
     @OnClick(R.id.cv_point_to_do)
     void onToDoInspectPoint() {
-        Intent intent = new Intent(getContext(), PointListActivity.class);
+        Intent intent = new Intent(getContext(), ToDoPointListActivity.class);
         intent.putExtra("toDoPointCount", toDoPointList.size());
         for (int i = 0; i < toDoPointList.size(); i ++) {
             intent.putExtra("toDoPoint" + i, toDoPointList.get(i));
@@ -232,6 +232,7 @@ public class HomePageFragment extends Fragment {
             InspectPoint point = pointList.get(i);
             InspectItem inspectItem = point.getInspectItem();
             List<CheckProjectTime> checkProjectTimes = inspectItem.getCheckProjectTime();
+            int count = inspectItem.getCount();
             switch (inspectItem.getFrequencyType()) {
                 case RemindFrequencyType.PER_DAY:
                     if (checkProjectTimes != null && checkProjectTimes.size() > 0) {
@@ -251,9 +252,11 @@ public class HomePageFragment extends Fragment {
                                         .where(InspectPointLogDao.Properties.InspectPointId.eq(point.getId()))
                                         .where(InspectPointLogDao.Properties.OpDate.between(std, etd))
                                         .list();
-                                if (pointLogs == null || pointLogs.size() == 0) {
+
+                                int logCount = pointLogs.size();
+                                int rest = count - logCount;
+                                for (int k = 0;k<rest;k++) {
                                     toDoPointList.add(point);
-                                    break;
                                 }
                             }
                         }
@@ -277,9 +280,10 @@ public class HomePageFragment extends Fragment {
                                         .where(InspectPointLogDao.Properties.InspectPointId.eq(point.getId()))
                                         .where(InspectPointLogDao.Properties.OpDate.between(bd, ed))
                                         .list();
-                                if (pointLogs == null || pointLogs.size() == 0) {
+                                int logCount = pointLogs.size();
+                                int rest = count - logCount;
+                                for (int k = 0;k<rest;k++) {
                                     toDoPointList.add(point);
-                                    break;
                                 }
                             }
                         }
@@ -301,9 +305,10 @@ public class HomePageFragment extends Fragment {
                                         .where(InspectPointLogDao.Properties.InspectPointId.eq(point.getId()))
                                         .where(InspectPointLogDao.Properties.OpDate.between(bd, ed))
                                         .list();
-                                if (pointLogs == null || pointLogs.size() == 0) {
+                                int logCount = pointLogs.size();
+                                int rest = count - logCount;
+                                for (int k = 0;k<rest;k++) {
                                     toDoPointList.add(point);
-                                    break;
                                 }
                             }
                         }
@@ -325,9 +330,10 @@ public class HomePageFragment extends Fragment {
                                         .where(InspectPointLogDao.Properties.InspectPointId.eq(point.getId()))
                                         .where(InspectPointLogDao.Properties.OpDate.between(bd, ed))
                                         .list();
-                                if (pointLogs == null || pointLogs.size() == 0) {
+                                int logCount = pointLogs.size();
+                                int rest = count - logCount;
+                                for (int k = 0;k<rest;k++) {
                                     toDoPointList.add(point);
-                                    break;
                                 }
                             }
                         }
@@ -349,9 +355,10 @@ public class HomePageFragment extends Fragment {
                                         .where(InspectPointLogDao.Properties.InspectPointId.eq(point.getId()))
                                         .where(InspectPointLogDao.Properties.OpDate.between(bd, ed))
                                         .list();
-                                if (pointLogs == null || pointLogs.size() == 0) {
+                                int logCount = pointLogs.size();
+                                int rest = count - logCount;
+                                for (int k = 0;k<rest;k++) {
                                     toDoPointList.add(point);
-                                    break;
                                 }
                             }
                         }
@@ -362,6 +369,5 @@ public class HomePageFragment extends Fragment {
         }
 
     }
-
 
 }

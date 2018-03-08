@@ -1,6 +1,7 @@
 package com.miaxis.inspection.model;
 
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -166,7 +167,7 @@ public class PointManageModelImpl implements IPointManageModel {
         InspectItemDao itemDao = daoSession.getInspectItemDao();
         InspectContentDao contentDao = daoSession.getInspectContentDao();
         CheckProjectTimeDao checkProjectTimeDao = daoSession.getCheckProjectTimeDao();
-
+        checkProjectTimeDao.deleteAll();
         List<CheckPoint> checkPointList = checkPointResponseEntity.getListData();
         List<InspectPoint> inspectPointList = new ArrayList<>();
         for (int i = 0; i < checkPointList.size(); i++) {
@@ -174,7 +175,11 @@ public class PointManageModelImpl implements IPointManageModel {
             CheckProject checkProject = checkPoint.getProject();
             InspectPoint inspectPoint = new InspectPoint();
             inspectPoint.setId(checkPoint.getId());
-            inspectPoint.setRfid(checkPoint.getCpRfid());
+            if (TextUtils.isEmpty(checkPoint.getCpRfid())) {
+                inspectPoint.setRfid(null);
+            } else {
+                inspectPoint.setRfid(checkPoint.getCpRfid());
+            }
             inspectPoint.setBound(!TextUtils.isEmpty(checkPoint.getCpRfid()));
             inspectPoint.setPointName(checkPoint.getCpName());
             inspectPoint.setOrganizationId(Long.valueOf(checkPoint.getBankId()));

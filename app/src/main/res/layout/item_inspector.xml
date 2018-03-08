@@ -22,6 +22,7 @@
             android:id="@+id/iv_inspector_photo"
             android:layout_width="@dimen/pic_height"
             android:layout_height="@dimen/pic_height"
+            android:src="@mipmap/default_photo"
             android:background="@drawable/white_bg_gray_stroke_n"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -58,7 +59,6 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
             android:gravity="center"
-            android:hint="检查员权限"
             android:id="@+id/tv_inspector_role"
             android:layout_width="wrap_content"
             android:layout_height="40dp"

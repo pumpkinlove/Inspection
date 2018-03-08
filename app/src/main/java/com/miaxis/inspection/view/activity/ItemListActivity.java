@@ -54,7 +54,6 @@ public class ItemListActivity extends BaseActivity {
         initToolBar();
     }
 
-
     @Override
     protected void initData() {
         mTask = (Task) getIntent().getSerializableExtra("task");

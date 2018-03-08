@@ -3,12 +3,15 @@ package com.miaxis.inspection.entity.comm;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.io.Serializable;
+
 /**
  * Created by xu.nan on 2018/2/26.
  */
 @Entity
-public class TaskTime {
+public class TaskTime implements Serializable {
 
+    private static final long serialVersionUID = -8712980582267461389L;
     private Long  taskId;
     private Integer taskTimesType;
     private String  taskStartTime;

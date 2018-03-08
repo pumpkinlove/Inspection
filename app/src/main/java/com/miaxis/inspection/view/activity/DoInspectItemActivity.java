@@ -185,6 +185,7 @@ public class DoInspectItemActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQ_CODE_INSPECT_CONTENT) {
+            InspectContentLogDao contentLogDao = mDaoSession.getInspectContentLogDao();
             switch (resultCode) {
                 case 111:
                     pointLog.__setDaoSession(mDaoSession);
@@ -192,7 +193,7 @@ public class DoInspectItemActivity extends BaseActivity {
                     pointLog.setOpDate(new Date());
                     pointLog.setOpInspectorCode(Inspection_App.getCurInspector().getCensorCode());
                     pointLog.setOpInspectorName(Inspection_App.getCurInspector().getCensorName());
-                    contentLogList = pointLog.getContentList();
+                    contentLogList = contentLogDao.queryBuilder().where(InspectContentLogDao.Properties.PointLogCode.eq(pointLogCode)).list();
                     pointLog.setResult("正常");
                     for (int i = 0; i < contentLogList.size(); i++) {
                         if (contentLogList.get(i).getHasProblem()) {
@@ -210,7 +211,7 @@ public class DoInspectItemActivity extends BaseActivity {
                     pointLog.setOpDate(new Date());
                     pointLog.setOpInspectorCode(Inspection_App.getCurInspector().getCensorCode());
                     pointLog.setOpInspectorName(Inspection_App.getCurInspector().getCensorName());
-                    contentLogList = pointLog.getContentList();
+                    contentLogList = contentLogDao.queryBuilder().where(InspectContentLogDao.Properties.PointLogCode.eq(pointLogCode)).list();
                     pointLog.setResult("正常");
                     for (int i = 0; i < contentLogList.size(); i++) {
                         if (contentLogList.get(i).getHasProblem()) {

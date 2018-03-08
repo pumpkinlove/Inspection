@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Transient;
+
 import com.miaxis.inspection.model.local.greenDao.gen.DaoSession;
 import com.miaxis.inspection.model.local.greenDao.gen.ProblemPhotoDao;
 import com.miaxis.inspection.model.local.greenDao.gen.ProblemTypeDao;
@@ -46,6 +48,22 @@ public class InspectContentLog implements Serializable {
 
     @ToMany(referencedJoinProperty = "contentLogId")
     private List<ProblemPhoto> problemPhotoList;
+
+    @Transient
+    private String photoName1;
+    @Transient
+    private String photoName2;
+    @Transient
+    private String photoName3;
+    @Transient
+    private String photoName4;
+    @Transient
+    private String photoName5;
+    @Transient
+    private String videoName;
+    @Transient
+    private String voiceName;
+
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -284,4 +302,59 @@ public class InspectContentLog implements Serializable {
         this.uploaded = uploaded;
     }
 
+    public String getPhotoName1() {
+        return photoName1;
+    }
+
+    public void setPhotoName1(String photoName1) {
+        this.photoName1 = photoName1;
+    }
+
+    public String getPhotoName2() {
+        return photoName2;
+    }
+
+    public void setPhotoName2(String photoName2) {
+        this.photoName2 = photoName2;
+    }
+
+    public String getPhotoName3() {
+        return photoName3;
+    }
+
+    public void setPhotoName3(String photoName3) {
+        this.photoName3 = photoName3;
+    }
+
+    public String getPhotoName4() {
+        return photoName4;
+    }
+
+    public void setPhotoName4(String photoName4) {
+        this.photoName4 = photoName4;
+    }
+
+    public String getPhotoName5() {
+        return photoName5;
+    }
+
+    public void setPhotoName5(String photoName5) {
+        this.photoName5 = photoName5;
+    }
+
+    public String getVideoName() {
+        return videoName;
+    }
+
+    public void setVideoName(String videoName) {
+        this.videoName = videoName;
+    }
+
+    public String getVoiceName() {
+        return voiceName;
+    }
+
+    public void setVoiceName(String voiceName) {
+        this.voiceName = voiceName;
+    }
 }
